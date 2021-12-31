@@ -3410,6 +3410,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@yomguithereal/helpers@npm:^1.1.1":
+  version: 1.1.1
+  resolution: "@yomguithereal/helpers@npm:1.1.1"
+  checksum: 901aa14a232d56a99c423ac5968dd7915954a4bb3e570169cb450f1f3d328456025977c9812df3a34b061c74757b4bbd673bd467b2449c660a2dea347dda402a
+  languageName: node
+  linkType: hard
+
 "abab@npm:^2.0.3, abab@npm:^2.0.5":
   version: 2.0.5
   resolution: "abab@npm:2.0.5"
@@ -6771,7 +6778,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"events@npm:^3.2.0":
+"events@npm:^3.2.0, events@npm:^3.3.0":
   version: 3.3.0
   resolution: "events@npm:3.3.0"
   checksum: f6f487ad2198aa41d878fa31452f1a3c00958f46e9019286ff4787c84aac329332ab45c9cdc8c445928fc6d7ded294b9e005a7fce9426488518017831b272780
@@ -7507,6 +7514,96 @@ __metadata:
   version: 1.0.1
   resolution: "graceful-readlink@npm:1.0.1"
   checksum: 4c1889ca0a6fc0bb9585b55c26a99719be132cbc4b7d84036193b70608059b9783e52e2a866d5a8e39821b16a69e899644ca75c6206563f1319b6720836b9ab2
+  languageName: node
+  linkType: hard
+
+"graphology-indices@npm:^0.16.0":
+  version: 0.16.5
+  resolution: "graphology-indices@npm:0.16.5"
+  dependencies:
+    graphology-utils: ^2.4.2
+    mnemonist: ^0.39.0
+  peerDependencies:
+    graphology-types: ">=0.20.0"
+  checksum: 40b23ce4be867ead5a90cfdce990bcfd7fad3ee260714c1213d928f7a3bc4d82ac18cacac46706337af91535c1ae7404cb7fdc72d3e4eaeeaa81c2f06014129f
+  languageName: node
+  linkType: hard
+
+"graphology-layout-forceatlas2@npm:^0.8.1":
+  version: 0.8.1
+  resolution: "graphology-layout-forceatlas2@npm:0.8.1"
+  dependencies:
+    graphology-utils: ^2.1.0
+  peerDependencies:
+    graphology-types: ">=0.19.0"
+  checksum: b08c317e3cc116f193b5386dd55de78abf3d9a76071497b3737e22ecbb8fcf4f17596baf207f3ab9467a783f2c96bd2740ad775813e000bd5114b606aa5a837b
+  languageName: node
+  linkType: hard
+
+"graphology-layout@npm:^0.5.0":
+  version: 0.5.0
+  resolution: "graphology-layout@npm:0.5.0"
+  dependencies:
+    graphology-utils: ^2.3.0
+    pandemonium: ^1.5.0
+  peerDependencies:
+    graphology-types: ">=0.19.0"
+  checksum: afef561ee7f921803ff8f574849842618ab613c54b7184283c37bbbd754efa77b72623356030cc3f62a64b06d851a5d1a921df240327610083265ab1af03976d
+  languageName: node
+  linkType: hard
+
+"graphology-metrics@npm:1.18.2":
+  version: 1.18.2
+  resolution: "graphology-metrics@npm:1.18.2"
+  dependencies:
+    graphology-shortest-path: ^1.5.2
+    graphology-utils: ^2.3.0
+    mnemonist: ^0.38.3
+  peerDependencies:
+    graphology-types: ">=0.20.0"
+  checksum: 74716c2e5fd515405fff24a740a6b3023b0e44ba177fd2ef75feacf51289b00ebcc0e2cea197f7d10ba3e33d589b1a91a5b04a6f047b549060f0a410d4e16b60
+  languageName: node
+  linkType: hard
+
+"graphology-shortest-path@npm:^1.5.2":
+  version: 1.5.2
+  resolution: "graphology-shortest-path@npm:1.5.2"
+  dependencies:
+    "@yomguithereal/helpers": ^1.1.1
+    graphology-indices: ^0.16.0
+    graphology-utils: ^2.1.2
+    mnemonist: ^0.38.1
+  peerDependencies:
+    graphology-types: ">=0.20.0"
+  checksum: 5a410243d765975b2cbeaf2560fe4e923499d6f713d20fcd530ec2cd158763ba63d7b3d23da0ed53624960562444016669e2dd948899f09c04ab54d90f749aee
+  languageName: node
+  linkType: hard
+
+"graphology-types@npm:^0.23.0":
+  version: 0.23.0
+  resolution: "graphology-types@npm:0.23.0"
+  checksum: 6063b9c1f4bd7ed8017d5e574bd289a1fac1dbcd3f81096e9c11105d6f9c0fd17f4a93a4df50e3bd2138dec84534657cb6298e8c9bca1d66a4bd6a98fa508481
+  languageName: node
+  linkType: hard
+
+"graphology-utils@npm:^2.1.0, graphology-utils@npm:^2.1.2, graphology-utils@npm:^2.3.0, graphology-utils@npm:^2.4.0, graphology-utils@npm:^2.4.2":
+  version: 2.5.0
+  resolution: "graphology-utils@npm:2.5.0"
+  peerDependencies:
+    graphology-types: ">=0.23.0"
+  checksum: cd81eaf928c10b84af9192143b3e83856016d58a9b424e3ef848671c84919a9fc20321e6237eba6f61d07250c010756020cbd493c9211558d3ab4a42641362cc
+  languageName: node
+  linkType: hard
+
+"graphology@npm:^0.23.2":
+  version: 0.23.2
+  resolution: "graphology@npm:0.23.2"
+  dependencies:
+    events: ^3.3.0
+    obliterator: ^2.0.0
+  peerDependencies:
+    graphology-types: ">=0.23.0"
+  checksum: d4aae1617025ef269212ca113d1f1de004613b45c5dfbc83d1df1e1484203624ac57b92ab35a7bdbb9869fc39823b1aa9b5bd1cb2fec96d18404c821fb0c373b
   languageName: node
   linkType: hard
 
@@ -10028,6 +10125,24 @@ __metadata:
   languageName: node
   linkType: hard
 
+"mnemonist@npm:^0.38.1, mnemonist@npm:^0.38.3":
+  version: 0.38.5
+  resolution: "mnemonist@npm:0.38.5"
+  dependencies:
+    obliterator: ^2.0.0
+  checksum: 66080afc1616866beb164e230c432964d6eed467cf37ad00e9c10161b8267928124ca8f1d0ecfea86c85568acfa62d54faaf646a86968d1135189a0fdfdd6b78
+  languageName: node
+  linkType: hard
+
+"mnemonist@npm:^0.39.0":
+  version: 0.39.0
+  resolution: "mnemonist@npm:0.39.0"
+  dependencies:
+    obliterator: ^2.0.1
+  checksum: 1762703b6ba6e2c1202a5b02e7286d9ae139d408b6c97095db09907fdbf4812375189ae1188a4c3205434f3ee473a9d9edc8498d37c2a8a85586004f0e0492cc
+  languageName: node
+  linkType: hard
+
 "ms@npm:2.0.0":
   version: 2.0.0
   resolution: "ms@npm:2.0.0"
@@ -10385,6 +10500,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"obliterator@npm:^2.0.0, obliterator@npm:^2.0.1":
+  version: 2.0.1
+  resolution: "obliterator@npm:2.0.1"
+  checksum: 50ead74a40bcdb202d2aa4a027a4cef497877e7c9983e56f65b3dd8c16da0e32d3edaa18565fcde571536fe66252d9a4d76300ac223ca4c5e33d6d41d1301c14
+  languageName: node
+  linkType: hard
+
 "obuf@npm:^1.0.0, obuf@npm:^1.1.2":
   version: 1.1.2
   resolution: "obuf@npm:1.1.2"
@@ -10584,6 +10706,13 @@ __metadata:
   version: 1.0.11
   resolution: "pako@npm:1.0.11"
   checksum: 1be2bfa1f807608c7538afa15d6f25baa523c30ec870a3228a89579e474a4d992f4293859524e46d5d87fd30fa17c5edf34dbef0671251d9749820b488660b16
+  languageName: node
+  linkType: hard
+
+"pandemonium@npm:^1.5.0":
+  version: 1.5.0
+  resolution: "pandemonium@npm:1.5.0"
+  checksum: 7b9f8ea36354eabce91e075b88c4c521c06c377b5f32db3adb02927d6ab25ebe59f1bd7286fce968ae894ea156e0f028d45c25f2ce0fb727c6583a653a137433
   languageName: node
   linkType: hard
 
@@ -12032,6 +12161,22 @@ __metadata:
   languageName: node
   linkType: hard
 
+"react-sigma-v2@npm:^1.3.0":
+  version: 1.3.0
+  resolution: "react-sigma-v2@npm:1.3.0"
+  dependencies:
+    lodash: ^4.17.21
+    tslib: ^2.3.1
+  peerDependencies:
+    graphology: ">=0.23.0"
+    graphology-layout-forceatlas2: ">=0.6.0"
+    react: ^17.0.0
+    react-dom: ^17.0.0
+    sigma: ^2.1.1
+  checksum: 71e0a0cd59dcfa72c1482e15837f7b6e431e04415b71ead88787fef28419c881cb000dc29c5f7f0b1c07edd469731aecca3ecc452777d270a7416c41fad935fc
+  languageName: node
+  linkType: hard
+
 "react-transition-group@npm:^4.4.2":
   version: 4.4.2
   resolution: "react-transition-group@npm:4.4.2"
@@ -12295,6 +12440,10 @@ __metadata:
     electron-is-dev: ^2.0.0
     electron-squirrel-startup: ^1.0.0
     electronmon: ^2.0.2
+    graphology: ^0.23.2
+    graphology-layout: ^0.5.0
+    graphology-layout-forceatlas2: ^0.8.1
+    graphology-types: ^0.23.0
     i18next: ^21.6.4
     i18next-browser-languagedetector: ^6.1.2
     i18next-http-backend: ^1.3.1
@@ -12302,6 +12451,8 @@ __metadata:
     react-dom: ^17.0.2
     react-i18next: ^11.15.2
     react-scripts: 5.0.0
+    react-sigma-v2: ^1.3.0
+    sigma: ^2.1.3
     typescript: ^4.5.4
     wait-for-localhost-cli: ^3.0.0
     wait-on: ^6.0.0
@@ -12883,6 +13034,18 @@ __metadata:
     get-intrinsic: ^1.0.2
     object-inspect: ^1.9.0
   checksum: 351e41b947079c10bd0858364f32bb3a7379514c399edb64ab3dce683933483fc63fb5e4efe0a15a2e8a7e3c436b6a91736ddb8d8c6591b0460a24bb4a1ee245
+  languageName: node
+  linkType: hard
+
+"sigma@npm:^2.1.3":
+  version: 2.1.3
+  resolution: "sigma@npm:2.1.3"
+  dependencies:
+    "@yomguithereal/helpers": ^1.1.1
+    events: ^3.3.0
+    graphology-metrics: 1.18.2
+    graphology-utils: ^2.4.0
+  checksum: c5aa221f73cd1c366938c9912fcadbd341972fd237bcb84d62f1f2fe0df729547a511bacc3164e99a8410350490c3579fed9fc43b39ca0c5c4b7e712dde37f03
   languageName: node
   linkType: hard
 
@@ -13822,7 +13985,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"tslib@npm:^2.0.3, tslib@npm:^2.1.0":
+"tslib@npm:^2.0.3, tslib@npm:^2.1.0, tslib@npm:^2.3.1":
   version: 2.3.1
   resolution: "tslib@npm:2.3.1"
   checksum: de17a98d4614481f7fcb5cd53ffc1aaf8654313be0291e1bfaee4b4bb31a20494b7d218ff2e15017883e8ea9626599b3b0e0229c18383ba9dce89da2adf15cb9
