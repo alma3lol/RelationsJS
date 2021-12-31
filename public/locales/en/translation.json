@@ -1,3 +1,75 @@
 {
-	"edit": "Edit"
+	"cancel": "Cancel",
+	"search": {
+		"find": "Find a node",
+		"hint": {
+			"empty": "Start typing to search",
+			"no_match": "No match",
+			"found": "Matched a  node"
+		},
+		"path": {
+			"enable": "Enable path search",
+			"disable": "Disable path search",
+			"start": "Start node",
+			"end": "End node"
+		}
+	},
+	"node_info": {
+		"title": "Node info",
+		"minimize": "Minimize node info",
+		"expand": "Expand node info"
+	},
+	"zoom": {
+		"reset": "Reset zoom",
+		"in": "Zoom in",
+		"out": "Zoom out"
+	},
+	"export": {
+		"title": "Export",
+		"description": "You will export ({{nodes}}) nodes and ({{edges}}) edges to a JSON file.",
+		"action": "Export",
+		"success": "Successfully exported graph",
+		"failed": "Failed to export graph"
+	},
+	"import": {
+		"title": "Import",
+		"action": "Import",
+		"choose_file": "Choose a file",
+		"success": "Successfully imported graph",
+		"failed": "Failed to import graph"
+	},
+	"refresh": "Refresh",
+	"settings": {
+		"title": "Settings",
+		"action": "Close",
+		"dark_mode": "Dark mode",
+		"clear_unused": {
+			"title": "Clear unused",
+			"action": "Clear"
+		},
+		"dangerzone": {
+			"title": "DANGER ZONE",
+			"action": "RESET DATABASE",
+			"confirmation": {
+				"label": "Confirmation",
+				"message": "Write CONFIRM (all caps) to continue"
+			}
+		},
+		"disconnect": "Disconnect"
+	},
+	"add_node": {
+		"title": "Add node",
+		"action": "Add"
+	},
+	"passport": "Passport",
+	"passports": "Passports",
+	"picture": "Picture",
+	"pictures": "Pictures",
+	"video": "Video",
+	"videos": "Videos",
+	"document": "Document",
+	"documents": "Documents",
+	"files": {
+		"save_dialog_title": "Choose a file to export graph to"
+	}
 }

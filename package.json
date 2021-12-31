@@ -22,6 +22,9 @@
     "assert": "^2.0.0",
     "crypto-browserify": "^3.12.0",
     "csv-parse": "^5.0.4",
+    "electron-compile": "^6.4.4",
+    "electron-is-dev": "^2.0.0",
+    "electron-squirrel-startup": "^1.0.0",
     "fs": "^0.0.1-security",
     "graphology": "^0.23.2",
     "graphology-layout": "^0.5.0",
@@ -52,15 +55,14 @@
     "web-vitals": "^2.1.2"
   },
   "scripts": {
-    "start": "react-app-rewired start",
+    "start": "cross-env BROWSER=none react-app-rewired start",
     "build": "react-app-rewired build",
     "test": "react-app-rewired test",
     "eject": "react-app-rewired eject",
-    "electron": "electronmon .",
-    "electron:start": "concurrently -k \"cross-env BROWSER=none yarn start\" \"yarn electron\"",
-    "electron:package:mac": "yarn build && electron-builder -m -c.extraMetadata.main=build/electron.js",
-    "electron:package:win": "yarn build && electron-builder -w -c.extraMetadata.main=build/electron.js",
-    "electron:package:linux": "yarn build && electron-builder -l -c.extraMetadata.main=build/electron.js"
+    "dev": "concurrently -k \"yarn start\" \"yarn electron\"",
+    "electron": "electron-forge start -- --no-sandbox --remote-debugging-port=9222",
+    "package": "react-scripts build && electron-forge package",
+    "make": "react-scripts build && electron-forge make"
   },
   "eslintConfig": {
     "extends": [
@@ -84,11 +86,10 @@
     "concurrently": "^6.5.1",
     "cross-env": "^7.0.3",
     "devtron": "^1.4.0",
-    "electron": "^16.0.5",
-    "electron-builder": "^22.14.5",
+    "electron": "^16.0.2",
     "electron-devtools-installer": "^3.2.0",
-    "electron-is-dev": "^2.0.0",
-    "electron-squirrel-startup": "^1.0.0",
+    "electron-forge": "^5.2.4",
+    "electron-prebuilt-compile": "8.2.0",
     "electronmon": "^2.0.2",
     "enzyme": "^3.11.0",
     "enzyme-adapter-react-16": "^1.15.6",
@@ -117,5 +118,53 @@
     "linux": {
       "target": "deb"
     }
+  },
+  "config": {
+    "forge": {
+      "makers": [
+        {
+          "name": "@electron-forge/maker-dmg",
+          "config": {}
+        },
+        {
+          "name": "@electron-forge/maker-squirrel",
+          "config": {
+            "Authors": "AlMA PRO",
+            "exe": "captive-portal-js-ui-${version}.exe"
+          }
+        },
+        {
+          "name": "@electron-forge/maker-deb",
+          "config": {
+            "options": {
+              "maintainer": "AlMA PRO",
+              "homepage": "https://github.com/almapro/CaptivePortalJS-ui"
+            }
+          }
+        },
+        {
+          "name": "@electron-forge/maker-rpm",
+          "config": {
+            "options": {
+              "maintainer": "AlMA PRO",
+              "homepage": "https://github.com/almapro/CaptivePortalJS-ui"
+            }
+          }
+        }
+      ],
+      "electronPackagerConfig": {
+        "packageManager": "yarn",
+        "asar": true
+      },
+      "github_repository": {
+        "owner": "almapro",
+        "name": "CaptivePortalJS-ui"
+      }
+    }
+  },
+  "jest": {
+    "snapshotSerializers": [
+      "enzyme-to-json/serializer"
+    ]
   }
 }
