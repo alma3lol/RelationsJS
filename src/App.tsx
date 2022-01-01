@@ -302,7 +302,8 @@ const App = () => {
   }
   const useStyles = makeStyles({
     snackbarProvider: {
-      marginRight: theme.spacing(10)
+      marginRight: theme.spacing(10),
+      marginLeft: theme.spacing(10)
     }
   });
   const classes = useStyles();
@@ -311,7 +312,7 @@ const App = () => {
       <ThemeProvider theme={theme}>
         <RTL>
           <CssBaseline>
-            <SnackbarProvider maxSnack={3} classes={{ anchorOriginTopRight: classes.snackbarProvider }} anchorOrigin={{ horizontal: 'right', vertical: 'top' }}>
+            <SnackbarProvider maxSnack={3} classes={{ anchorOriginTopRight: classes.snackbarProvider, anchorOriginTopLeft: classes.snackbarProvider }} anchorOrigin={{ horizontal: language === 'en' ? 'right' : 'left', vertical: 'top' }}>
               <HashRouter basename='/'>
                 <Routes>
                   <Route path='/' element={
