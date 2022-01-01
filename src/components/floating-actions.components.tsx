@@ -361,7 +361,7 @@ export const FloatingActions: FC<FloatingActionsProps> = ({ showAddNode, showSet
 		if (saved) {
 			enqueueSnackbar(t('export.success'), { variant: 'success' });
 		} else {
-			enqueueSnackbar(t('export.failed'), { variant: 'error' });
+			enqueueSnackbar(t('export.failed'), { variant: 'warning' });
 		}
 		handleCancel();
 	}
