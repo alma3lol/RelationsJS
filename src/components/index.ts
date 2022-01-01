@@ -5,3 +5,5 @@ export * from './floating-actions.components';
 export * from './confirm-action.component';
 export * from './context-menu.component';
 export * from './settings.component';
+export * from './add-node.component';
+export * from './language-selector.component';

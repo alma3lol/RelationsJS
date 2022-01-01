@@ -25,6 +25,7 @@ import {
 	FloatingActions,
 	ConfirmAction,
     Settings,
+    AddNode,
 } from '../components';
 import { useTranslation } from 'react-i18next';
 
@@ -64,9 +65,6 @@ export const DashboardView = () => {
 	const sigma = useSigma();
 	const [neo4jSigmaGraph, setNeo4jSigmaGraph] = useState(new Neo4jSigmaGraph(sigma.getGraph(), driver, { database }));
 	const [mouseMove, setMouseMove] = useState(false);
-	/**
-	 * Drag'n'Drop
-	 */
 	useEffect(() => {
 		setSigma(sigma);
 		let isDragging = false;
@@ -80,14 +78,10 @@ export const DashboardView = () => {
 		});
 		sigma.getMouseCaptor().on("mousemove", (e) => {
 			if (!isDragging || !draggedNode) return;
-
-			// Get new position of node
 			const pos = sigma.viewportToGraph(e);
-
 			sigma.getGraph().setNodeAttribute(draggedNode, "x", pos.x);
 			sigma.getGraph().setNodeAttribute(draggedNode, "y", pos.y);
 		});
-		// On mouse up, we reset the autoscale and the dragging mode
 		sigma.getMouseCaptor().on("mouseup", () => {
 			setMouseMove(false);
 			if (draggedNode) {
@@ -97,7 +91,6 @@ export const DashboardView = () => {
 			draggedNode = '';
 			sigma.getCamera().enable();
 		});
-		// Disable the autoscale at the first down interaction
 		sigma.getMouseCaptor().on("mousedown", () => {
 			if (!sigma.getCustomBBox()) sigma.setCustomBBox(sigma.getBBox());
 		});
@@ -294,8 +287,6 @@ export const DashboardView = () => {
 				graph.clear();
 				paths.forEach(neo4jSigmaGraph.addRelationPathToGraph);
 				circlepack.assign(neo4jSigmaGraph.getGraph(), { hierarchyAttributes: ['node_type'] });
-				// const sensibleSettings = forceAtlas2.inferSettings(neo4jSigmaGraph.getGraph());
-				// forceAtlas2(neo4jSigmaGraph.getGraph(), { iterations: 50, settings: sensibleSettings });
 				new SpringSupervisor(neo4jSigmaGraph.getGraph(), { isNodeFixed: (n) => neo4jSigmaGraph.getGraph().getNodeAttribute(n, "highlighted") }).start();
 				sigma.refresh();
 				setFoundPath(true);
@@ -322,6 +313,7 @@ export const DashboardView = () => {
 	const [confirmAction, setConfirmAction] = useState<() => void>(() => {});
 	return (
 		<>
+			<AddNode show={showAddNode} onDone={createGraphCallback} close={() => setShowAddNode(false)} />
 			<Settings onDone={createGraphCallback} show={showSettings} close={() => setShowSettings(false)}/>
 			<FloatingActions showAddNode={() => setShowAddNode(true)} showSettings={() => setShowSettings(true)} onDoneImporting={createGraphCallback} />
 			<ConfirmAction close={() => { setShowConfirmAction(false); setConfirmAction(() => {}); }} actionName={confirmActionName} actionTitle={confirmActionTitle} actionQuestion={confirmActionQuestion} onConfirm={confirmAction} show={showConfirmAction} />

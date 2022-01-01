@@ -28,6 +28,7 @@ import { red } from "@mui/material/colors";
 import { Neo4jError } from "neo4j-driver";
 import { ThemeModeSwitch } from "./theme-mode-switch.component";
 import { useTranslation } from "react-i18next";
+import { LanguageSelector } from "./language-selector.component";
 
 export type SettingsProps = {
 	show: boolean
@@ -120,6 +121,9 @@ export const Settings: FC<SettingsProps> = ({ show, close, onDone }) => {
 			</DialogTitle>
 			<Divider variant='middle' />
 			<DialogContent>
+				<Box sx={{ mb: 2 }}>
+					<LanguageSelector />
+				</Box>
 				<FormControlLabel
 					sx={{ m: 0 }}
 					control={<ThemeModeSwitch onClick={toggleDarkMode} checked={darkMode} />}
@@ -176,10 +180,10 @@ export const Settings: FC<SettingsProps> = ({ show, close, onDone }) => {
 			<DialogActions style={{ padding: theme.spacing(3) }}>
 				<Grid container>
 					<Grid item flexGrow={1}>
-						<Button variant='outlined' color='primary' onClick={disconnect}><LogoutIcon />{t('settings.disconnect')}</Button>
+						<Button color='inherit' onClick={close}>{t('settings.action')}</Button>
 					</Grid>
 					<Grid item>
-						<Button color='inherit' onClick={close}>{t('settings.action')}</Button>
+						<Button variant='contained' color='error' onClick={disconnect}><LogoutIcon sx={{ px: 0.5 }} />{t('settings.disconnect')}</Button>
 					</Grid>
 				</Grid>
 			</DialogActions>
