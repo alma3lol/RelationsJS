@@ -14,10 +14,13 @@ import getNodeProgramImage from 'sigma/rendering/webgl/programs/node.image';
 import { AuthRoute, RestrictedRoute } from './components';
 import { LoginView } from './views';
 import { DashboardView } from './views/dashboard.view';
+import { RTL } from './rtl-support';
 
 export type AppContext = {
   darkMode: boolean
   toggleDarkMode: () => void
+  language: string
+  setLanguage: (lang: string) => void
   connected: boolean
   setConnected: (connected: boolean) => void
   driver: Driver | null
@@ -64,6 +67,8 @@ export type AppContext = {
 export const appContext = createContext<AppContext>({
   darkMode: false,
   toggleDarkMode: () => {},
+  language: 'en',
+  setLanguage: () => {},
   connected: false,
   setConnected: () => {},
   driver: null,
@@ -79,12 +84,13 @@ export const appContext = createContext<AppContext>({
   sigma: null,
   setSigma: () => {},
   theme: createTheme({
+    direction: 'ltr',
     palette: {
       primary: {
-        main: '#85559F',
+        main: '#1151BF',
       },
       secondary: {
-        main: '#3F294D',
+        main: '#145CD9',
       },
       mode: 'light',
     }
@@ -119,7 +125,9 @@ export const appContext = createContext<AppContext>({
 
 const App = () => {
   const localDarkMode = localStorage.getItem('darkMode');
+  const localLanguage = localStorage.getItem('language');
   const [darkMode, setDarkMode] = useState(localDarkMode && localDarkMode === '1' ? true : false);
+  const [language, setLanguage] = useState(localLanguage ? localLanguage : 'en');
   const toggleDarkMode = () => setDarkMode(!darkMode);
   const [connected, setConnected] = useState(false);
   const [driver, setDriver] = useState<Driver | null>(null);
@@ -129,12 +137,13 @@ const App = () => {
   const [url, setUrl] = useState('');
   const [sigma, setSigma] = useState<Sigma | null>(null);
   const [theme, setTheme] = useState(createTheme({
+    direction: language === 'ar' ? 'rtl' : 'ltr',
     palette: {
       primary: {
-        main: '#85559F',
+        main: '#1151BF',
       },
       secondary: {
-        main: '#3F294D',
+        main: '#145CD9',
       },
       mode: darkMode ? 'dark' : 'light',
     }
@@ -153,21 +162,26 @@ const App = () => {
   const [selectedNodeLabel, setSelectedNodeLabel] = useState('');
   useEffect(() => {
     localStorage.setItem('darkMode', darkMode ? '1' : '');
+    localStorage.setItem('language', language);
+    document.body.style.direction = language === 'ar' ? 'rtl' : 'ltr';
     setTheme(createTheme({
+      direction: language === 'ar' ? 'rtl' : 'ltr',
       palette: {
         primary: {
-          main: '#85559F',
+          main: '#1151BF',
         },
         secondary: {
-          main: '#3F294D',
+          main: '#145CD9',
         },
         mode: darkMode ? 'dark' : 'light',
       }
     }));
-  }, [darkMode]);
+  }, [darkMode, language, setTheme]);
   const appContextValue: AppContext = {
     darkMode,
     toggleDarkMode,
+    language,
+    setLanguage,
     connected,
     setConnected,
     driver,
@@ -295,26 +309,28 @@ const App = () => {
   return (
     <appContext.Provider value={appContextValue}>
       <ThemeProvider theme={theme}>
-        <CssBaseline>
-          <SnackbarProvider maxSnack={3} classes={{ anchorOriginTopRight: classes.snackbarProvider }} anchorOrigin={{ horizontal: 'right', vertical: 'top' }}>
-            <HashRouter basename='/'>
-              <Routes>
-                <Route path='/' element={
-                  <RestrictedRoute>
-                    <SigmaContainer initialSettings={{ defaultNodeType: 'image',  nodeProgramClasses: { image: getNodeProgramImage() } }} style={{ background: 'transparent' }}>
-                      <DashboardView />
-                    </SigmaContainer>
-                  </RestrictedRoute>
-                } />
-                <Route path='/login' element={
-                  <AuthRoute>
-                    <LoginView />
-                  </AuthRoute>
+        <RTL>
+          <CssBaseline>
+            <SnackbarProvider maxSnack={3} classes={{ anchorOriginTopRight: classes.snackbarProvider }} anchorOrigin={{ horizontal: 'right', vertical: 'top' }}>
+              <HashRouter basename='/'>
+                <Routes>
+                  <Route path='/' element={
+                    <RestrictedRoute>
+                      <SigmaContainer initialSettings={{ defaultNodeType: 'image',  nodeProgramClasses: { image: getNodeProgramImage() } }} style={{ background: 'transparent' }}>
+                        <DashboardView />
+                      </SigmaContainer>
+                    </RestrictedRoute>
                   } />
-              </Routes>
-            </HashRouter>
-          </SnackbarProvider>
-        </CssBaseline>
+                  <Route path='/login' element={
+                    <AuthRoute>
+                      <LoginView />
+                    </AuthRoute>
+                    } />
+                </Routes>
+              </HashRouter>
+            </SnackbarProvider>
+          </CssBaseline>
+        </RTL>
       </ThemeProvider>
     </appContext.Provider>
   );

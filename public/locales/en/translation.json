@@ -59,7 +59,15 @@
 	},
 	"add_node": {
 		"title": "Add node",
-		"action": "Add"
+		"action": "Add",
+		"caption": "Node type",
+		"hint": {
+			"default": "Hover over a node type to see its description",
+			"person": "A person node with relations and information"
+		},
+		"type": {
+			"person": "Person"
+		}
 	},
 	"passport": "Passport",
 	"passports": "Passports",
