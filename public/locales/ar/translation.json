@@ -1,5 +1,14 @@
 {
 	"cancel": "إلغاء",
+	"login": "تسجيل الدخول",
+	"username": "اسم المستخدم",
+	"password": "كلمة المرور",
+	"database": "قاعدة البيانات",
+	"neo4j_url": "مسار خادم Neo4j",
+	"titles": {
+		"login": "تسجيل الدخول - RelationsJS",
+		"dashboard": "لوحة التحكم - RelationsJS"
+	},
 	"search": {
 		"find": "البحث",
 		"hint": {

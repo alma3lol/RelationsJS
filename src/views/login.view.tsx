@@ -23,6 +23,7 @@ import { useCallback, useContext, useEffect, useState } from 'react';
 import { useTitle } from 'react-use';
 import { appContext } from '../App';
 import { ThemeModeSwitch } from '../components';
+import { useTranslation } from 'react-i18next';
 
 const useStyles = makeStyles<DefaultTheme, { mode: 'dark' | 'light' }>({
   input: {
@@ -31,7 +32,8 @@ const useStyles = makeStyles<DefaultTheme, { mode: 'dark' | 'light' }>({
 });
 
 export const LoginView = () => {
-  useTitle('Login - Captive Portal JS');
+  const { t } = useTranslation();
+  useTitle(t('titles.login'));
   const { darkMode, toggleDarkMode, setConnected, setDriver, setDatabase, setUsername, setPassword, setUrl, autologin, setAutologin } = useContext(appContext);
   const [localUrl, localUsername, localPassword, localDatabase] = [localStorage.getItem('neo4j_url'), localStorage.getItem('neo4j_username'), localStorage.getItem('neo4j_password'), localStorage.getItem('neo4j_database')]
   const [url, setLocalUrl] = useState(!!localUrl ? localUrl : 'neo4j://localhost:7687');
@@ -99,19 +101,19 @@ export const LoginView = () => {
             <Grid item xs={12}>
             <Collapse in={!!error}>
             <Alert severity="error">
-            <AlertTitle>Error</AlertTitle>
+            <AlertTitle>{t('error')}</AlertTitle>
             {error}
             </Alert>
             </Collapse>
             </Grid>
             <Grid item xs={12}>
             <FormControl required fullWidth variant="outlined">
-            <InputLabel htmlFor="url">Neo4j URL</InputLabel>
+            <InputLabel htmlFor="url">{t('neo4j_url')}</InputLabel>
             <OutlinedInput
             inputProps={{ className: classes.input }}
             value={url}
             id="url"
-            label="Neo4j URL"
+            label={t('neo4j_url')}
             onChange={e => setLocalUrl(e.target.value)}
             />
             </FormControl>
@@ -119,19 +121,19 @@ export const LoginView = () => {
             <Grid container item xs={12} spacing={3}>
             <Grid item xs={6}>
             <FormControl required fullWidth variant="outlined">
-            <InputLabel htmlFor="username">Username</InputLabel>
+            <InputLabel htmlFor="username">{t('username')}</InputLabel>
             <OutlinedInput
             inputProps={{ className: classes.input }}
             value={username}
             id="username"
-            label="Username"
+            label={t('username')}
             onChange={e => setLocalUsername(e.target.value)}
             />
             </FormControl>
             </Grid>
               <Grid item xs={6}>
                 <FormControl required fullWidth variant="outlined">
-                  <InputLabel htmlFor="password">Password</InputLabel>
+                  <InputLabel htmlFor="password">{t('password')}</InputLabel>
                   <OutlinedInput
                     inputProps={{ className: classes.input }}
                       value={password}
@@ -148,25 +150,25 @@ export const LoginView = () => {
                     </IconButton>
                     </InputAdornment>
                     }
-                    label="Password"
+                    label={t('password')}
                     />
                 </FormControl>
               </Grid>
             </Grid>
             <Grid item xs={12}>
               <FormControl required fullWidth variant="outlined">
-                <InputLabel htmlFor="database">Database</InputLabel>
+                <InputLabel htmlFor="database">{t('database')}</InputLabel>
                 <OutlinedInput
                   inputProps={{ className: classes.input }}
                   value={database}
                   id="database"
-                  label="Database"
+                  label={t('database')}
                   onChange={e => setLocalDatabase(e.target.value)}
                   />
               </FormControl>
             </Grid>
             <Grid item xs={12}>
-              <Button disabled={loading} fullWidth type='submit' variant='contained'>{loading ? <CircularProgress /> : 'Login' }</Button>
+              <Button disabled={loading} fullWidth type='submit' variant='contained'>{loading ? <CircularProgress /> : t('login') }</Button>
             </Grid>
           </Grid>
         </form>

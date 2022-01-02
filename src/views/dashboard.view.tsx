@@ -37,7 +37,7 @@ export type ClickNode = {
 
 export const DashboardView = () => {
      const { t } = useTranslation();
-	useTitle(t('dashboard.title'));
+	useTitle(t('titles.dashboard'));
 	const {
 		driver,
 		setSigma,

@@ -1,5 +1,14 @@
 {
 	"cancel": "Cancel",
+	"login": "Login",
+	"username": "Username",
+	"password": "Password",
+	"database": "Database",
+	"neo4j_url": "Neo4j URL",
+	"titles": {
+		"login": "Login - RelationsJS",
+		"dashboard": "Dashboard - RelationsJS"
+	},
 	"search": {
 		"find": "Find a node",
 		"hint": {
