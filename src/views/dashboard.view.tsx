@@ -14,7 +14,6 @@ import { appContext } from '../App';
 import { Attributes } from 'graphology-types';
 import { useSigma, useSetSettings, useRegisterEvents } from 'react-sigma-v2';
 import circlepack from 'graphology-layout/circlepack';
-// import forceAtlas2 from 'graphology-layout-forceatlas2';
 import { useSnackbar } from "notistack"
 import _ from 'lodash';
 import { Neo4jError, Node } from 'neo4j-driver';
@@ -24,8 +23,8 @@ import {
 	ContextMenu,
 	FloatingActions,
 	ConfirmAction,
-    Settings,
-    AddNode,
+	Settings,
+	AddNode,
 } from '../components';
 import { useTranslation } from 'react-i18next';
 
@@ -36,7 +35,7 @@ export type ClickNode = {
 }
 
 export const DashboardView = () => {
-     const { t } = useTranslation();
+	const { t } = useTranslation();
 	useTitle(t('titles.dashboard'));
 	const {
 		driver,
