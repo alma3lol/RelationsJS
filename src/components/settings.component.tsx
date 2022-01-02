@@ -121,15 +121,19 @@ export const Settings: FC<SettingsProps> = ({ show, close, onDone }) => {
 			</DialogTitle>
 			<Divider variant='middle' />
 			<DialogContent>
+				<Grid container sx={{ mb: 2 }}>
+					<Grid item flexGrow={1}>
+						<LanguageSelector />
+					</Grid>
+					<Grid item>
+						<FormControlLabel
+							sx={{ m: 0 }}
+							control={<ThemeModeSwitch onClick={toggleDarkMode} checked={darkMode} />}
+							label={t('settings.dark_mode') as string}
+							labelPlacement='start' />
+					</Grid>
+				</Grid>
 				<Box sx={{ mb: 2 }}>
-					<LanguageSelector />
-				</Box>
-				<FormControlLabel
-					sx={{ m: 0 }}
-					control={<ThemeModeSwitch onClick={toggleDarkMode} checked={darkMode} />}
-					label={t('settings.dark_mode') as string}
-					labelPlacement='start' />
-				<Box sx={{ mt: 2 }}>
 					{t('settings.clear_unused.title')}:
 					<Box sx={{ pl: 4 }}>
 						<FormGroup>
