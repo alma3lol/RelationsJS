@@ -93,6 +93,7 @@ export const FloatingActions: FC<FloatingActionsProps> = ({ showAddNode, showSet
 		selectedNodeLabel,
 		driver,
 		database,
+		language,
 	} = useContext(appContext);
 	const sigma = useSigma();
 	const graph = sigma.getGraph();
@@ -421,8 +422,8 @@ export const FloatingActions: FC<FloatingActionsProps> = ({ showAddNode, showSet
 				</Grid>
 			</Box>
 			<Box className={classes.floatingActionsBottomLeft}>
-				<Collapse in={expandNodeInfo && nodePropertiesInfo.length > 0} collapsedSize={theme.spacing(8)}>
-					<Paper sx={{ width: 450, p: 2 }}>
+				<Paper elevation={3} sx={{ width: 450, p: 2 }}>
+					<Collapse in={expandNodeInfo && nodePropertiesInfo.length > 0} collapsedSize={theme.spacing(4)}>
 						<Grid container>
 							<Grid item xs={11}>{t('node_info.title')}{(hoveredNodeLabel || selectedNodeLabel) && ` (${hoveredNodeLabel || selectedNodeLabel})`}</Grid>
 							<Grid item xs={1}>
@@ -454,8 +455,8 @@ export const FloatingActions: FC<FloatingActionsProps> = ({ showAddNode, showSet
 								</>}
 							</Grid>
 						</Grid>
-					</Paper>
-				</Collapse>
+					</Collapse>
+				</Paper>
 			</Box>
 			<Dialog open={showImportDialog} fullWidth maxWidth='md'>
 				<form onSubmit={handleImportSubmit}>
@@ -472,7 +473,8 @@ export const FloatingActions: FC<FloatingActionsProps> = ({ showAddNode, showSet
 							</Grid>
 						</Grid>
 					</DialogContent>
-					<DialogActions>
+					<DialogActions
+						sx={{ direction: language === 'en' ? 'ltr' : 'rtl' }}>
 						<Button color='inherit' onClick={handleCancel}>{t('cancel')}</Button>
 						<Button type='submit' variant='contained' color='primary'>{t('import.action')}</Button>
 					</DialogActions>
@@ -484,7 +486,8 @@ export const FloatingActions: FC<FloatingActionsProps> = ({ showAddNode, showSet
 					<DialogContent>
 						{t('export.description').replace('{{nodes}}', sigma.getGraph().nodes().length.toString()).replace('{{edges}}', sigma.getGraph().edges().length.toString())}
 					</DialogContent>
-					<DialogActions>
+					<DialogActions
+						dir={language === 'en' ? 'ltr' : 'rtl'}>
 						<Button color='inherit' onClick={handleCancel}>{t('cancel')}</Button>
 						<Button type='submit' variant='contained' color='primary'>{t('export.action')}</Button>
 					</DialogActions>
