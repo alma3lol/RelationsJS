@@ -94,7 +94,6 @@ export const FloatingActions: FC<FloatingActionsProps> = ({ showAddNode, showSet
 		selectedNodeLabel,
 		driver,
 		database,
-		language,
 	} = useContext(appContext);
 	const sigma = useSigma();
 	const graph = sigma.getGraph();
