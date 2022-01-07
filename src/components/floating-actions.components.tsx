@@ -473,8 +473,7 @@ export const FloatingActions: FC<FloatingActionsProps> = ({ showAddNode, showSet
 							</Grid>
 						</Grid>
 					</DialogContent>
-					<DialogActions
-						sx={{ direction: language === 'en' ? 'ltr' : 'rtl' }}>
+					<DialogActions>
 						<Button color='inherit' onClick={handleCancel}>{t('cancel')}</Button>
 						<Button type='submit' variant='contained' color='primary'>{t('import.action')}</Button>
 					</DialogActions>
