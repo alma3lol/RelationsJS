@@ -43,6 +43,7 @@ import _ from 'lodash';
 import { useSnackbar } from 'notistack';
 import { Neo4jError } from 'neo4j-driver';
 import { useTranslation } from 'react-i18next';
+import useHotkeys from '@reecelucas/react-use-hotkeys';
 
 export type FloatingActionsProps = {
 	showAddNode: () => void
@@ -366,6 +367,11 @@ export const FloatingActions: FC<FloatingActionsProps> = ({ showAddNode, showSet
 		}
 		handleCancel();
 	}
+	useHotkeys('Escape', () => {
+		setShowImportDialog(false);
+		setShowExportDialog(false);
+		setImportFromExportedGraphFile(null);
+	}, true);
 	return (
 		<>
 			<Box className={classes.floatingActionsTop} display='grid' rowGap={2}>
@@ -485,8 +491,7 @@ export const FloatingActions: FC<FloatingActionsProps> = ({ showAddNode, showSet
 					<DialogContent>
 						{t('export.description').replace('{{nodes}}', sigma.getGraph().nodes().length.toString()).replace('{{edges}}', sigma.getGraph().edges().length.toString())}
 					</DialogContent>
-					<DialogActions
-						dir={language === 'en' ? 'ltr' : 'rtl'}>
+					<DialogActions>
 						<Button color='inherit' onClick={handleCancel}>{t('cancel')}</Button>
 						<Button type='submit' variant='contained' color='primary'>{t('export.action')}</Button>
 					</DialogActions>
