@@ -62,6 +62,8 @@ export type AppContext = {
   setSelectedNode: (selectedNode: string | null) => void
   selectedNodeLabel: string
   setSelectedNodeLabel: (selectedNodeLabel: string) => void
+  layoutMode: 'CIRCULAR' | 'RANDOM',
+  setLayoutMode: (layoutMode: 'CIRCULAR' | 'RANDOM') => void
 }
 
 export const appContext = createContext<AppContext>({
@@ -121,6 +123,8 @@ export const appContext = createContext<AppContext>({
   setSelectedNode: () => {},
   selectedNodeLabel: '',
   setSelectedNodeLabel: () => {},
+  layoutMode: 'CIRCULAR',
+  setLayoutMode: () => {},
 });
 
 const App = () => {
@@ -177,6 +181,7 @@ const App = () => {
       }
     }));
   }, [darkMode, language, setTheme]);
+  const [layoutMode, setLayoutMode] = useState<'CIRCULAR' | 'RANDOM'>('CIRCULAR');
   const appContextValue: AppContext = {
     darkMode,
     toggleDarkMode,
@@ -299,6 +304,8 @@ const App = () => {
     setSelectedNode,
     selectedNodeLabel,
     setSelectedNodeLabel,
+    layoutMode,
+    setLayoutMode,
   }
   const useStyles = makeStyles({
     snackbarProvider: {
