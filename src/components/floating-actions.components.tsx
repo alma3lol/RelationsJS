@@ -46,7 +46,6 @@ import { useSnackbar } from 'notistack';
 import { Neo4jError } from 'neo4j-driver';
 import { useTranslation } from 'react-i18next';
 import useHotkeys from '@reecelucas/react-use-hotkeys';
-import Circle from '../images/BiLoaderCircle.svg';
 
 export type FloatingActionsProps = {
 	showAddNode: () => void
