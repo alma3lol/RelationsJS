@@ -47,7 +47,7 @@
 		"success": "Successfully imported graph",
 		"failed": "Failed to import graph"
 	},
-	"refresh": "Refresh",
+	"refresh": "Refresh layout",
 	"settings": {
 		"title": "Settings",
 		"action": "Close",
@@ -72,10 +72,17 @@
 		"caption": "Node type",
 		"hint": {
 			"default": "Hover over a node type to see its description",
+			"category": "A category node that can contain other nodes",
 			"person": "A person node with relations and information"
 		},
 		"type": {
+			"category": "Category",
 			"person": "Person"
+		},
+		"inputs": {
+			"category": {
+				"name": "Category Name"
+			}
 		}
 	},
 	"passport": "Passport",
@@ -88,5 +95,19 @@
 	"documents": "Documents",
 	"files": {
 		"save_dialog_title": "Choose a file to export graph to"
+	},
+	"context_menu": {
+		"set_start_node": "Set as start node",
+		"set_end_node": "Set as end node"
+	},
+	"change_layout": {
+		"CIRCULAR": "Change to random layout",
+		"RANDOM": "Change to circular layout"
+	},
+	"quick_find": {
+		"title": "Quick find",
+		"action": "Search",
+		"search_lable": "Search",
+		"no_results": "Your search returned no results"
 	}
 }
