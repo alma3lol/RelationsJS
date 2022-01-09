@@ -54,24 +54,6 @@ export type FloatingActionsProps = {
 	refreshGraph: () => void
 }
 
-export type WifiteCrackedWPA = {
-	type: "WPA"
-	date: number
-	essid: string
-	bssid: string
-	key: string
-	handshake_file: string
-}
-
-export type WifiteCrackedWPS = {
-	type: "WPS"
-	date: number
-	essid: string
-	bssid: string
-	pin: string
-	psk: string
-}
-
 export const FloatingActions: FC<FloatingActionsProps> = ({ showAddNode, showSettings, onDoneImporting, refreshGraph }) => {
 	const { t } = useTranslation();
 	const { enqueueSnackbar } = useSnackbar();
