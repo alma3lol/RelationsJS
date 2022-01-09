@@ -1,13 +1,16 @@
 import { Dialog, Grid, CardContent, Card, CardActionArea, Divider, Typography, Button, DialogTitle, DialogContent, DialogActions } from "@mui/material";
 import { makeStyles } from "@mui/styles";
 import {
+	Groups as GroupsIcon,
 	Person as PersonIcon,
 } from "@mui/icons-material";
-import { FC, FormEvent, useContext, useState } from "react";
+import { FC, FormEvent, useContext, useEffect, useState } from "react";
 import { appContext } from "../App";
 import { NodeType } from "../neo4j-sigma-graph";
 import EventEmitter from "events";
 import { useTranslation } from "react-i18next";
+import { AddCategory } from "./add-node";
+import { v4 } from "uuid";
 
 export type AddNodeProps = {
 	show: boolean
@@ -22,7 +25,7 @@ export type WithHintComponent = {
 
 export const AddNode: FC<AddNodeProps> = ({ show, close, onDone: onDoneParent }) => {
 	const { t } = useTranslation();
-	const { theme } = useContext(appContext);
+	const { theme, driver, database } = useContext(appContext);
 	const useStyles = makeStyles({
 		cardActionArea: {
 			'&:disabled > .MuiCardActionArea-focusHighlight': {
@@ -38,6 +41,7 @@ export const AddNode: FC<AddNodeProps> = ({ show, close, onDone: onDoneParent })
 	const classes = useStyles();
 	const [nodeType, setNodeType] = useState<null | NodeType>(null);
 	const nodeTypes: [JSX.Element, string, NodeType, string][] = [
+		[<GroupsIcon />, t('add_node.type.category'), 'CATEGORY', t('add_node.hint.category')],
 		[<PersonIcon />, t('add_node.type.person'), 'PERSON', t('add_node.hint.person')],
 	];
 	const defaultHint = t('add_node.hint.default');
@@ -50,17 +54,34 @@ export const AddNode: FC<AddNodeProps> = ({ show, close, onDone: onDoneParent })
 		onDoneParent();
 		handleClose();
 	}
-	const addNodeEventEmitter = new EventEmitter();
-	const handleOnSubmit = (e: FormEvent) => {
+	const [categoryName, setCategoryName] = useState('');
+	const handleOnSubmit = async (e: FormEvent) => {
 		e.preventDefault();
+		if (!driver) {
+			return;
+		}
+		const session = driver.session({ database });
+		const id = v4();
 		switch(nodeType) {
+			case 'CATEGORY':
+				await session.run(`
+					CREATE (c:Category {id: $id, name: $name})
+				`, { id, name: categoryName });
+				await session.close();
+				onDone();
+				break;
 			case 'PERSON':
-				addNodeEventEmitter.emit('ADD_PERSON_NODE');
+				// TODO
 				break;
 			default:
 				break;
 		}
 	}
+	useEffect(() => {
+		setNodeType(null);
+		setHint(defaultHint);
+		setCategoryName('');
+	}, [show]);
 	return (
 		<Dialog open={show} fullWidth maxWidth='lg'>
 			<form onSubmit={handleOnSubmit}>
@@ -90,6 +111,7 @@ export const AddNode: FC<AddNodeProps> = ({ show, close, onDone: onDoneParent })
 						</Grid>
 						{nodeType !== null && <Divider variant='middle' className={classes.divider} />}
 						<Grid item container spacing={0}>
+							{nodeType === 'CATEGORY' && <AddCategory value={categoryName} onChange={e => setCategoryName(e.currentTarget.value ?? '')} onSubmit={handleOnSubmit} />}
 							{nodeType === 'PERSON' && "Hi"}
 						</Grid>
 					</Grid>
