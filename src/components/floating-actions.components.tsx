@@ -167,6 +167,13 @@ export const FloatingActions: FC<FloatingActionsProps> = ({ showAddNode, showSet
 	}, [foundNode]);
 	const handleSearchChange = (searchString: string) => {
 		const valueItem = values.find(value => value.label === searchString);
+		const foundInGraph = graph.findNode((__, attributes) => attributes.label === searchString);
+		if (foundInGraph) {
+			setSearch(searchString);
+			setValues([]);
+			setFoundNode(foundInGraph);
+			return;
+		}
 		if (valueItem) {
 			setSearch(valueItem.label);
 			setValues([]);
