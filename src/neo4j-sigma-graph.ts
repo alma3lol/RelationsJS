@@ -1,11 +1,14 @@
 import Graph from "graphology";
 import _ from "lodash";
 import { Driver, Node, Path, Session, SessionMode } from "neo4j-driver";
+import GroupsSvgIcon from './images/groups.svg';
 
 export type NodeType =
+  'CATEGORY' |
   'PERSON' |
   'GROUP' |
   'PARTY' |
+  'HOST' |
   'WORKPLACE' |
   'LOCATION' |
   'ORGANIZATION' |
@@ -17,18 +20,24 @@ export type NodeType =
   'PROGRAM' |
   'PROJECT' |
   'NATIONALITY' |
-  'OTHER';
+  'PHONE_NUMBER' |
+  'EMAIL' |
+  'ENTRANCE';
 
 export type RelationType =
+  'CATEGORIZED_AS' |
   'KNOWS' |
   'WORKS_AT' |
   'LIVES_IN' |
+  'BEEN_TO' |
+  'COMING_TO' |
   'OWNS' |
   'FROM' |
   'ORGANIZED' |
   'HAS' |
   'RUNS' |
-  'MEMBER_OF';
+  'MEMBER_OF' |
+  'GRANTED_BY';
 
 export type SessionOptions = {
   defaultAccessMode?: SessionMode;
@@ -52,7 +61,16 @@ export class Neo4jSigmaGraph {
   addNodeToGraph = (node: Node) => {
     const node_type = node.labels[0].toUpperCase() as NodeType;
     const data: any = { node_type, type: 'image', id: node.properties.id };
+    // create a random x, y position for the node
+    const x = Math.random() * 1000;
+    const y = Math.random() * 1000;
+    data.x = x;
+    data.y = y;
     switch (node_type) {
+      case 'CATEGORY':
+        data.image = GroupsSvgIcon;
+        data.label = node.properties.name;
+        break;
       case 'PERSON':
         // data.image = WifiSvgIcon;
         data.label = `${node.properties.essid} - ${node.properties.bssid}`;
@@ -66,6 +84,24 @@ export class Neo4jSigmaGraph {
     if (!this.graph.hasNode(node.properties.id)) {
       this.graph.addNode(node.properties.id, data);
     }
+  }
+
+  searchNodes = (query: string) => {
+    const session = this.generateSession();
+    if (!session) {
+      return [];
+    }
+    return session.run(`
+      MATCH (n)
+      WHERE n.name =~ '.*${query}.*'
+      RETURN n
+    `).then((result) => {
+      const nodes: Node[] = result.records.map((record: any) => record.get('n'));
+      return nodes;
+    }).catch((error: any) => {
+      console.error(error);
+      return [];
+    });
   }
 
   addRelationPathToGraph = (path: Path, data: any = {}) => {

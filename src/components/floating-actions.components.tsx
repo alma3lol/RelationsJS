@@ -17,6 +17,7 @@ import {
 	DialogTitle,
 	DialogContent,
 	DialogActions,
+    SvgIcon,
 } from '@mui/material';
 import { makeStyles } from '@mui/styles';
 import { FC, useContext, useState, useEffect, FormEvent } from 'react';
@@ -34,6 +35,7 @@ import {
 	Refresh as RefreshIcon,
 	UploadFile as UploadFileIcon,
 	Download as DownloadIcon,
+	Shuffle as ShuffleIcon,
 } from '@mui/icons-material';
 import { appContext } from '../App';
 import { useSigma } from 'react-sigma-v2';
@@ -44,11 +46,13 @@ import { useSnackbar } from 'notistack';
 import { Neo4jError } from 'neo4j-driver';
 import { useTranslation } from 'react-i18next';
 import useHotkeys from '@reecelucas/react-use-hotkeys';
+import Circle from '../images/BiLoaderCircle.svg';
 
 export type FloatingActionsProps = {
 	showAddNode: () => void
 	showSettings: () => void
 	onDoneImporting: () => void
+	refreshGraph: () => void
 }
 
 export type WifiteCrackedWPA = {
@@ -69,7 +73,7 @@ export type WifiteCrackedWPS = {
 	psk: string
 }
 
-export const FloatingActions: FC<FloatingActionsProps> = ({ showAddNode, showSettings, onDoneImporting }) => {
+export const FloatingActions: FC<FloatingActionsProps> = ({ showAddNode, showSettings, onDoneImporting, refreshGraph }) => {
 	const { t } = useTranslation();
 	const { enqueueSnackbar } = useSnackbar();
 	const {
@@ -94,6 +98,8 @@ export const FloatingActions: FC<FloatingActionsProps> = ({ showAddNode, showSet
 		selectedNodeLabel,
 		driver,
 		database,
+		layoutMode,
+		setLayoutMode,
 	} = useContext(appContext);
 	const sigma = useSigma();
 	const graph = sigma.getGraph();
@@ -277,6 +283,7 @@ export const FloatingActions: FC<FloatingActionsProps> = ({ showAddNode, showSet
 		setImportFromExportedGraphFile(null);
 	}
 	type NodeTypeString =
+		'Category' |
 		'Person' |
 		'Group' |
 		'Party' |
@@ -371,12 +378,31 @@ export const FloatingActions: FC<FloatingActionsProps> = ({ showAddNode, showSet
 		setShowExportDialog(false);
 		setImportFromExportedGraphFile(null);
 	}, true);
+	useHotkeys('Control+e', () => {
+		setShowExportDialog(true);
+	});
+	useHotkeys('Control+i', () => {
+		setShowImportDialog(true);
+	});
+	const CircleSvg = () => (
+		<SvgIcon>
+			<circle cx="12" cy="20" r="2"></circle>
+			<circle cx="12" cy="4" r="2"></circle>
+			<circle cx="6.343" cy="17.657" r="2"></circle>
+			<circle cx="17.657" cy="6.343" r="2"></circle>
+			<circle cx="4" cy="12" r="2.001"></circle>
+			<circle cx="20" cy="12" r="2"></circle>
+			<circle cx="6.343" cy="6.344" r="2"></circle>
+			<circle cx="17.657" cy="17.658" r="2"></circle>
+		</SvgIcon>
+	)
 	return (
 		<>
 			<Box className={classes.floatingActionsTop} display='grid' rowGap={2}>
 				<Tooltip placement='left' title={t('settings.title') as string}><Fab color='secondary' onClick={showSettings}><SettingsIcon /></Fab></Tooltip>
 				<Tooltip placement='left' title={t('add_node.title') as string}><Fab color='secondary' onClick={showAddNode}><AddIcon /></Fab></Tooltip>
-				<Tooltip placement='left' title={t('refresh') as string}><Fab color='secondary' onClick={() => sigma.refresh()}><RefreshIcon /></Fab></Tooltip>
+				<Tooltip placement='left' title={t('refresh') as string}><Fab color='secondary' onClick={() => refreshGraph()}><RefreshIcon /></Fab></Tooltip>
+				<Tooltip placement='left' title={t(`change_layout.${layoutMode}`) as string}><Fab color='secondary' onClick={() => setLayoutMode(layoutMode === 'RANDOM' ? 'CIRCULAR' : 'RANDOM')}>{layoutMode === 'CIRCULAR' ? <ShuffleIcon /> : <CircleSvg />}</Fab></Tooltip>
 				<Tooltip placement='left' title={t('import.title') as string}><Fab color='secondary' onClick={() => setShowImportDialog(true)}><UploadFileIcon /></Fab></Tooltip>
 				<Tooltip placement='left' title={t('export.title') as string}><Fab color='secondary' onClick={() => setShowExportDialog(true)}><DownloadIcon /></Fab></Tooltip>
 			</Box>
