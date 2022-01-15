@@ -7,7 +7,6 @@ import {
 import { FC, FormEvent, useContext, useEffect, useState } from "react";
 import { appContext } from "../App";
 import { NodeType } from "../neo4j-sigma-graph";
-import EventEmitter from "events";
 import { useTranslation } from "react-i18next";
 import { AddCategory } from "./add-node";
 import { v4 } from "uuid";
