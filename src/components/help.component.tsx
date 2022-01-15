@@ -58,6 +58,8 @@ export const Help: React.FC<HelpProps> = ({ show, onClose }) => {
 		{ shortcut: "Ctrl + r", description: t("help.shortcuts.refresh_graph") },
 		{ shortcut: "Ctrl + l", description: t("help.shortcuts.change_layout") },
 		{ shortcut: "Ctrl + f", description: t("help.shortcuts.show_quick_find") },
+		{ shortcut: "f", description: t("help.shortcuts.focus_search") },
+		{ shortcut: "p", description: t("help.shortcuts.toggle_find_path") },
 		{ shortcut: "Ctrl + e", description: t("help.shortcuts.show_export") },
 		{ shortcut: "Ctrl + i", description: t("help.shortcuts.show_import") },
 		{ shortcut: "Esc", description: t("help.shortcuts.escape") },

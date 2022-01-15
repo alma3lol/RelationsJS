@@ -126,7 +126,9 @@
 			"escape": "Close help, settings, export, import, ...etc",
 			"zoom_in": "Zoom in",
 			"zoom_out": "Zoom out",
-			"reset_zoom": "Reset zoom"
+			"reset_zoom": "Reset zoom",
+			"focus_search": "Focus search input",
+			"toggle_find_path": "Toggle find path"
 		}
 	}
 }
