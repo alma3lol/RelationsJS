@@ -20,7 +20,7 @@ import {
     SvgIcon,
 } from '@mui/material';
 import { makeStyles } from '@mui/styles';
-import { FC, useContext, useState, useEffect, FormEvent } from 'react';
+import { FC, useContext, useState, useEffect, FormEvent, createRef } from 'react';
 import {
 	ZoomIn as ZoomInIcon,
 	ZoomOut as ZoomOutIcon,
@@ -372,6 +372,17 @@ export const FloatingActions: FC<FloatingActionsProps> = ({ showAddNode, showSet
 	useHotkeys('Control+i', () => {
 		setShowImportDialog(true);
 	});
+	const searchRef = createRef<HTMLInputElement>();
+	useHotkeys('f', e => {
+		if (document.activeElement && document.activeElement.tagName !== 'INPUT') e.preventDefault();
+		if (searchRef.current) {
+			searchRef.current.focus();
+		}
+	});
+	useHotkeys('p', e => {
+		if (document.activeElement && document.activeElement.tagName !== 'INPUT') e.preventDefault();
+		setIsFindPath(!isFindPath);
+	});
 	const CircleSvg = () => (
 		<SvgIcon>
 			<circle cx="12" cy="20" r="2"></circle>
@@ -411,7 +422,7 @@ export const FloatingActions: FC<FloatingActionsProps> = ({ showAddNode, showSet
 							onInputChange={(__, v) => handleSearchChange(v)}
 							noOptionsText={search ===  '' ? t('search.hint.empty') : foundNode ? t('search.hint.found') : t('search.hint.no_match')}
 							fullWidth
-							renderInput={(params) => <TextField {...params} onChange={e => handleSearchChange(e.target.value)} label={t('search.find')} />} />}
+							renderInput={(params) => <TextField {...params} onChange={e => handleSearchChange(e.target.value)} label={t('search.find')} inputRef={searchRef} />} />}
 						{isFindPath && <>
 							<Autocomplete
 								disablePortal
@@ -420,7 +431,7 @@ export const FloatingActions: FC<FloatingActionsProps> = ({ showAddNode, showSet
 								onInputChange={(e, v) => { if (e && e.type === 'onChange') handleStartNodeSearchChange(v); }}
 								noOptionsText={startNodeSearch ===  '' ? t('search.hint.empty') : startNode ? startNode === endNode ? t('search.hint.same_node') : t('search.hint.found') : t('search.hint.no_match')}
 								fullWidth
-								renderInput={(params) => <TextField {...params} onChange={e => handleStartNodeSearchChange(e.target.value)} label={t('search.path.start')} />} />
+								renderInput={(params) => <TextField {...params} onChange={e => handleStartNodeSearchChange(e.target.value)} label={t('search.path.start')} inputRef={searchRef} />} />
 							<Autocomplete
 								disablePortal
 								options={endValues}
