@@ -380,9 +380,16 @@ export const FloatingActions: FC<FloatingActionsProps> = ({ showAddNode, showSet
 		}
 	});
 	useHotkeys('p', e => {
-		if (document.activeElement && document.activeElement.tagName !== 'INPUT') e.preventDefault();
-		setIsFindPath(!isFindPath);
-	});
+		if (document.activeElement && document.activeElement.tagName !== 'INPUT') {
+			e.preventDefault();
+			setIsFindPath(!isFindPath);
+		}
+	}, true);
+	useEffect(() => {
+		if (searchRef.current) {
+			searchRef.current.focus();
+		}
+	}, [isFindPath, searchRef]);
 	const CircleSvg = () => (
 		<SvgIcon>
 			<circle cx="12" cy="20" r="2"></circle>
