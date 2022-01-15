@@ -20,7 +20,7 @@ export type NodeType =
   'PROGRAM' |
   'PROJECT' |
   'NATIONALITY' |
-  'PHONE_NUMBER' |
+  'PHONE' |
   'EMAIL' |
   'ENTRANCE';
 
