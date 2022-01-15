@@ -50,7 +50,7 @@ export const Help: React.FC<HelpProps> = ({ show, onClose }) => {
 	const { t } = useTranslation();
 	const shortcuts = [
 		{ shortcut: "Ctrl + ?", description: t("help.shortcuts.show_help") },
-		{ shortcut: "Ctrl + a", description: t("help.shortcuts.show_add_node") },
+		{ shortcut: "Ctrl + n", description: t("help.shortcuts.show_add_node") },
 		{ shortcut: "Ctrl + =", description: t("help.shortcuts.zoom_in") },
 		{ shortcut: "Ctrl + -", description: t("help.shortcuts.zoom_out") },
 		{ shortcut: "Ctrl + 0", description: t("help.shortcuts.reset_zoom") },

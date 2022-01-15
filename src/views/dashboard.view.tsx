@@ -362,10 +362,7 @@ export const DashboardView = () => {
 		setQuickFind(false);
 		setShowHelp(false);
 	}, true);
-	useHotkeys('Control+a', e => {
-		if (e.target instanceof HTMLInputElement) {
-			return;
-		}
+	useHotkeys('Control+n', e => {
 		e.preventDefault();
 		setShowAddNode(true);
 		setShowSettings(false);
