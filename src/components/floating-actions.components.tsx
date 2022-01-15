@@ -288,7 +288,8 @@ export const FloatingActions: FC<FloatingActionsProps> = ({ showAddNode, showSet
 		'Nationality' |
 		'Phone' |
 		'Email' |
-		'Entrance';
+		'Entrance' |
+		'Media';
 	const generateNodeQueryStringFromParams = (type: NodeTypeString, params: any) => {
 		let paramsString = _.join(_.keys(params).map(key => `${key}: $${key}`), ', ');
 		return `MERGE (:${type} { ${paramsString} })`;

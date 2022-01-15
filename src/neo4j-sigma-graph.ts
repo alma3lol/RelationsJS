@@ -22,7 +22,8 @@ export type NodeType =
   'NATIONALITY' |
   'PHONE' |
   'EMAIL' |
-  'ENTRANCE';
+  'ENTRANCE' |
+  'MEDIA';
 
 export type RelationType =
   'CATEGORIZED_AS' |
