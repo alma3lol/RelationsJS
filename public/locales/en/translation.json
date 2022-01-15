@@ -1,5 +1,6 @@
 {
 	"cancel": "Cancel",
+	"close": "Close",
 	"login": "Login",
 	"username": "Username",
 	"password": "Password",
@@ -109,5 +110,23 @@
 		"action": "Search",
 		"search_lable": "Search",
 		"no_results": "Your search returned no results"
+	},
+	"help": {
+		"title": "Help",
+		"description": "This page shows shortcuts available in the application.",
+		"shortcuts": {
+			"show_help": "Show help",
+			"show_settings": "Show settings",
+			"show_export": "Show export",
+			"show_import": "Show import",
+			"refresh_graph": "Refresh graph",
+			"change_layout": "Change layout",
+			"show_quick_find": "Show quick find",
+			"show_add_node": "Show add node",
+			"escape": "Close help, settings, export, import, ...etc",
+			"zoom_in": "Zoom in",
+			"zoom_out": "Zoom out",
+			"reset_zoom": "Reset zoom"
+		}
 	}
 }

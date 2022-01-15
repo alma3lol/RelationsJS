@@ -8,3 +8,4 @@ export * from './settings.component';
 export * from './add-node.component';
 export * from './language-selector.component';
 export * from './quick-find.component';
+export * from './help.component';

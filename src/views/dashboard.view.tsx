@@ -27,6 +27,7 @@ import {
 	Settings,
 	AddNode,
     QuickFind,
+    Help,
 } from '../components';
 import { useTranslation } from 'react-i18next';
 import FA2Layout from "graphology-layout-forceatlas2/worker";
@@ -400,6 +401,7 @@ export const DashboardView = () => {
 	});
 	return (
 		<>
+			<Help show={showHelp} onClose={() => setShowHelp(false)} />
 			<QuickFind show={quickFind} onClose={() => setQuickFind(false)} />
 			<AddNode show={showAddNode} onDone={createGraphCallback} close={() => setShowAddNode(false)} />
 			<Settings onDone={createGraphCallback} show={showSettings} close={() => setShowSettings(false)}/>
