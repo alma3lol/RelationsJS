@@ -324,7 +324,7 @@ const App = () => {
                 <Routes>
                   <Route path='/' element={
                     <RestrictedRoute>
-                      <SigmaContainer initialSettings={{ defaultNodeType: 'image',  nodeProgramClasses: { image: getNodeProgramImage() } }} style={{ background: 'transparent' }}>
+                      <SigmaContainer initialSettings={{ defaultNodeType: 'image',  nodeProgramClasses: { image: getNodeProgramImage() } }} style={{ background: 'transparent', direction: 'ltr' }}>
                         <DashboardView />
                       </SigmaContainer>
                     </RestrictedRoute>
