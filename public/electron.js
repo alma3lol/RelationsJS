@@ -26,6 +26,7 @@ const createWindow = () => {
       contextIsolation: true,
       preload: path.join(__dirname, 'preload.js'),
     },
+    autoHideMenuBar: true,
   });
 
   win.setMenuBarVisibility(false);
