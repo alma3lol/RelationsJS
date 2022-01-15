@@ -379,6 +379,17 @@ export const DashboardView = () => {
 		setQuickFind(false);
 		setShowHelp(false);
 	});
+	useHotkeys('Control+0', () => {
+		sigma.getCamera().animatedReset();
+	});
+	useHotkeys(['Control+=', 'Control+*'], e => {
+		e.preventDefault();
+		sigma.getCamera().animatedZoom(2);
+	}, true);
+	useHotkeys('Control+-', e => {
+		e.preventDefault();
+		sigma.getCamera().animatedUnzoom(2);
+	});
 	const [showHelp, setShowHelp] = useState(false);
 	useHotkeys('Control+Shift+?', () => {
 		setShowAddNode(false);
