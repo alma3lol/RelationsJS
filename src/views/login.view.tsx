@@ -24,6 +24,8 @@ import { useTitle } from 'react-use';
 import { appContext } from '../App';
 import { ThemeModeSwitch } from '../components';
 import { useTranslation } from 'react-i18next';
+import { Neo4jSigmaGraph } from '../neo4j-sigma-graph';
+import Graph from 'graphology';
 
 const useStyles = makeStyles<DefaultTheme, { mode: 'dark' | 'light' }>({
   input: {
@@ -68,6 +70,7 @@ export const LoginView = () => {
       setUrl(url);
       setDriver(drv);
       setLoading(false);
+      Neo4jSigmaGraph.init(new Graph(), drv, { database });
       setConnected(true);
     } catch (err: any) {
       const typedError: Neo4jError = err || new Neo4jError('Invalid credentials', '403');

@@ -48,16 +48,27 @@ export type SessionOptions = {
 }
 
 export class Neo4jSigmaGraph {
-  constructor(
-    private graph: Graph,
-    private driver: Driver | null,
-    private sessionOptions?: SessionOptions,
+  private static _instance: Neo4jSigmaGraph;
+  private constructor(
+    private _graph: Graph,
+    private _driver: Driver,
+    private _sessionOptions: SessionOptions,
   ) {}
 
-  generateSession = () => this.driver ? this.driver.session(this.sessionOptions) : null;
+  static init = (graph: Graph, driver: Driver, sessionOptions: SessionOptions) => {
+    if (this._instance) return;
+    this._instance = new Neo4jSigmaGraph(graph, driver, sessionOptions);
+  }
 
-  getGraph = () => this.graph;
-  setGraph = (graph: Graph) => this.graph = graph;
+  static getInstance = () => {
+    if (!this._instance) throw new Error('Must call init() first');
+    return this._instance;
+  }
+
+  generateSession = () => this._driver.session(this._sessionOptions);
+
+  getGraph = () => this._graph;
+  setGraph = (graph: Graph) => this._graph = graph;
 
   addNodeToGraph = (node: Node) => {
     const node_type = node.labels[0].toUpperCase() as NodeType;
@@ -82,8 +93,8 @@ export class Neo4jSigmaGraph {
         data.handshakes = node.properties.handshakes;
         break;
     }
-    if (!this.graph.hasNode(node.properties.id)) {
-      this.graph.addNode(node.properties.id, data);
+    if (!this._graph.hasNode(node.properties.id)) {
+      this._graph.addNode(node.properties.id, data);
     }
   }
 
@@ -114,8 +125,8 @@ export class Neo4jSigmaGraph {
       const relationshipActualEndNodeId = start.identity.low === relationship.end.low ? startNode.id : endNode.id;
       this.addNodeToGraph(start);
       this.addNodeToGraph(end);
-      if (!this.graph.hasEdge(relationshipActualStartNodeId, relationshipActualEndNodeId)) {
-        this.graph.addEdge(relationshipActualStartNodeId, relationshipActualEndNodeId, { label: relationshipType, ...data });
+      if (!this._graph.hasEdge(relationshipActualStartNodeId, relationshipActualEndNodeId)) {
+        this._graph.addEdge(relationshipActualStartNodeId, relationshipActualEndNodeId, { label: relationshipType, ...data });
       }
     });
   }

@@ -1,6 +1,4 @@
 import {
-	Add as AddIcon,
-	Delete as DeleteIcon,
 	Flag as FlagIcon,
 	PinDrop as PinDropIcon,
 } from '@mui/icons-material';
@@ -12,14 +10,14 @@ import getNodeProgramImage from "sigma/rendering/webgl/programs/node.image";
 import { MouseCoords, NodeDisplayData, PlainObject } from 'sigma/types';
 import { appContext } from '../App';
 import { Attributes } from 'graphology-types';
-import { useSigma, useSetSettings, useRegisterEvents, useLoadGraph } from 'react-sigma-v2';
+import { useSigma, useSetSettings, useRegisterEvents } from 'react-sigma-v2';
 import { circular } from 'graphology-layout';
 import { useSnackbar } from "notistack"
 import _ from 'lodash';
 import useHotkeys from '@reecelucas/react-use-hotkeys';
-import { Neo4jError, Node } from 'neo4j-driver';
+import { Node } from 'neo4j-driver';
 import { SpringSupervisor } from '../layout-spring';
-import { Neo4jSigmaGraph, NodeType } from '../neo4j-sigma-graph';
+import { Neo4jSigmaGraph } from '../neo4j-sigma-graph';
 import {
 	ContextMenu,
 	FloatingActions,
@@ -70,7 +68,7 @@ export const DashboardView = () => {
 	} = useContext(appContext);
 	const { enqueueSnackbar } = useSnackbar();
 	const sigma = useSigma();
-	const [neo4jSigmaGraph, setNeo4jSigmaGraph] = useState(new Neo4jSigmaGraph(sigma.getGraph(), driver, { database }));
+	const neo4jSigmaGraph = Neo4jSigmaGraph.getInstance();
 	const [mouseMove, setMouseMove] = useState(false);
 	useEffect(() => {
 		setSigma(sigma);
@@ -261,12 +259,6 @@ export const DashboardView = () => {
 		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [foundPath]);
 	const registerEvents = useRegisterEvents();
-	useEffect(() => {
-		if (driver) {
-			setNeo4jSigmaGraph(new Neo4jSigmaGraph(sigma.getGraph(), driver, { database }));
-		}
-		// eslint-disable-next-line react-hooks/exhaustive-deps
-	}, [driver]);
 	useEffect(() => {
 		setSigmaSettings({
 			defaultNodeType: 'image',
