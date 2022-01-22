@@ -26,6 +26,7 @@ import { ThemeModeSwitch } from '../components';
 import { useTranslation } from 'react-i18next';
 import { Neo4jSigmaGraph } from '../neo4j-sigma-graph';
 import Graph from 'graphology';
+import { useCategoryContextMenu, usePersonContextMenu, useMediaContextMenu } from '../models';
 
 const useStyles = makeStyles<DefaultTheme, { mode: 'dark' | 'light' }>({
   input: {
@@ -58,6 +59,9 @@ export const LoginView = () => {
   useEffect(() => {
     setClasses(darkMode ? darkClasses : lightClasses);
   }, [darkMode, darkClasses, lightClasses]);
+  const categoryContextMenu = useCategoryContextMenu();
+  const personContextMenu = usePersonContextMenu();
+  const mediaContextMenu = useMediaContextMenu();
   const handleOnSubmit: React.FormEventHandler = async e => {
     e.preventDefault();
     setLoading(true);
@@ -70,7 +74,10 @@ export const LoginView = () => {
       setUrl(url);
       setDriver(drv);
       setLoading(false);
-      Neo4jSigmaGraph.init(new Graph(), drv, { database });
+      Neo4jSigmaGraph.init(new Graph(), drv, { database }, t);
+      Neo4jSigmaGraph.getInstance().setContextMenu('CATEGORY', categoryContextMenu);
+      Neo4jSigmaGraph.getInstance().setContextMenu('PERSON', personContextMenu);
+      Neo4jSigmaGraph.getInstance().setContextMenu('MEDIA', mediaContextMenu);
       setConnected(true);
     } catch (err: any) {
       const typedError: Neo4jError = err || new Neo4jError('Invalid credentials', '403');
@@ -79,7 +86,23 @@ export const LoginView = () => {
       setTimeout(() => setError(''), 5000);
     }
   }
-  const handleOnSubmitCallback = useCallback(handleOnSubmit, [setLoading, setDriver, setConnected, setError, database, setDatabase, url, username, password, setPassword, setUrl, setUsername]);
+  const handleOnSubmitCallback = useCallback(handleOnSubmit, [
+    setLoading,
+    setDriver,
+    setConnected,
+    setError,
+    database,
+    setDatabase,
+    url,
+    username,
+    password,
+    setPassword,
+    setUrl,
+    setUsername,
+    categoryContextMenu,
+    personContextMenu,
+    mediaContextMenu,
+  ]);
   useEffect(() => {
     if (autologin) {
       setAutologin(false);
