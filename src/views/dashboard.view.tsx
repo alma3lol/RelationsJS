@@ -1,4 +1,5 @@
 import {
+	Delete as DeleteIcon,
 	Flag as FlagIcon,
 	PinDrop as PinDropIcon,
 } from '@mui/icons-material';
@@ -17,7 +18,7 @@ import _ from 'lodash';
 import useHotkeys from '@reecelucas/react-use-hotkeys';
 import { Node } from 'neo4j-driver';
 import { SpringSupervisor } from '../layout-spring';
-import { Neo4jSigmaGraph } from '../neo4j-sigma-graph';
+import { ContextMenuItem, Neo4jSigmaGraph, NodeType } from '../neo4j-sigma-graph';
 import {
 	ContextMenu,
 	FloatingActions,
@@ -111,10 +112,10 @@ export const DashboardView = () => {
 			renderLabels: true,
 			renderEdgeLabels: true,
 			defaultNodeColor: theme.palette.secondary.main,
-			labelSize: 10,
+			labelSize: 25,
 			labelWeight: 'bold',
 			labelGridCellSize: 0,
-			edgeLabelSize: 10,
+			edgeLabelSize: 25,
 			nodeReducer,
 			nodeProgramClasses: {
 				image: getNodeProgramImage(),
@@ -230,8 +231,8 @@ export const DashboardView = () => {
 	const [foundPath, setFoundPath] = useState(false);
 	const handleNodeRightClick = (e: ClickNode) => {
 		const graph = sigma.getGraph();
-		// const nodeType: NodeType = graph.getNodeAttribute(e.node, 'node_type');
-		const items: [JSX.Element, string, (id: string) => void][] = [];
+		const nodeType: NodeType = graph.getNodeAttribute(e.node, 'node_type');
+		const items: ContextMenuItem[] = [];
 		items.push([<FlagIcon />, t('context_menu.set_start_node'), id => {
 			setIsFindPath(true);
 			setStartNode(id);
@@ -242,6 +243,27 @@ export const DashboardView = () => {
 			setEndNode(id);
 			setEndNodeSearch(graph.getNodeAttribute(id, 'label'));
 		}]);
+		const nodeMenu = Neo4jSigmaGraph.getInstance().getContextMenu(nodeType);
+		if (nodeMenu) {
+			items.push(...nodeMenu.map(item => ([item[0], t(item[1]), item[2]] as ContextMenuItem)));
+		}
+		items.push([<DeleteIcon />, t('context_menu.delete_node'), id => {
+			setConfirmActionName(t('actions.names.delete_node', { node: graph.getNodeAttribute(id, 'label') }));
+			setConfirmActionTitle(t('actions.titles.delete_node'));
+			setConfirmActionQuestion(t('actions.questions.delete_node'));
+			setConfirmAction(() => async () => {
+				try {
+					const session = Neo4jSigmaGraph.getInstance().generateSession();
+					await session.run('MATCH (n { id: $id }) OPTIONAL MATCH (n)-[r]-() DELETE r, n', { id });
+					await session.close();
+					enqueueSnackbar(t('actions.success.delete_node'), { variant: 'success' });
+					createGraphCallback();
+				} catch (e) {
+					enqueueSnackbar(t('actions.errors.delete_node', { message: (e as any).message }), { variant: 'error' });
+				}
+			});
+			setShowConfirmAction(true);
+		}]);
 		setMenu({
 			show: true,
 			node: e.node,
@@ -250,7 +272,7 @@ export const DashboardView = () => {
 			items,
 		});
 	}
-	const handleNodeRightClickCallback = useCallback(handleNodeRightClick, [setMenu, driver, sigma, enqueueSnackbar, createGraphCallback, database, foundPath, setEndNode, setEndNodeSearch, setIsFindPath, setStartNode, setStartNodeSearch]);
+	const handleNodeRightClickCallback = useCallback(handleNodeRightClick, [setMenu, driver, sigma, enqueueSnackbar, createGraphCallback, database, foundPath, setEndNode, setEndNodeSearch, setIsFindPath, setStartNode, setStartNodeSearch, Neo4jSigmaGraph]);
 	useEffect(() => {
 		sigma.addListener('rightClickNode', handleNodeRightClickCallback);
 		return () => {
@@ -266,10 +288,10 @@ export const DashboardView = () => {
 			renderLabels: true,
 			renderEdgeLabels: true,
 			defaultNodeColor: theme.palette.secondary.main,
-			labelSize: 10,
+			labelSize: 25,
 			labelWeight: 'bold',
 			labelGridCellSize: 0,
-			edgeLabelSize: 10,
+			edgeLabelSize: 25,
 			nodeProgramClasses: {
 				image: getNodeProgramImage(),
 			},
