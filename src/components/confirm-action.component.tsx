@@ -1,5 +1,6 @@
 import { Dialog, DialogTitle, DialogContent, DialogActions, Button } from "@mui/material"
 import { FC } from "react"
+import { useTranslation } from "react-i18next";
 
 export type ConfirmActionProps = {
 	actionName: string
@@ -11,6 +12,7 @@ export type ConfirmActionProps = {
 }
 
 export const ConfirmAction: FC<ConfirmActionProps> = ({ actionName, actionTitle, actionQuestion, show, close, onConfirm }) => {
+	const { t } = useTranslation();
 	const handleOnConfirm = () => {
 		onConfirm();
 		close();
@@ -21,7 +23,7 @@ export const ConfirmAction: FC<ConfirmActionProps> = ({ actionName, actionTitle,
 			<DialogTitle>{actionTitle}</DialogTitle>
 			<DialogContent>{actionQuestion}</DialogContent>
 			<DialogActions>
-				<Button color='inherit' onClick={close}>Cancel</Button>
+				<Button color='inherit' onClick={close}>{t('cancel')}</Button>
 				<Button variant='contained' color='error' onClick={handleOnConfirm}>{actionName}</Button>
 			</DialogActions>
 		</Dialog>
