@@ -5,7 +5,7 @@ import { HashRouter, Routes, Route } from 'react-router-dom';
 import { makeStyles } from '@mui/styles';
 import { Driver, Session } from 'neo4j-driver';
 import { ThemeProvider } from '@emotion/react';
-import { createTheme, CssBaseline, Theme } from '@mui/material';
+import { createTheme, CssBaseline, Theme, ThemeOptions } from '@mui/material';
 import Sigma from 'sigma';
 import { SnackbarProvider } from 'notistack';
 import { SigmaContainer } from 'react-sigma-v2';
@@ -15,6 +15,24 @@ import { AuthRoute, RestrictedRoute } from './components';
 import { LoginView } from './views';
 import { DashboardView } from './views/dashboard.view';
 import { RTL } from './rtl-support';
+import { setLocale } from 'yup';
+
+export const createThemeOptions = (darkMode: boolean, language: string): ThemeOptions => ({
+  direction: language === 'ar' ? 'rtl' : 'ltr',
+  typography: {
+    fontSize: 20,
+    fontFamily: language === 'ar' ? 'Scheherazade New' : 'Arial',
+  },
+  palette: {
+    primary: {
+      main: '#1151BF',
+    },
+    secondary: {
+      main: '#145CD9',
+    },
+    mode: darkMode ? 'dark' : 'light',
+  }
+});
 
 export type AppContext = {
   darkMode: boolean
@@ -85,18 +103,7 @@ export const appContext = createContext<AppContext>({
   setUrl: () => {},
   sigma: null,
   setSigma: () => {},
-  theme: createTheme({
-    direction: 'ltr',
-    palette: {
-      primary: {
-        main: '#1151BF',
-      },
-      secondary: {
-        main: '#145CD9',
-      },
-      mode: 'light',
-    }
-  }),
+  theme: createTheme(createThemeOptions(false, 'en')),
   autologin: true,
   setAutologin: () => {},
   createDatabaseIndexesAndConstraints: async () => {},
@@ -140,18 +147,7 @@ const App = () => {
   const [password, setPassword] = useState('');
   const [url, setUrl] = useState('');
   const [sigma, setSigma] = useState<Sigma | null>(null);
-  const [theme, setTheme] = useState(createTheme({
-    direction: language === 'ar' ? 'rtl' : 'ltr',
-    palette: {
-      primary: {
-        main: '#1151BF',
-      },
-      secondary: {
-        main: '#145CD9',
-      },
-      mode: darkMode ? 'dark' : 'light',
-    }
-  }));
+  const [theme, setTheme] = useState(createTheme(createThemeOptions(darkMode, language)));
   const [autologin, setAutologin] = useState(true);
   const [search, setSearch] = useState('');
   const [foundNode, setFoundNode] = useState<string | null>(null);
@@ -168,18 +164,20 @@ const App = () => {
     localStorage.setItem('darkMode', darkMode ? '1' : '');
     localStorage.setItem('language', language);
     document.body.style.direction = language === 'ar' ? 'rtl' : 'ltr';
-    setTheme(createTheme({
-      direction: language === 'ar' ? 'rtl' : 'ltr',
-      palette: {
-        primary: {
-          main: '#1151BF',
-        },
-        secondary: {
-          main: '#145CD9',
-        },
-        mode: darkMode ? 'dark' : 'light',
+    setLocale({
+      mixed: {
+        oneOf: ({ label, value, values }) => ({ key: 'schema.invalid.oneOf', values: { label, value, values } }),
+      },
+      number: {
+        min: ({ min, label }) => ({ key: 'schema.invalid.min_number', values: { min, label } }),
+        max: ({ max, label }) => ({ key: 'schema.invalid.max_number', values: { max, label } }),
+      },
+      string: {
+        email: ({ label }) => ({ key: 'schema.invalid.email', values: { label } }),
+        uuid: ({ label }) => ({ key: 'schema.invalid.uuid', values: { label } }),
       }
-    }));
+    });
+    setTheme(createTheme(createThemeOptions(darkMode, language)));
   }, [darkMode, language, setTheme]);
   const [layoutMode, setLayoutMode] = useState<'CIRCULAR' | 'RANDOM'>('CIRCULAR');
   const appContextValue: AppContext = {
