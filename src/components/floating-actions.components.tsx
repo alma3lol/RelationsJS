@@ -270,29 +270,9 @@ export const FloatingActions: FC<FloatingActionsProps> = ({ showAddNode, showSet
 		setShowExportDialog(false);
 		setImportFromExportedGraphFile(null);
 	}
-	type NodeTypeString =
-		'Category' |
-		'Person' |
-		'Group' |
-		'Party' |
-		'Workplace' |
-		'Location' |
-		'Organization' |
-		'Event' |
-		'Workshop' |
-		'Conference' |
-		'Seminar' |
-		'Course' |
-		'Program' |
-		'Project' |
-		'Nationality' |
-		'Phone' |
-		'Email' |
-		'Entrance' |
-		'Media';
-	const generateNodeQueryStringFromParams = (type: NodeTypeString, params: any) => {
+	const generateNodeQueryStringFromParams = (type: NodeType, params: any) => {
 		let paramsString = _.join(_.keys(params).map(key => `${key}: $${key}`), ', ');
-		return `MERGE (:${type} { ${paramsString} })`;
+		return `MERGE (:${_.capitalize(type.toLowerCase())} { ${paramsString} })`;
 	}
 	const generateEdgeQueryStringFromRelationType = (relationType: RelationType) => {
 		return `MATCH (s { id: $source }), (t { id: $target }) MERGE (s)-[:${relationType}]->(t)`;
@@ -314,7 +294,6 @@ export const FloatingActions: FC<FloatingActionsProps> = ({ showAddNode, showSet
 							importedGraph.nodes.forEach(async node => {
 								if (graph.hasNode(node.id)) return;
 								const node_type: NodeType = node.node_type;
-								let nodeType: NodeTypeString = 'Person';
 								const nodeData: any = { id: node.id };
 								switch(node_type) {
 									case 'PERSON':
@@ -326,7 +305,7 @@ export const FloatingActions: FC<FloatingActionsProps> = ({ showAddNode, showSet
 										break;
 								}
 								try {
-									await trx.run(generateNodeQueryStringFromParams(nodeType, nodeData), nodeData);
+									await trx.run(generateNodeQueryStringFromParams(node_type, nodeData), nodeData);
 								} catch (__) {}
 							});
 							importedGraph.edges.forEach(async edge => {
@@ -377,10 +356,12 @@ export const FloatingActions: FC<FloatingActionsProps> = ({ showAddNode, showSet
 	});
 	const searchRef = createRef<HTMLInputElement>();
 	useHotkeys('f', e => {
-		if (document.activeElement && document.activeElement.tagName !== 'INPUT') {
-			e.preventDefault();
-			if (searchRef.current) {
-				searchRef.current.focus();
+		if (document.activeElement) {
+			if (document.activeElement.tagName !== 'INPUT' && document.activeElement.tagName !== 'TEXTAREA') {
+				e.preventDefault();
+				if (searchRef.current) {
+					searchRef.current.focus();
+				}
 			}
 		}
 	});
