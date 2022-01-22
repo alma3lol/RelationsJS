@@ -1,7 +1,9 @@
 import Graph from "graphology";
 import _ from "lodash";
 import { Driver, Node, Path, Session, SessionMode } from "neo4j-driver";
+import { TFunction } from "react-i18next";
 import GroupsSvgIcon from './images/groups.svg';
+import PersonSvgIcon from './images/person.svg';
 
 export type NodeType =
   'CATEGORY' |
@@ -47,17 +49,22 @@ export type SessionOptions = {
   fetchSize?: number;
 }
 
+export type ContextMenuItem = [JSX.Element, string, (id: string) => void];
+
 export class Neo4jSigmaGraph {
   private static _instance: Neo4jSigmaGraph;
   private constructor(
     private _graph: Graph,
     private _driver: Driver,
     private _sessionOptions: SessionOptions,
+    private _t: TFunction,
   ) {}
 
-  static init = (graph: Graph, driver: Driver, sessionOptions: SessionOptions) => {
+  private _contextMenus: Map<NodeType, ContextMenuItem[]> = new Map();
+
+  static init = (graph: Graph, driver: Driver, sessionOptions: SessionOptions, t: TFunction) => {
     if (this._instance) return;
-    this._instance = new Neo4jSigmaGraph(graph, driver, sessionOptions);
+    this._instance = new Neo4jSigmaGraph(graph, driver, sessionOptions, t);
   }
 
   static getInstance = () => {
@@ -70,10 +77,25 @@ export class Neo4jSigmaGraph {
   getGraph = () => this._graph;
   setGraph = (graph: Graph) => this._graph = graph;
 
+  getContextMenu = (node: NodeType) => this._contextMenus.get(node);
+  setContextMenu = (node: NodeType, contextMenu: ContextMenuItem[]) => this._contextMenus.set(node, contextMenu);
+
+  createRelationship = async (
+    source: string,
+    target: string,
+    type: RelationType,
+  ): Promise<void> => {
+      const session = this.generateSession();
+      await session.run(`
+        MATCH (a { id: $source }), (b { id: $target })
+        CREATE (a)-[:${type}]->(b)
+      `, { source, target });
+      await session.close();
+    }
+
   addNodeToGraph = (node: Node) => {
     const node_type = node.labels[0].toUpperCase() as NodeType;
     const data: any = { node_type, type: 'image', id: node.properties.id };
-    // create a random x, y position for the node
     const x = Math.random() * 1000;
     const y = Math.random() * 1000;
     data.x = x;
@@ -82,15 +104,33 @@ export class Neo4jSigmaGraph {
       case 'CATEGORY':
         data.image = GroupsSvgIcon;
         data.label = node.properties.name;
+        data.name = node.properties.name;
         break;
       case 'PERSON':
-        // data.image = WifiSvgIcon;
-        data.label = `${node.properties.essid} - ${node.properties.bssid}`;
-        data.essid = node.properties.essid;
-        data.bssid = node.properties.bssid;
-        data.password = node.properties.password;
-        data.pin = node.properties.pin;
-        data.handshakes = node.properties.handshakes;
+        data.image = PersonSvgIcon;
+        data.label = `${node.properties.arabicName}`;
+        data.arabicName = node.properties.arabicName;
+        data.englishName = node.properties.englishName;
+        data.motherName = node.properties.motherName;
+        data.nickname = node.properties.nickname;
+        data.birthDate = node.properties.birthDate;
+        data.birthPlace = node.properties.birthPlace;
+        data.job = node.properties.job;
+        data.nationality = node.properties.nationality;
+        data.phone = node.properties.phone;
+        data.email = node.properties.email;
+        data.workplace = node.properties.workplace;
+        data.address = node.properties.address;
+        data.gpsLocation = node.properties.gpsLocation;
+        data.passportNumber = node.properties.passportNumber;
+        data.passportIssueDate = node.properties.passportIssueDate;
+        data.passportIssuePlace = node.properties.passportIssuePlace;
+        data.idNumber = node.properties.idNumber;
+        data.nationalNumber = node.properties.nationalNumber;
+        data.registerationNumber = node.properties.registerationNumber;
+        data.restrictions = node.properties.restrictions;
+        data.notes = node.properties.notes;
+        data.extra = node.properties.extra
         break;
     }
     if (!this._graph.hasNode(node.properties.id)) {
@@ -126,7 +166,7 @@ export class Neo4jSigmaGraph {
       this.addNodeToGraph(start);
       this.addNodeToGraph(end);
       if (!this._graph.hasEdge(relationshipActualStartNodeId, relationshipActualEndNodeId)) {
-        this._graph.addEdge(relationshipActualStartNodeId, relationshipActualEndNodeId, { label: relationshipType, ...data });
+        this._graph.addEdge(relationshipActualStartNodeId, relationshipActualEndNodeId, { label: this._t(`relations.${relationshipType}`), size: 5, ...data });
       }
     });
   }
