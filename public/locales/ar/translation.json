@@ -20,8 +20,8 @@
 		"path": {
 			"enable": "تفعيل البحث عن المسار",
 			"disable": "تعطيل البحث عن المسار",
-			"start": "نقطة البدء",
-			"end": "نقطة النهاية"
+			"start": "عنصر البدء",
+			"end": "عنصر النهاية"
 		}
 	},
 	"node_info": {
@@ -52,7 +52,7 @@
 	"settings": {
 		"title": "الإعدادات",
 		"action": "إغلاق",
-		"dark_mode": "الوضع المظلم",
+		"dark_mode": "الوضع الليلي",
 		"clear_unused": {
 			"title": "إزالة العناصر الغير مستخدمة",
 			"action": "إزالة"
@@ -81,25 +81,98 @@
 			"person": "شخص"
 		},
 		"inputs": {
+			"choose_file": "اختر ملف",
+			"delete_file": "حذف الملف",
 			"category": {
 				"name": "اسم التصنيف"
+			},
+			"person": {
+				"file_number": "رقم الملف",
+				"arabic_name": "الاسم باللغة العربية",
+				"english_name": "الاسم باللغة الإنجليزية",
+				"mother_name": "اسم الأم",
+				"nickname": "الكنية",
+				"image": "الصورة الشخصية",
+				"id_image": "صورة الهوية",
+				"passport_image": "صورة جواز السفر",
+				"birthdate": "تاريخ الميلاد",
+				"birth_place": "مكان الميلاد",
+				"passport_number": "رقم جواز السفر",
+				"passport_issue_date": "تاريخ صدور جواز السفر",
+				"passport_issue_place": "مكان صدور جواز السفر",
+				"job": "الوظيفة",
+				"id_number": "رقم الهوية",
+				"national_number": "الرقم الوطني",
+				"registeration_number": "رقم القيد",
+				"nationality": "الجنسية",
+				"address": "العنوان",
+				"gps_location": "إحداثي موقع السكن",
+				"workplace": "جهة العمل",
+				"attachments": "المرفثقات",
+				"phone": "رقم الهاتف",
+				"email": "عنوان البريد الإلكتروني",
+				"restrictions": "القيودات",
+				"category": "التصنيف",
+				"notes": "الملاحظات",
+				"extra": "تفريغ محاضر الإستدلال",
+				"choose_attachments": "إختيار مرفقات",
+				"no_categories": "لا يوجد تصنيفات بهذا الإسم"
 			}
+		},
+		"sections": {
+			"person": {
+				"basic": "المعلومات الأساسية",
+				"identification": "معلومات الهوية",
+				"important": "المعلومات المهمة"
+			}
+		},
+		"success": {
+			"person": "تم إضافة الشخص بنجاح.",
+			"category": "تم إضافة التصنيف بنجاح."
 		}
 	},
 	"passport": "جواز السفر",
 	"passports": "جوازات السفر",
-	"picture": "صورة",
-	"pictures": "صور",
+	"image": "صورة",
+	"images": "صور",
 	"video": "فيديو",
 	"videos": "فيديوهات",
-	"document": "مستند",
-	"documents": "مستندات",
+	"id": "بطاقة هوية",
+	"ids": "بطاقات هوية",
+	"avatar": "صورة شخصية",
+	"avatars": "صور شخصية",
+	"attachment": "مرفق",
+	"attachments": "مرفقات",
 	"files": {
 		"save_dialog_title": "قم بإختيار ملف لحفظ العناصر فيه"
 	},
 	"context_menu": {
-		"set_start_node": "تعيين نقطة البدء",
-		"set_end_node": "تعيين نقطة النهاية"
+		"set_start_node": "تعيين كعنصر البدء",
+		"set_end_node": "تعيين كعنصر النهاية",
+		"delete_node": "حذف العنصر",
+		"person": {
+			"edit": "تعديل الشخص"
+		},
+		"category": {
+			"edit": "تعديل التصنيف"
+		}
+	},
+	"actions": {
+		"names": {
+			"delete_node": "حذف العنصر ({{node}})"
+		},
+		"titles": {
+			"delete_node": "حذف العنصر"
+		},
+		"questions": {
+			"delete_node": "هل أنت متأكد من حذف العنصر؟"
+		},
+		"success": {
+			"delete_node": "تم حذف العنصر بنجاح."
+		},
+		"errors": {
+			"delete_node": "حدث خطأ أثناء حذف العنصر: {{message}}"
+		}
 	},
 	"change_layout": {
 		"CIRCULAR": "تغيير التخطيط إلى تخطيط عشوائي",
@@ -129,6 +202,38 @@
 			"reset_zoom": "إعادة تعيين التكبير",
 			"focus_search": "الإنتقال للبحث",
 			"toggle_find_path": "تفعيل/تعطيل البحث عن مسار"
+		}
+	},
+	"schema": {
+		"invalid": {
+			"anyOf": "الحقل {{label}} غير صحيح: {{value}} يجب أن تكون إحدى {{values}}",
+			"min_number": "الحقل {{label}} يجب أن يكون أكبر من {{min}}",
+			"max_number": "الحقل {{label}} يجب أن يكون أصغر من {{max}}",
+			"email": "الحقل {{label}} يجب أن يكون عنوان بريد إلكتروني صحيح",
+			"uuid": "الحقل {{label}} يجب أن يكون UUID صحيح",
+			"gps_location": "الحقل {{label}} يجب أن يكون إحداثي موقع صحيح"
+		}
+	},
+	"relations": {
+		"CATEGORIZED_AS": "مصنف كـ",
+		"KNOWS": "يعرف",
+		"WORKS_AT": "عمل في",
+		"LIVES_IN": "يعيش في",
+		"BEEN_TO": "ذهب إلى",
+		"COMING_TO": "ذاهب إلى",
+		"OWNS": "يملك",
+		"FROM": "من",
+		"ORGANIZED": "نظّم",
+		"HAS": "لديه",
+		"RUNS": "يشغّل",
+		"MEMBER_OF": "عضو في",
+		"GRANTED_BY": "تم منحه من قبل"
+	},
+	"notifications": {
+		"success": {
+			"settings": {
+				"cleared_unused": "تم حذف ({{cleared_count}}) {{cleared_type}} غير مستخدمة بنجاح."
+			}
 		}
 	}
 }

@@ -81,25 +81,98 @@
 			"person": "Person"
 		},
 		"inputs": {
+			"choose_file": "Choose a file",
+			"delete_file": "Delete file",
 			"category": {
 				"name": "Category Name"
+			},
+			"person": {
+				"file_number": "File number",
+				"arabic_name": "Arabic name",
+				"english_name": "English name",
+				"mother_name": "Mother name",
+				"nickname": "Nickname",
+				"image": "Profile image",
+				"id_image": "ID image",
+				"passport_image": "Passport image",
+				"birthdate": "Birthdate",
+				"birth_place": "Birth place",
+				"passport_number": "Passport number",
+				"passport_issue_date": "Passport issue date",
+				"passport_issue_place": "Passport issue place",
+				"job": "Job",
+				"id_number": "ID number",
+				"national_number": "National number",
+				"registration_number": "Registration number",
+				"nationality": "nationality",
+				"address": "Address",
+				"gps_location": "GPS Location",
+				"workplace": "Workplace",
+				"attachments": "Attachments",
+				"phone": "Phone number",
+				"email": "Email address",
+				"restrictions": "Restrictions",
+				"category": "Category",
+				"notes": "Notes",
+				"extra": "Extra",
+				"choose_attachments": "Choose attachments",
+				"no_categories": "No categories with this name"
 			}
+		},
+		"sections": {
+			"person": {
+				"basic": "Basic information",
+				"identification": "Identification information",
+				"important": "Important information"
+			}
+		},
+		"success": {
+			"person": "Successfully added a person",
+			"category": "Successfully added a category"
 		}
 	},
 	"passport": "Passport",
 	"passports": "Passports",
-	"picture": "Picture",
-	"pictures": "Pictures",
+	"image": "Image",
+	"images": "Images",
 	"video": "Video",
 	"videos": "Videos",
-	"document": "Document",
-	"documents": "Documents",
+	"id": "ID",
+	"ids": "IDs",
+	"avatar": "Avatar",
+	"avatars": "Avatars",
+	"attachment": "Attachment",
+	"attachments": "Attachments",
 	"files": {
 		"save_dialog_title": "Choose a file to export graph to"
 	},
 	"context_menu": {
 		"set_start_node": "Set as start node",
-		"set_end_node": "Set as end node"
+		"set_end_node": "Set as end node",
+		"delete_node": "Delete node",
+		"person": {
+			"edit": "Edit person"
+		},
+		"category": {
+			"edit": "Edit category"
+		}
+	},
+	"actions": {
+		"names": {
+			"delete_node": "Delete node ({{node}})"
+		},
+		"titles": {
+			"delete_node": "Delete node"
+		},
+		"questions": {
+			"delete_node": "Are you sure you want to delete this node?"
+		},
+		"success": {
+			"delete_node": "Successfully deleted node"
+		},
+		"errors": {
+			"delete_node": "Failed to delete node: {{message}}"
+		}
 	},
 	"change_layout": {
 		"CIRCULAR": "Change to random layout",
@@ -129,6 +202,38 @@
 			"reset_zoom": "Reset zoom",
 			"focus_search": "Focus search input",
 			"toggle_find_path": "Toggle find path"
+		}
+	},
+	"schema": {
+		"invalid": {
+			"anyOf": "{{label}} is invalid: {{value}} is not one of {{values}}",
+			"min_number": "{{label}} must be at least {{min}}",
+			"max_number": "{{label}} must be at most {{max}}",
+			"email": "{{label}} must be a valid email address",
+			"uuid": "{{label}} must be a valid UUID",
+			"gps_location": "{{label}} must be a valid GPS location"
+		}
+	},
+	"relations": {
+		"CATEGORIZED_AS": "Categorized as",
+		"KNOWS": "Knows",
+		"WORKS_AT": "Works at",
+		"LIVES_IN": "Lives in",
+		"BEEN_TO": "Been to",
+		"COMING_TO": "Coming to",
+		"OWNS": "Owns",
+		"FROM": "From",
+		"ORGANIZED": "Organized",
+		"HAS": "Has",
+		"RUNS": "Runs",
+		"MEMBER_OF": "Member of",
+		"GRANTED_BY": "Granted by"
+	},
+	"notifications": {
+		"success": {
+			"settings": {
+				"cleared_unused": "Successfully cleared unused ({{cleared_count}}) {{cleared_type}}"
+			}
 		}
 	}
 }
