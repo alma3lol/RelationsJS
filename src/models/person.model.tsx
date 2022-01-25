@@ -10,25 +10,25 @@ export const PersonSchema = yup.object().shape({
 	arabicName: yup.string().required(),
 	englishName: yup.string().required(),
 	motherName: yup.string().required(),
-	nickname: yup.string().required(),
-	birthDate: yup.date().required().transform(value => new Date(value).toISOString()),
-	birthPlace: yup.string().required(),
-	job: yup.string().required(),
+	nickname: yup.string().nullable(),
+	birthDate: yup.date().nullable(),
+	birthPlace: yup.string().nullable(),
+	job: yup.string().nullable(),
 	nationality: yup.string().required(),
-	phone: yup.string().required(),
-	email: yup.string().email().required(),
-	workplace: yup.string().required(),
-	address: yup.string().required(),
-	gpsLocation: yup.string().matches(/\d+\.\d+,\s?\d+\.\d+/, () => ({ key: 'schema.invalid.gps_location', values: { label: 'gpsLocation' } })).required(),
-	passportNumber: yup.string().required(),
-	passportIssueDate: yup.date().required().transform(value => new Date(value).toISOString()),
-	passportIssuePlace: yup.string().required(),
-	idNumber: yup.string().required(),
-	nationalNumber: yup.string().matches(/[12](19|20)[0-9]{2}\d{7}/).optional(),
-	registerationNumber: yup.string().required(),
-	restrictions: yup.array().of(yup.string().min(1)).required().transform(value => JSON.stringify(value)),
-	notes: yup.string().optional(),
-	extra: yup.array().of(yup.string().min(1)).required().transform(value => JSON.stringify(value)),
+	phone: yup.string().nullable(),
+	email: yup.string().email().nullable(),
+	workplace: yup.string().nullable(),
+	address: yup.string().nullable(),
+	gpsLocation: yup.string().matches(/\d+\.\d+,\s?\d+\.\d+/, { message: () => ({ key: 'schema.invalid.gps_location', values: { label: 'gpsLocation' } }), excludeEmptyString: true }).nullable(),
+	passportNumber: yup.string().nullable(),
+	passportIssueDate: yup.date().nullable(),
+	passportIssuePlace: yup.string().nullable(),
+	idNumber: yup.string().nullable(),
+	nationalNumber: yup.string().matches(/[12](19|20)[0-9]{9}/, { excludeEmptyString: true }).nullable(),
+	registerationNumber: yup.string().nullable(),
+	restrictions: yup.array().of(yup.string().min(1)).nullable(),
+	notes: yup.string().nullable(),
+	extra: yup.array().of(yup.string().min(1)).nullable(),
 });
 
 export const CreatePersonCypher = `
@@ -57,6 +57,13 @@ CREATE (p:Person {
 	notes: $notes,
 	extra: $extra
 })
+`;
+
+export const DeletePersonCypher = `
+MATCH (p:Person { id: $id })
+OPTIONAL MATCH (p)-[r]->(o)
+WHERE NOT (r:CATEGORIZED_AS)
+DETACH DELETE r, o, p
 `;
 
 export const usePersonContextMenu = (): ContextMenuItem[] => {
