@@ -1,6 +1,6 @@
 import EventEmitter from 'events';
 
-export type FileType = 'passports' | 'pictures' | 'videos' | 'documents';
+export type FileType = 'image' | 'video' | 'document' | 'avatar' | 'passport' | 'attachment';
 
 declare global {
 	interface Window {

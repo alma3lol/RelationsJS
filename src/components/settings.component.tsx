@@ -45,48 +45,67 @@ export const Settings: FC<SettingsProps> = ({ show, close, onDone }) => {
 		setDatabase('');
 		setConnected(false);
 	}
-	const [filesTypes, setFilesTypes] = useState<{ [key in FileType]: boolean }>({ 'passports': false, 'pictures': false, 'documents': false, 'videos': false });
+	const [filesTypes, setFilesTypes] = useState<{ [key in FileType]: boolean }>({ 'passport': false, 'image': false, 'document': false, 'video': false, avatar: false, attachment: false });
 	const deleteUsedFiles = async () => {
 		if (driver) {
 			const session = driver.session({ database });
 			const trx = session.beginTransaction();
 			let clearedNothing = true;
-			if (filesTypes['passports']) {
-				const result = await trx.run('MATCH (h:Passport) RETURN h');
-				const count = await window.files.clearUnused('passports', result.records.map(record => record.toObject().h));
-				setFilesTypes(prev => ({ ...prev, 'passports': false }));
+			if (filesTypes['passport']) {
+				const result = await trx.run(`MATCH (m:Media { type: 'passport' }) RETURN m`);
+				const count = await window.files.clearUnused('passport', result.records.map(record => record.toObject().m));
+				setFilesTypes(prev => ({ ...prev, passport: false }));
 				if (count) {
 					clearedNothing = false;
 					enqueueSnackbar(`Cleared ${count} unused passports`, { variant: 'success' });
 				}
 			}
-			if (filesTypes['pictures']) {
-				const result = await trx.run('MATCH (p:Picture) RETURN p');
-				const count = await window.files.clearUnused('pictures', result.records.map(record => record.toObject().p));
-				setFilesTypes(prev => ({ ...prev, 'pictures': false }));
+			if (filesTypes['image']) {
+				const result = await trx.run(`MATCH (m:Media { type: 'image' }) RETURN m`);
+				const count = await window.files.clearUnused('image', result.records.map(record => record.toObject().m));
+				setFilesTypes(prev => ({ ...prev, image: false }));
 				if (count) {
 					clearedNothing = false;
-					enqueueSnackbar(`Cleared ${count} unused pictures`, { variant: 'success' });
+					enqueueSnackbar(`Cleared ${count} unused images`, { variant: 'success' });
 				}
 			}
-			if (filesTypes['documents']) {
-				const result = await trx.run('MATCH (d:Document) RETURN d');
-				const count = await window.files.clearUnused('documents', result.records.map(record => record.toObject().d));
-				setFilesTypes(prev => ({ ...prev, 'documents': false }));
+			if (filesTypes['document']) {
+				const result = await trx.run(`MATCH (m:Media { type: 'document' }) RETURN m`);
+				const count = await window.files.clearUnused('document', result.records.map(record => record.toObject().m));
+				setFilesTypes(prev => ({ ...prev, document: false }));
 				if (count) {
 					clearedNothing = false;
 					enqueueSnackbar(`Cleared ${count} unused documents`, { variant: 'success' });
 				}
 			}
-			if (filesTypes['videos']) {
-				const result = await trx.run('MATCH (v:Video) RETURN v');
-				const count = await window.files.clearUnused('videos', result.records.map(record => record.toObject().v));
-				setFilesTypes(prev => ({ ...prev, 'videos': false }));
+			if (filesTypes['video']) {
+				const result = await trx.run(`MATCH (m:Media { type: 'video' }) RETURN m`);
+				const count = await window.files.clearUnused('video', result.records.map(record => record.toObject().m));
+				setFilesTypes(prev => ({ ...prev, video: false }));
 				if (count) {
 					clearedNothing = false;
 					enqueueSnackbar(`Cleared ${count} unused videos`, { variant: 'success' });
 				}
 			}
+			if (filesTypes['avatar']) {
+				const result = await trx.run(`MATCH (m:Media { type: 'avatar' }) RETURN m`);
+				const count = await window.files.clearUnused('avatar', result.records.map(record => record.toObject().m));
+				setFilesTypes(prev => ({ ...prev, avatar: false }));
+				if (count) {
+					clearedNothing = false;
+					enqueueSnackbar(`Cleared ${count} unused avatars`, { variant: 'success' });
+				}
+			}
+			if (filesTypes['attachment']) {
+				const result = await trx.run(`MATCH (m:Media { type: 'attachment' }) RETURN m`);
+				const count = await window.files.clearUnused('attachment', result.records.map(record => record.toObject().m));
+				setFilesTypes(prev => ({ ...prev, attachment: false }));
+				if (count) {
+					clearedNothing = false;
+					enqueueSnackbar(`Cleared ${count} unused attachments`, { variant: 'success' });
+				}
+			}
+
 			if (clearedNothing) enqueueSnackbar('Nothing to be cleared', { variant: 'info' });
 			await session.close();
 		}
@@ -137,12 +156,14 @@ export const Settings: FC<SettingsProps> = ({ show, close, onDone }) => {
 					{t('settings.clear_unused.title')}:
 					<Box sx={{ pl: 4 }}>
 						<FormGroup>
-							<FormControlLabel control={<Checkbox size='small' checked={filesTypes['passports']} onChange={() => setFilesTypes(prev => ({ ...prev, 'passports': !prev['passports'] }))} />} label={t('passports') as string} />
-							<FormControlLabel control={<Checkbox size='small' checked={filesTypes['pictures']} onChange={() => setFilesTypes(prev => ({ ...prev, 'pictures': !prev['pictures'] }))} />} label={t('pictures') as string} />
-							<FormControlLabel control={<Checkbox size='small' checked={filesTypes['videos']} onChange={() => setFilesTypes(prev => ({ ...prev, 'videos': !prev['videos'] }))} />} label={t('videos') as string} />
-							<FormControlLabel control={<Checkbox size='small' checked={filesTypes['documents']} onChange={() => setFilesTypes(prev => ({ ...prev, 'documents': !prev['documents'] }))} />} label={t('documents') as string} />
+							<FormControlLabel control={<Checkbox size='small' checked={filesTypes['passport']} onChange={() => setFilesTypes(prev => ({ ...prev, 'passport': !prev['passport'] }))} />} label={t('passports') as string} />
+							<FormControlLabel control={<Checkbox size='small' checked={filesTypes['image']} onChange={() => setFilesTypes(prev => ({ ...prev, 'image': !prev['image'] }))} />} label={t('images') as string} />
+							<FormControlLabel control={<Checkbox size='small' checked={filesTypes['video']} onChange={() => setFilesTypes(prev => ({ ...prev, 'video': !prev['video'] }))} />} label={t('videos') as string} />
+							<FormControlLabel control={<Checkbox size='small' checked={filesTypes['document']} onChange={() => setFilesTypes(prev => ({ ...prev, 'document': !prev['document'] }))} />} label={t('documents') as string} />
+							<FormControlLabel control={<Checkbox size='small' checked={filesTypes['avatar']} onChange={() => setFilesTypes(prev => ({ ...prev, avatar: !prev['avatar'] }))} />} label={t('avatars') as string} />
+							<FormControlLabel control={<Checkbox size='small' checked={filesTypes['attachment']} onChange={() => setFilesTypes(prev => ({ ...prev, 'attachment': !prev['attachment'] }))} />} label={t('attachments') as string} />
 						</FormGroup>
-						<Button onClick={deleteUsedFilesCallback} size='small' variant='contained' disabled={!filesTypes['passports'] && !filesTypes['pictures'] && !filesTypes['videos'] && !filesTypes['documents']}>{t('settings.clear_unused.action')}</Button>
+						<Button onClick={deleteUsedFilesCallback} size='small' variant='contained' disabled={!filesTypes['passport'] && !filesTypes['image'] && !filesTypes['video'] && !filesTypes['document'] && !filesTypes['avatar'] && !filesTypes['attachment']}>{t('settings.clear_unused.action')}</Button>
 					</Box>
 				</Box>
 				<Paper sx={{ border: 2, borderColor: red[500], p: 2, mt: 2 }}>
