@@ -9,7 +9,7 @@ export const MediaSchema = yup.object().shape({
 	id: yup.string().required(),
 	name: yup.string().required(),
 	path: yup.string().required(),
-	type: yup.mixed().oneOf(['image', 'video', 'document', 'avatar', 'passport', 'attachment']).required(),
+	type: yup.mixed().oneOf(['image', 'video', 'id', 'avatar', 'passport', 'attachment']).required(),
 });
 
 export const CreateMediaCypher = `

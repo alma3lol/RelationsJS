@@ -45,7 +45,7 @@ export const Settings: FC<SettingsProps> = ({ show, close, onDone }) => {
 		setDatabase('');
 		setConnected(false);
 	}
-	const [filesTypes, setFilesTypes] = useState<{ [key in FileType]: boolean }>({ 'passport': false, 'image': false, 'document': false, 'video': false, avatar: false, attachment: false });
+	const [filesTypes, setFilesTypes] = useState<{ [key in FileType]: boolean }>({ passport: false, image: false, id: false, video: false, avatar: false, attachment: false });
 	const deleteUsedFiles = async () => {
 		if (driver) {
 			const session = driver.session({ database });
@@ -57,7 +57,7 @@ export const Settings: FC<SettingsProps> = ({ show, close, onDone }) => {
 				setFilesTypes(prev => ({ ...prev, passport: false }));
 				if (count) {
 					clearedNothing = false;
-					enqueueSnackbar(`Cleared ${count} unused passports`, { variant: 'success' });
+					enqueueSnackbar(t('notifications.success.settings.cleared_unused', { cleared_count: count, cleared_type: t('passports') }), { variant: 'success' });
 				}
 			}
 			if (filesTypes['image']) {
@@ -66,16 +66,16 @@ export const Settings: FC<SettingsProps> = ({ show, close, onDone }) => {
 				setFilesTypes(prev => ({ ...prev, image: false }));
 				if (count) {
 					clearedNothing = false;
-					enqueueSnackbar(`Cleared ${count} unused images`, { variant: 'success' });
+					enqueueSnackbar(t('notifications.success.settings.cleared_unused', { cleared_count: count, cleared_type: t('images') }), { variant: 'success' });
 				}
 			}
-			if (filesTypes['document']) {
-				const result = await trx.run(`MATCH (m:Media { type: 'document' }) RETURN m`);
-				const count = await window.files.clearUnused('document', result.records.map(record => record.toObject().m));
-				setFilesTypes(prev => ({ ...prev, document: false }));
+			if (filesTypes['id']) {
+				const result = await trx.run(`MATCH (m:Media { type: 'id' }) RETURN m`);
+				const count = await window.files.clearUnused('id', result.records.map(record => record.toObject().m));
+				setFilesTypes(prev => ({ ...prev, id: false }));
 				if (count) {
 					clearedNothing = false;
-					enqueueSnackbar(`Cleared ${count} unused documents`, { variant: 'success' });
+					enqueueSnackbar(t('notifications.success.settings.cleared_unused', { cleared_count: count, cleared_type: t(('ids')) }), { variant: 'success' });
 				}
 			}
 			if (filesTypes['video']) {
@@ -84,7 +84,7 @@ export const Settings: FC<SettingsProps> = ({ show, close, onDone }) => {
 				setFilesTypes(prev => ({ ...prev, video: false }));
 				if (count) {
 					clearedNothing = false;
-					enqueueSnackbar(`Cleared ${count} unused videos`, { variant: 'success' });
+					enqueueSnackbar(t('notifications.success.settings.cleared_unused', { cleared_count: count, cleared_type: t(('videos')) }), { variant: 'success' });
 				}
 			}
 			if (filesTypes['avatar']) {
@@ -93,7 +93,7 @@ export const Settings: FC<SettingsProps> = ({ show, close, onDone }) => {
 				setFilesTypes(prev => ({ ...prev, avatar: false }));
 				if (count) {
 					clearedNothing = false;
-					enqueueSnackbar(`Cleared ${count} unused avatars`, { variant: 'success' });
+					enqueueSnackbar(t('notifications.success.settings.cleared_unused', { cleared_count: count, cleared_type: t(('avatars')) }), { variant: 'success' });
 				}
 			}
 			if (filesTypes['attachment']) {
@@ -102,7 +102,7 @@ export const Settings: FC<SettingsProps> = ({ show, close, onDone }) => {
 				setFilesTypes(prev => ({ ...prev, attachment: false }));
 				if (count) {
 					clearedNothing = false;
-					enqueueSnackbar(`Cleared ${count} unused attachments`, { variant: 'success' });
+					enqueueSnackbar(t('notifications.success.settings.cleared_unused', { cleared_count: count, cleared_type: t(('attachments')) }), { variant: 'success' });
 				}
 			}
 
@@ -156,14 +156,14 @@ export const Settings: FC<SettingsProps> = ({ show, close, onDone }) => {
 					{t('settings.clear_unused.title')}:
 					<Box sx={{ pl: 4 }}>
 						<FormGroup>
-							<FormControlLabel control={<Checkbox size='small' checked={filesTypes['passport']} onChange={() => setFilesTypes(prev => ({ ...prev, 'passport': !prev['passport'] }))} />} label={t('passports') as string} />
-							<FormControlLabel control={<Checkbox size='small' checked={filesTypes['image']} onChange={() => setFilesTypes(prev => ({ ...prev, 'image': !prev['image'] }))} />} label={t('images') as string} />
-							<FormControlLabel control={<Checkbox size='small' checked={filesTypes['video']} onChange={() => setFilesTypes(prev => ({ ...prev, 'video': !prev['video'] }))} />} label={t('videos') as string} />
-							<FormControlLabel control={<Checkbox size='small' checked={filesTypes['document']} onChange={() => setFilesTypes(prev => ({ ...prev, 'document': !prev['document'] }))} />} label={t('documents') as string} />
+							<FormControlLabel control={<Checkbox size='small' checked={filesTypes['passport']} onChange={() => setFilesTypes(prev => ({ ...prev, passport: !prev['passport'] }))} />} label={t('passports') as string} />
+							<FormControlLabel control={<Checkbox size='small' checked={filesTypes['image']} onChange={() => setFilesTypes(prev => ({ ...prev, image: !prev['image'] }))} />} label={t('images') as string} />
+							<FormControlLabel control={<Checkbox size='small' checked={filesTypes['video']} onChange={() => setFilesTypes(prev => ({ ...prev, video: !prev['video'] }))} />} label={t('videos') as string} />
+							<FormControlLabel control={<Checkbox size='small' checked={filesTypes['id']} onChange={() => setFilesTypes(prev => ({ ...prev, id: !prev['id'] }))} />} label={t('ids') as string} />
 							<FormControlLabel control={<Checkbox size='small' checked={filesTypes['avatar']} onChange={() => setFilesTypes(prev => ({ ...prev, avatar: !prev['avatar'] }))} />} label={t('avatars') as string} />
-							<FormControlLabel control={<Checkbox size='small' checked={filesTypes['attachment']} onChange={() => setFilesTypes(prev => ({ ...prev, 'attachment': !prev['attachment'] }))} />} label={t('attachments') as string} />
+							<FormControlLabel control={<Checkbox size='small' checked={filesTypes['attachment']} onChange={() => setFilesTypes(prev => ({ ...prev, attachment: !prev['attachment'] }))} />} label={t('attachments') as string} />
 						</FormGroup>
-						<Button onClick={deleteUsedFilesCallback} size='small' variant='contained' disabled={!filesTypes['passport'] && !filesTypes['image'] && !filesTypes['video'] && !filesTypes['document'] && !filesTypes['avatar'] && !filesTypes['attachment']}>{t('settings.clear_unused.action')}</Button>
+						<Button onClick={deleteUsedFilesCallback} size='small' variant='contained' disabled={!filesTypes['passport'] && !filesTypes['image'] && !filesTypes['video'] && !filesTypes['id'] && !filesTypes['avatar'] && !filesTypes['attachment']}>{t('settings.clear_unused.action')}</Button>
 					</Box>
 				</Box>
 				<Paper sx={{ border: 2, borderColor: red[500], p: 2, mt: 2 }}>
