@@ -26,7 +26,7 @@ import { ThemeModeSwitch } from '../components';
 import { useTranslation } from 'react-i18next';
 import { Neo4jSigmaGraph } from '../neo4j-sigma-graph';
 import Graph from 'graphology';
-import { useCategoryContextMenu, usePersonContextMenu, useMediaContextMenu } from '../models';
+import { useCategoryContextMenu, usePersonContextMenu, useMediaContextMenu, DeletePersonCypher, DeleteCategoryCypher, DeleteMediaCypher } from '../models';
 
 const useStyles = makeStyles<DefaultTheme, { mode: 'dark' | 'light' }>({
   input: {
@@ -78,6 +78,9 @@ export const LoginView = () => {
       Neo4jSigmaGraph.getInstance().setContextMenu('CATEGORY', categoryContextMenu);
       Neo4jSigmaGraph.getInstance().setContextMenu('PERSON', personContextMenu);
       Neo4jSigmaGraph.getInstance().setContextMenu('MEDIA', mediaContextMenu);
+      Neo4jSigmaGraph.getInstance().setDeleteCypher('CATEGORY', DeleteCategoryCypher);
+      Neo4jSigmaGraph.getInstance().setDeleteCypher('PERSON', DeletePersonCypher);
+      Neo4jSigmaGraph.getInstance().setDeleteCypher('MEDIA', DeleteMediaCypher);
       setConnected(true);
     } catch (err: any) {
       const typedError: Neo4jError = err || new Neo4jError('Invalid credentials', '403');
