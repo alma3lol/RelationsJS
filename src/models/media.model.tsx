@@ -9,8 +9,7 @@ export const MediaSchema = yup.object().shape({
 	id: yup.string().required(),
 	name: yup.string().required(),
 	path: yup.string().required(),
-	url: yup.string().required(),
-	type: yup.mixed().oneOf(['image', 'video', 'document', 'profile', 'passport', 'attachment']).required(),
+	type: yup.mixed().oneOf(['image', 'video', 'document', 'avatar', 'passport', 'attachment']).required(),
 });
 
 export const CreateMediaCypher = `
@@ -18,7 +17,6 @@ CREATE (m:Media {
 	id: $id,
 	name: $name,
 	path: $path,
-	url: $url,
 	type: $type
 })
 `;
