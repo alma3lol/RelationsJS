@@ -253,11 +253,14 @@ export const DashboardView = () => {
 			setConfirmActionQuestion(t('actions.questions.delete_node'));
 			setConfirmAction(() => async () => {
 				try {
-					const session = Neo4jSigmaGraph.getInstance().generateSession();
-					await session.run('MATCH (n { id: $id }) OPTIONAL MATCH (n)-[r]-() DELETE r, n', { id });
-					await session.close();
-					enqueueSnackbar(t('actions.success.delete_node'), { variant: 'success' });
-					createGraphCallback();
+					const cypher = Neo4jSigmaGraph.getInstance().getDeleteCypher(nodeType);
+					if (cypher) {
+						const session = Neo4jSigmaGraph.getInstance().generateSession();
+						await session.run(cypher, { id });
+						await session.close();
+						enqueueSnackbar(t('actions.success.delete_node'), { variant: 'success' });
+						createGraphCallback();
+					}
 				} catch (e) {
 					enqueueSnackbar(t('actions.errors.delete_node', { message: (e as any).message }), { variant: 'error' });
 				}
