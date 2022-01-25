@@ -6,10 +6,14 @@ import {
 } from "@mui/icons-material";
 import { FC, FormEvent, useContext, useEffect, useState } from "react";
 import { appContext } from "../App";
-import { NodeType } from "../neo4j-sigma-graph";
+import { Neo4jSigmaGraph, NodeType } from "../neo4j-sigma-graph";
 import { useTranslation } from "react-i18next";
-import { AddCategory } from "./add-node";
+import { AddCategory, AddPerson } from "./add-node";
 import { v4 } from "uuid";
+import useHotkeys from "@reecelucas/react-use-hotkeys";
+import { CategorySchema, PersonSchema, CreatePersonCypher, CreateCategoryCypher, MediaSchema, CreateMediaCypher } from "../models";
+import { ValidationError } from "yup";
+import { useSnackbar } from "notistack";
 
 export type AddNodeProps = {
 	show: boolean
@@ -24,7 +28,8 @@ export type WithHintComponent = {
 
 export const AddNode: FC<AddNodeProps> = ({ show, close, onDone: onDoneParent }) => {
 	const { t } = useTranslation();
-	const { theme, driver, database } = useContext(appContext);
+	const { theme } = useContext(appContext);
+	const { enqueueSnackbar } = useSnackbar();
 	const useStyles = makeStyles({
 		cardActionArea: {
 			'&:disabled > .MuiCardActionArea-focusHighlight': {
@@ -54,23 +59,149 @@ export const AddNode: FC<AddNodeProps> = ({ show, close, onDone: onDoneParent })
 		handleClose();
 	}
 	const [categoryName, setCategoryName] = useState('');
+	const [fileNumber, setFileNumber] = useState('');
+	const [arabicName, setArabicName] = useState('');
+	const [englishName, setEnglishName] = useState('');
+	const [motherName, setMotherName] = useState('');
+	const [nickname, setNickname] = useState('');
+	const [image, setImage] = useState<File | null>(null);
+	const [idImage, setIdImage] = useState<File | null>(null);
+	const [passportImage, setPassportImage] = useState<File | null>(null);
+	const [birthDate, setBirthDate] = useState<Date | null>(null);
+	const [birthPlace, setBirthPlace] = useState('');
+	const [passportNumber, setPassportNumber] = useState('');
+	const [passportIssueDate, setPassportIssueDate] = useState<Date | null>(null);
+	const [passportIssuePlace, setPassportIssuePlace] = useState('');
+	const [job, setJob] = useState('');
+	const [idNumber, setIdNumber] = useState('');
+	const [nationalNumber, setNationalNumber] = useState('');
+	const [registerationNumber, setRegisterationNumber] = useState('');
+	const [nationality, setNationality] = useState('');
+	const [address, setAddress] = useState('');
+	const [gpsLocation, setGpsLocation] = useState('');
+	const [workplace, setWorkplace] = useState('');
+	const [attachments, setAttachments] = useState<File[]>([]);
+	const [phone, setPhone] = useState('');
+	const [restrictions, setRestrictions] = useState<string[]>([]);
+	const [category, setCategory] = useState('');
+	const [notes, setNotes] = useState('');
+	const [extra, setExtra] = useState<string[]>([]);
+	const [email, setEmail] = useState('');
 	const handleOnSubmit = async (e: FormEvent) => {
 		e.preventDefault();
-		if (!driver) {
-			return;
-		}
-		const session = driver.session({ database });
+		const session = Neo4jSigmaGraph.getInstance().generateSession();
 		const id = v4();
 		switch(nodeType) {
 			case 'CATEGORY':
-				await session.run(`
-					CREATE (c:Category {id: $id, name: $name})
-				`, { id, name: categoryName });
-				await session.close();
-				onDone();
+				try {
+					const category = await CategorySchema.validate({ id, name: categoryName });
+					await session.run(CreateCategoryCypher, category);
+					await session.close();
+					onDone();
+					enqueueSnackbar(t('add_node.success.category'), { variant: 'success' });
+				} catch (e) {
+					if (e  instanceof ValidationError) {
+						if (e.errors) {
+							enqueueSnackbar(e.errors.join('\n'), { variant: 'error' });
+						}
+					}
+				}
 				break;
 			case 'PERSON':
-				// TODO
+				try {
+					const person = await PersonSchema.validate({
+						id,
+						arabicName,
+						englishName,
+						motherName,
+						nickname,
+						birthDate,
+						birthPlace,
+						job,
+						nationality,
+						phone,
+						email,
+						workplace,
+						address,
+						gpsLocation,
+						passportNumber,
+						passportIssueDate,
+						passportIssuePlace,
+						idNumber,
+						nationalNumber,
+						registerationNumber,
+						restrictions,
+						notes,
+						extra,
+					});
+					await session.run(CreatePersonCypher, person);
+					await session.close();
+					await Neo4jSigmaGraph.getInstance().createRelationship(id, category, 'CATEGORIZED_AS');
+					if (image) {
+						const session = Neo4jSigmaGraph.getInstance().generateSession();
+						const imageId = v4();
+						const imagePath = window.files.upload(id, 'avatar', image.name, (await image.arrayBuffer()));
+						const imageMedia = await MediaSchema.validate({
+							id: imageId,
+							path: imagePath,
+							name: image.name,
+							type: 'avatar',
+						});
+						await session.run(CreateMediaCypher, imageMedia);
+						await Neo4jSigmaGraph.getInstance().createRelationship(id, imageId, 'HAS');
+					}
+					if (idImage) {
+						const session = Neo4jSigmaGraph.getInstance().generateSession();
+						const idImageId = v4();
+						const idImagePath = window.files.upload(id, 'id', idImage.name, (await idImage.arrayBuffer()));
+						const idImageMedia = await MediaSchema.validate({
+							id: idImageId,
+							path: idImagePath,
+							name: idImage.name,
+							type: 'id',
+						});
+						await session.run(CreateMediaCypher, idImageMedia);
+						await Neo4jSigmaGraph.getInstance().createRelationship(id, idImageId, 'HAS');
+					}
+					if (passportImage) {
+						const session = Neo4jSigmaGraph.getInstance().generateSession();
+						const passportImageId = v4();
+						const passportImagePath = window.files.upload(id, 'passport', passportImage.name, (await passportImage.arrayBuffer()));
+						const passportImageMedia = await MediaSchema.validate({
+							id: passportImageId,
+							path: passportImagePath,
+							name: passportImage.name,
+							type: 'passport',
+						});
+						await session.run(CreateMediaCypher, passportImageMedia);
+						await Neo4jSigmaGraph.getInstance().createRelationship(id, passportImageId, 'HAS');
+					}
+					if (attachments.length > 0) {
+						for (const attachment of attachments) {
+							const session = Neo4jSigmaGraph.getInstance().generateSession();
+							const attachmentId = v4();
+							const attachmentPath = window.files.upload(id, 'attachment', attachment.name, (await attachment.arrayBuffer()));
+							const attachmentMedia = await MediaSchema.validate({
+								id: attachmentId,
+								path: attachmentPath,
+								name: attachment.name,
+								type: 'attachment',
+							});
+							await session.run(CreateMediaCypher, attachmentMedia);
+							await Neo4jSigmaGraph.getInstance().createRelationship(id, attachmentId, 'HAS');
+						}
+					}
+					onDone();
+					enqueueSnackbar(t('add_node.success.person'), { variant: 'success' });
+				} catch (e) {
+					if (e instanceof ValidationError) {
+						if (e.errors) {
+							enqueueSnackbar(e.errors.join('\n'), { variant: 'error' });
+						}
+					} else if (Object.hasOwnProperty.call(e, 'message')) {
+						enqueueSnackbar((e as any).message, { variant: 'error' });
+					}
+				}
 				break;
 			default:
 				break;
@@ -80,7 +211,47 @@ export const AddNode: FC<AddNodeProps> = ({ show, close, onDone: onDoneParent })
 		setNodeType(null);
 		setHint(defaultHint);
 		setCategoryName('');
+		setFileNumber('');
+		setArabicName('');
+		setEnglishName('');
+		setMotherName('');
+		setNickname('');
+		setImage(null);
+		setIdImage(null);
+		setPassportImage(null);
+		setBirthDate(null);
+		setBirthPlace('');
+		setPassportNumber('');
+		setPassportIssueDate(null);
+		setPassportIssuePlace('');
+		setJob('');
+		setIdNumber('');
+		setNationalNumber('');
+		setRegisterationNumber('');
+		setNationality('');
+		setAddress('');
+		setGpsLocation('');
+		setWorkplace('');
+		setAttachments([]);
+		setPhone('');
+		setRestrictions([]);
+		setCategory('');
+		setNotes('');
+		setExtra([]);
+		setEmail('');
 	}, [show]);
+	useHotkeys(['0', '1'], e => {
+		if (nodeType === null) {
+			switch (e.key) {
+				case '0':
+					setNodeType('CATEGORY');
+					break;
+				case '1':
+					setNodeType('PERSON');
+					break;
+			}
+		}
+	});
 	return (
 		<Dialog open={show} fullWidth maxWidth='lg'>
 			<form onSubmit={handleOnSubmit}>
@@ -94,12 +265,12 @@ export const AddNode: FC<AddNodeProps> = ({ show, close, onDone: onDoneParent })
 							<Grid item container xs={12} spacing={1}>
 								{nodeTypes.map((node, idx) => (
 									<Grid key={idx} item onMouseOver={() => setHint(node[3])} onMouseOut={() => setHint(defaultHint)}>
-										<Card variant='outlined' sx={{ width: 75, height: 75 }}>
+										<Card variant='outlined' sx={{ width: 100, height: 100 }}>
 											<CardActionArea className={classes.cardActionArea} disabled={node[2] === nodeType} onClick={() => setNodeType(node[2])}>
-												<CardContent sx={{ height: 75 }}>
-													<Grid container justifyContent='center' alignItems='center' direction='column' height='100%'>
-														<Grid item>{node[0]}</Grid>
-														<Grid item>{node[1]}</Grid>
+												<CardContent sx={{ height: 100 }}>
+													<Grid container justifyContent='center' alignItems='center' direction='row' height='100%'>
+														<Grid item><Typography>{node[0]}</Typography></Grid>
+														<Grid item><Typography>{node[1]}</Typography></Grid>
 													</Grid>
 												</CardContent>
 											</CardActionArea>
@@ -111,7 +282,64 @@ export const AddNode: FC<AddNodeProps> = ({ show, close, onDone: onDoneParent })
 						{nodeType !== null && <Divider variant='middle' className={classes.divider} />}
 						<Grid item container spacing={0}>
 							{nodeType === 'CATEGORY' && <AddCategory value={categoryName} onChange={e => setCategoryName(e.currentTarget.value ?? '')} onSubmit={handleOnSubmit} />}
-							{nodeType === 'PERSON' && "Hi"}
+							{nodeType === 'PERSON' && <AddPerson
+								fileNumber={fileNumber}
+								onFileNumberChange={e => setFileNumber(e.currentTarget.value ?? '')}
+								arabicName={arabicName}
+								onArabicNameChange={e => setArabicName(e.currentTarget.value ?? '')}
+								englishName={englishName}
+								onEnglishNameChange={e => setEnglishName(e.currentTarget.value ?? '')}
+								motherName={motherName}
+								onMotherNameChange={e => setMotherName(e.currentTarget.value ?? '')}
+								nickname={nickname}
+								onNicknameChange={e => setNickname(e.currentTarget.value ?? '')}
+								image={image}
+								onImageChange={e => setImage(e.currentTarget.files && e.currentTarget.files[0] ? e.currentTarget.files[0] : null)}
+								idImage={idImage}
+								onIdImageChange={e => setIdImage(e.currentTarget.files && e.currentTarget.files[0] ? e.currentTarget.files[0] : null)}
+								passportImage={passportImage}
+								onPassportImageChange={e => setPassportImage(e.currentTarget.files && e.currentTarget.files[0] ? e.currentTarget.files[0] : null)}
+								birthDate={birthDate}
+								onBirthDateChange={setBirthDate}
+								birthPlace={birthPlace}
+								onBirthPlaceChange={e => setBirthPlace(e.currentTarget.value ?? '')}
+								passportNumber={passportNumber}
+								onPassportNumberChange={e => setPassportNumber(e.currentTarget.value ?? '')}
+								passportIssueDate={passportIssueDate}
+								onPassportIssueDateChange={setPassportIssueDate}
+								passportIssuePlace={passportIssuePlace}
+								onPassportIssuePlaceChange={e => setPassportIssuePlace(e.currentTarget.value ?? '')}
+								job={job}
+								onJobChange={e => setJob(e.currentTarget.value ?? '')}
+								idNumber={idNumber}
+								onIdNumberChange={e => setIdNumber(e.currentTarget.value ?? '')}
+								nationalNumber={nationalNumber}
+								onNationalNumberChange={e => setNationalNumber(e.currentTarget.value ?? '')}
+								registerationNumber={registerationNumber}
+								onRegisterationNumberChange={e => setRegisterationNumber(e.currentTarget.value ?? '')}
+								nationality={nationality}
+								onNationalityChange={e => setNationality(e.currentTarget.value ?? '')}
+								address={address}
+								onAddressChange={e => setAddress(e.currentTarget.value ?? '')}
+								gpsLocation={gpsLocation}
+								onGpsLocationChange={e => setGpsLocation(e.currentTarget.value ?? '')}
+								workplace={workplace}
+								onWorkplaceChange={e => setWorkplace(e.currentTarget.value ?? '')}
+								attachments={attachments}
+								onAttachmentsChange={setAttachments}
+								phone={phone}
+								onPhoneChange={e => setPhone(e.currentTarget.value ?? '')}
+								restrictions={restrictions}
+								onRestrictionsChange={setRestrictions}
+								category={category}
+								onCategoryChange={setCategory}
+								notes={notes}
+								onNotesChange={e => setNotes(e.currentTarget.value ?? '')}
+								extra={extra}
+								onExtraChange={setExtra}
+								email={email}
+								onEmailChange={e => setEmail(e.currentTarget.value ?? '')}
+							/>}
 						</Grid>
 					</Grid>
 				</DialogContent>
