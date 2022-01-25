@@ -21,6 +21,11 @@ CREATE (m:Media {
 })
 `;
 
+export const DeleteMediaCypher = `
+MATCH (m:Media { id: $id })
+DETACH DELETE m
+`;
+
 export const useMediaContextMenu = () => {
 	const { t } = useTranslation();
 	const menu: ContextMenuItem[] = [];

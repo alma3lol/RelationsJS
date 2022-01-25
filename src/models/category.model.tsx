@@ -17,6 +17,11 @@ CREATE (c:Category {
 })
 `;
 
+export const DeleteCategoryCypher = `
+MATCH (c:Category { id: $id })
+DETACH DELETE c
+`;
+
 export const useCategoryContextMenu = (): ContextMenuItem[] => {
 	const { t } = useTranslation();
 	const menu: ContextMenuItem[] = [];
