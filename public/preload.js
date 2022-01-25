@@ -50,7 +50,7 @@ contextBridge.exposeInMainWorld(
       const title = _title ?? 'Choosea file to export to';
       const filePath = remote.dialog.showSaveDialogSync({
         title,
-        defaultPath: 'represent-js-graph.json',
+        defaultPath: 'relations-js-graph.json',
         filters: [
           {
             name: 'JSON',
