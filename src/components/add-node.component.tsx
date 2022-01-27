@@ -236,16 +236,14 @@ export const AddNode: FC<AddNodeProps> = ({ show, close, onDone: onDoneParent })
 		setExtra([]);
 		setEmail('');
 	}, [show]);
-	useHotkeys(['0', '1'], e => {
+	useHotkeys(nodeTypes.map((__, i) => (i + 1).toString()), e => {
 		if (nodeType === null) {
-			switch (e.key) {
-				case '0':
-					setNodeType('CATEGORY');
-					break;
-				case '1':
-					setNodeType('PERSON');
-					break;
-			}
+			nodeTypes.forEach((nodeType, i) => {
+				if (e.key === (i + 1).toString()) {
+					setNodeType(nodeType[2]);
+					return;
+				}
+			});
 		}
 	});
 	return (
