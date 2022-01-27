@@ -1,26 +1,20 @@
 import { useTranslation } from 'react-i18next';
-import * as yup from 'yup';
 import { ContextMenuItem } from '../neo4j-sigma-graph';
 import {
 	Edit as EditIcon,
 } from '@mui/icons-material';
+import { makeAutoObservable } from 'mobx';
+import { v4 } from 'uuid';
 
-export const CategorySchema = yup.object().shape({
-	id: yup.string().uuid().required(),
-	name: yup.string().required(),
-});
-
-export const CreateCategoryCypher = `
-CREATE (c:Category {
-	id: $id,
-	name: $name
-})
-`;
-
-export const DeleteCategoryCypher = `
-MATCH (c:Category { id: $id })
-DETACH DELETE c
-`;
+export class Category {
+	id = '';
+	name = '';
+	constructor(_id: string = v4()) {
+		makeAutoObservable(this, { id: false });
+		this.id = _id;
+	}
+	setName = (value: string) => this.name = value;
+}
 
 export const useCategoryContextMenu = (): ContextMenuItem[] => {
 	const { t } = useTranslation();
