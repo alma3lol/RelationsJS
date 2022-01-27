@@ -11,7 +11,6 @@ import { useTranslation } from "react-i18next";
 import { AddCategory, AddPerson } from "./add-node";
 import useHotkeys from "@reecelucas/react-use-hotkeys";
 import { Category, Media, Person } from "../models";
-import { ValidationError } from "yup";
 import { useSnackbar } from "notistack";
 
 export type AddNodeProps = {
@@ -121,11 +120,7 @@ export const AddNode: FC<AddNodeProps> = ({ show, close, onDone: onDoneParent })
 					onDone();
 					enqueueSnackbar(t('add_node.success.person'), { variant: 'success' });
 				} catch (e) {
-					if (e instanceof ValidationError) {
-						if (e.errors) {
-							enqueueSnackbar(e.errors.join('\n'), { variant: 'error' });
-						}
-					} else if (Object.hasOwnProperty.call(e, 'message')) {
+					if (Object.hasOwnProperty.call(e, 'message')) {
 						enqueueSnackbar((e as any).message, { variant: 'error' });
 					}
 				}

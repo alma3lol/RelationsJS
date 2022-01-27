@@ -15,7 +15,6 @@ import { AuthRoute, RestrictedRoute } from './components';
 import { LoginView } from './views';
 import { DashboardView } from './views/dashboard.view';
 import { RTL } from './rtl-support';
-import { setLocale } from 'yup';
 
 export const createThemeOptions = (darkMode: boolean, language: string): ThemeOptions => ({
   direction: language === 'ar' ? 'rtl' : 'ltr',
@@ -164,19 +163,6 @@ const App = () => {
     localStorage.setItem('darkMode', darkMode ? '1' : '');
     localStorage.setItem('language', language);
     document.body.style.direction = language === 'ar' ? 'rtl' : 'ltr';
-    setLocale({
-      mixed: {
-        oneOf: ({ label, value, values }) => ({ key: 'schema.invalid.oneOf', values: { label, value, values } }),
-      },
-      number: {
-        min: ({ min, label }) => ({ key: 'schema.invalid.min_number', values: { min, label } }),
-        max: ({ max, label }) => ({ key: 'schema.invalid.max_number', values: { max, label } }),
-      },
-      string: {
-        email: ({ label }) => ({ key: 'schema.invalid.email', values: { label } }),
-        uuid: ({ label }) => ({ key: 'schema.invalid.uuid', values: { label } }),
-      }
-    });
     setTheme(createTheme(createThemeOptions(darkMode, language)));
   }, [darkMode, language, setTheme]);
   const [layoutMode, setLayoutMode] = useState<'CIRCULAR' | 'RANDOM'>('CIRCULAR');
