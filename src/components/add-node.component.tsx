@@ -56,8 +56,8 @@ export const AddNode: FC<AddNodeProps> = ({ show, close, onDone: onDoneParent })
 		onDoneParent();
 		handleClose();
 	}
-	const category = new Category();
-	const person = new Person();
+	const [category, setCategory] = useState(new Category());
+	const [person, setPerson] = useState(new Person());
 	const handleOnSubmit = async (e: FormEvent) => {
 		e.preventDefault();
 		if (nodeType === null) return;
@@ -132,6 +132,8 @@ export const AddNode: FC<AddNodeProps> = ({ show, close, onDone: onDoneParent })
 	useEffect(() => {
 		setNodeType(null);
 		setHint(defaultHint);
+		setCategory(new Category());
+		setPerson(new Person());
 	}, [show]);
 	useHotkeys(nodeTypes.map((__, i) => (i + 1).toString()), e => {
 		if (nodeType === null) {
