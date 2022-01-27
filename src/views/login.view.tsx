@@ -26,9 +26,9 @@ import { ThemeModeSwitch } from '../components';
 import { useTranslation } from 'react-i18next';
 import { Neo4jSigmaGraph } from '../neo4j-sigma-graph';
 import Graph from 'graphology';
-import { usePersonContextMenu, useMediaContextMenu } from '../models';
+import { usePersonContextMenu } from '../models';
 import { CategoryRepository, MediaRepository, PersonRepository } from '../repositories';
-import { useCategoryContextMenu } from '../menus';
+import { useCategoryContextMenu, useMediaContextMenu } from '../menus';
 
 const useStyles = makeStyles<DefaultTheme, { mode: 'dark' | 'light' }>({
   input: {
