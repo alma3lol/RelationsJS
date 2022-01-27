@@ -93,7 +93,7 @@ export class PersonRepository extends Repository<Person, string> {
         await session.close();
         return persons;
     }
-    readbyId = async (id: string) => {
+    readById = async (id: string) => {
         const session = this.generateSession();
         const person = await session.run(`MATCH (p:Person) WHERE p.id = $id RETURN p`, { id }).then(result => {
             if (result.records.length === 0) throw Error('No such a person');

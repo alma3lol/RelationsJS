@@ -18,7 +18,7 @@ export class CategoryRepository extends Repository<Category, string> {
         }));
         return categories;
     }
-    readbyId = async (id: string) => {
+    readById = async (id: string) => {
         const session = this.generateSession();
         const category = await session.run(`MATCH (c:Category) WHERE c.id = $id RETURN c`, { id }).then(result => {
             if (result.records.length === 0) throw Error('No such a category');
