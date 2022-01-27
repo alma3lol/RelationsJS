@@ -253,11 +253,9 @@ export const DashboardView = () => {
 			setConfirmActionQuestion(t('actions.questions.delete_node'));
 			setConfirmAction(() => async () => {
 				try {
-					const cypher = Neo4jSigmaGraph.getInstance().getDeleteCypher(nodeType);
-					if (cypher) {
-						const session = Neo4jSigmaGraph.getInstance().generateSession();
-						await session.run(cypher, { id });
-						await session.close();
+					const repository = Neo4jSigmaGraph.getInstance().getRepository(nodeType);
+					if (repository) {
+						await repository.delete(id);
 						enqueueSnackbar(t('actions.success.delete_node'), { variant: 'success' });
 						createGraphCallback();
 					}
