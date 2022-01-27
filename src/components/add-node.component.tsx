@@ -9,9 +9,8 @@ import { appContext } from "../App";
 import { Neo4jSigmaGraph, NodeType } from "../neo4j-sigma-graph";
 import { useTranslation } from "react-i18next";
 import { AddCategory, AddPerson } from "./add-node";
-import { v4 } from "uuid";
 import useHotkeys from "@reecelucas/react-use-hotkeys";
-import { MediaSchema, CreateMediaCypher, Category, Person } from "../models";
+import { Category, Media, Person } from "../models";
 import { ValidationError } from "yup";
 import { useSnackbar } from "notistack";
 
@@ -79,58 +78,44 @@ export const AddNode: FC<AddNodeProps> = ({ show, close, onDone: onDoneParent })
 				try {
 					await repository.create(person);
 					await Neo4jSigmaGraph.getInstance().createRelationship(person.id, person.category, 'CATEGORIZED_AS');
+					const mediaRepository = Neo4jSigmaGraph.getInstance().getRepository('MEDIA');
+					if (!mediaRepository) return;
 					if (person.image) {
-						const session = Neo4jSigmaGraph.getInstance().generateSession();
-						const imageId = v4();
 						const imagePath = window.files.upload(person.id, 'avatar', person.image.name, (await person.image.arrayBuffer()));
-						const imageMedia = await MediaSchema.validate({
-							id: imageId,
-							path: imagePath,
-							name: person.image.name,
-							type: 'avatar',
-						});
-						await session.run(CreateMediaCypher, imageMedia);
-						await Neo4jSigmaGraph.getInstance().createRelationship(person.id, imageId, 'HAS');
+						const media = new Media();
+						media.setName(person.image.name);
+						media.setPath(imagePath);
+						media.setType('avatar');
+						await mediaRepository.create(media);
+						await Neo4jSigmaGraph.getInstance().createRelationship(person.id, media.id, 'HAS');
 					}
 					if (person.idImage) {
-						const session = Neo4jSigmaGraph.getInstance().generateSession();
-						const idImageId = v4();
 						const idImagePath = window.files.upload(person.id, 'id', person.idImage.name, (await person.idImage.arrayBuffer()));
-						const idImageMedia = await MediaSchema.validate({
-							id: idImageId,
-							path: idImagePath,
-							name: person.idImage.name,
-							type: 'id',
-						});
-						await session.run(CreateMediaCypher, idImageMedia);
-						await Neo4jSigmaGraph.getInstance().createRelationship(person.id, idImageId, 'HAS');
+						const media = new Media();
+						media.setName(person.idImage.name);
+						media.setPath(idImagePath);
+						media.setType('id');
+						await mediaRepository.create(media);
+						await Neo4jSigmaGraph.getInstance().createRelationship(person.id, media.id, 'HAS');
 					}
 					if (person.passportImage) {
-						const session = Neo4jSigmaGraph.getInstance().generateSession();
-						const passportImageId = v4();
 						const passportImagePath = window.files.upload(person.id, 'passport', person.passportImage.name, (await person.passportImage.arrayBuffer()));
-						const passportImageMedia = await MediaSchema.validate({
-							id: passportImageId,
-							path: passportImagePath,
-							name: person.passportImage.name,
-							type: 'passport',
-						});
-						await session.run(CreateMediaCypher, passportImageMedia);
-						await Neo4jSigmaGraph.getInstance().createRelationship(person.id, passportImageId, 'HAS');
+						const media = new Media();
+						media.setName(person.passportImage.name);
+						media.setPath(passportImagePath);
+						media.setType('passport');
+						await mediaRepository.create(media);
+						await Neo4jSigmaGraph.getInstance().createRelationship(person.id, media.id, 'HAS');
 					}
 					if (person.attachments.length > 0) {
 						for (const attachment of person.attachments) {
-							const session = Neo4jSigmaGraph.getInstance().generateSession();
-							const attachmentId = v4();
 							const attachmentPath = window.files.upload(person.id, 'attachment', attachment.name, (await attachment.arrayBuffer()));
-							const attachmentMedia = await MediaSchema.validate({
-								id: attachmentId,
-								path: attachmentPath,
-								name: attachment.name,
-								type: 'attachment',
-							});
-							await session.run(CreateMediaCypher, attachmentMedia);
-							await Neo4jSigmaGraph.getInstance().createRelationship(person.id, attachmentId, 'HAS');
+							const media = new Media();
+							media.setName(attachment.name);
+							media.setPath(attachmentPath);
+							media.setType('attachment');
+							await mediaRepository.create(media);
+							await Neo4jSigmaGraph.getInstance().createRelationship(person.id, media.id, 'HAS');
 						}
 					}
 					onDone();
