@@ -4,6 +4,7 @@ import { Driver, Node, Path, Session, SessionMode } from "neo4j-driver";
 import { TFunction } from "react-i18next";
 import GroupsSvgIcon from './images/groups.svg';
 import PersonSvgIcon from './images/person.svg';
+import { Repository } from "./types";
 
 export type NodeType =
   'CATEGORY' |
@@ -60,6 +61,7 @@ export class Neo4jSigmaGraph {
     private _t: TFunction,
   ) {}
 
+  private _repositories: Map<NodeType, Repository<any, string>> = new Map();
   private _contextMenus: Map<NodeType, ContextMenuItem[]> = new Map();
   private _deleteCyphers: Map<NodeType, string> = new Map();
 
@@ -78,6 +80,9 @@ export class Neo4jSigmaGraph {
   getGraph = () => this._graph;
   setGraph = (graph: Graph) => this._graph = graph;
 
+  getRepository = (node: NodeType) => this._repositories.get(node);
+  setRepository = (node: NodeType, repository: Repository<any, string>) => this._repositories.set(node, repository);
+
   getContextMenu = (node: NodeType) => this._contextMenus.get(node);
   setContextMenu = (node: NodeType, contextMenu: ContextMenuItem[]) => this._contextMenus.set(node, contextMenu);
 
@@ -88,8 +93,9 @@ export class Neo4jSigmaGraph {
     source: string,
     target: string,
     type: RelationType,
+    _session?: Session,
   ): Promise<void> => {
-      const session = this.generateSession();
+      const session = _session ?? this.generateSession();
       await session.run(`
         MATCH (a { id: $source }), (b { id: $target })
         CREATE (a)-[:${type}]->(b)
