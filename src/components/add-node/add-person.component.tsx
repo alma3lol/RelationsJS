@@ -29,161 +29,52 @@ import AddIconDarkSvg from '../../images/add-dark.svg';
 import AddIconLightSvg from '../../images/add-light.svg';
 import { appContext } from "../../App";
 import { Neo4jSigmaGraph } from "../../neo4j-sigma-graph";
+import { Person } from "../../models";
+import { observer } from "mobx-react-lite";
 
 export type AddPersonProps = {
-	onFileNumberChange: (event: React.ChangeEvent<HTMLInputElement>) => void;
-	fileNumber: string;
-	onArabicNameChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
-	arabicName: string;
-	onEnglishNameChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
-	englishName: string;
-	onMotherNameChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
-	motherName: string;
-	onNicknameChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
-	nickname: string;
-	onImageChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
-	image: File | null;
-	onIdImageChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
-	idImage: File | null;
-	onPassportImageChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
-	passportImage: File | null;
-	onBirthDateChange: (birthdate: Date | null) => void;
-	birthDate: Date | null;
-	onBirthPlaceChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
-	birthPlace: string;
-	onPassportNumberChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
-	passportNumber: string;
-	onPassportIssuePlaceChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
-	passportIssuePlace: string;
-	onPassportIssueDateChange: (passportIssueDate: Date | null) => void;
-	passportIssueDate: Date | null;
-	onJobChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
-	job: string;
-	onIdNumberChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
-	idNumber: string;
-	onNationalNumberChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
-	nationalNumber: string;
-	onRegisterationNumberChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
-	registerationNumber: string;
-	onNationalityChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
-	nationality: string;
-	onAddressChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
-	address: string;
-	onGpsLocationChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
-	gpsLocation: string;
-	onWorkplaceChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
-	workplace: string;
-	onAttachmentsChange: (attachments: File[]) => void;
-	attachments: File[];
-	onPhoneChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
-	phone: string;
-	onEmailChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
-	email: string;
-	onRestrictionsChange: (restrictions: string[]) => void;
-	restrictions: string[];
-	onCategoryChange: (category: string) => void;
-	category: string;
-	onNotesChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
-	notes: string;
-	onExtraChange: (extra: string[]) => void;
-	extra: string[];
+	person: Person;
+	onSubmit: (e: React.FormEvent) => void;
 }
 
-export const AddPerson: React.FC<AddPersonProps> = ({
-	onFileNumberChange,
-	fileNumber,
-	onArabicNameChange,
-	arabicName,
-	onEnglishNameChange,
-	englishName,
-	onMotherNameChange,
-	motherName,
-	onNicknameChange,
-	nickname,
-	onImageChange,
-	image,
-	onIdImageChange,
-	idImage,
-	onPassportImageChange,
-	passportImage,
-	onBirthDateChange,
-	birthDate,
-	onBirthPlaceChange,
-	birthPlace,
-	onPassportNumberChange,
-	passportNumber,
-	onPassportIssuePlaceChange,
-	passportIssuePlace,
-	onPassportIssueDateChange,
-	passportIssueDate,
-	onJobChange,
-	job,
-	onIdNumberChange,
-	idNumber,
-	onNationalNumberChange,
-	nationalNumber,
-	onRegisterationNumberChange,
-	registerationNumber,
-	onNationalityChange,
-	nationality,
-	onAddressChange,
-	address,
-	onGpsLocationChange,
-	gpsLocation,
-	onWorkplaceChange,
-	workplace,
-	onAttachmentsChange,
-	attachments,
-	onPhoneChange,
-	phone,
-	onEmailChange,
-	email,
-	onRestrictionsChange,
-	restrictions,
-	onCategoryChange,
-	category,
-	onNotesChange,
-	notes,
-	onExtraChange,
-	extra,
-}) => {
+export const AddPerson = observer<AddPersonProps>(({ person }) => {
 	const { t } = useTranslation();
 	const { theme, language } = useContext(appContext);
 	const [expanded, setExpanded] = useState<'BASIC' | 'IDENTIFICATION' | 'IMPORTANT'>('BASIC');
 	const [newRestriction, setNewRestriction] = useState('');
 	const handleAddNewRestriction = useCallback(() => {
 		if (newRestriction) {
-			onRestrictionsChange(_.uniq(_.concat(restrictions, [newRestriction])));
+			person.setRestrictions(_.uniq(_.concat(person.restrictions, [newRestriction])));
 			setNewRestriction('')
 		}
-	}, [newRestriction, onRestrictionsChange, restrictions, setNewRestriction])
+	}, [newRestriction, person, setNewRestriction])
 	const handleChangeRestriction = useCallback((idx: number, newValue: string) => {
 		if (!newValue) {
 			handleDeleteRestriction(idx);
 			return;
 		}
-		onRestrictionsChange(restrictions.map((restriction, i) => idx === i ? newValue : restriction));
-	}, [restrictions, onRestrictionsChange]);
+		person.setRestrictions(person.restrictions.map((restriction, i) => idx === i ? newValue : restriction));
+	}, [person]);
 	const handleDeleteRestriction = useCallback((idx: number) => {
-		onRestrictionsChange(restrictions.filter((__, i) => idx !== i));
-	}, [restrictions, onRestrictionsChange]);
+		person.setRestrictions(person.restrictions.filter((__, i) => idx !== i));
+	}, [person]);
 	const [newExtra, setNewExtra] = useState('');
 	const handleAddNewExtra = useCallback(() => {
 		if (newExtra) {
-			onExtraChange(_.uniq(_.concat(extra, [newExtra])));
+			person.setExtra(_.uniq(_.concat(person.extra, [newExtra])));
 			setNewExtra('')
 		}
-	}, [newExtra, onExtraChange, extra, setNewExtra]);
+	}, [newExtra, person, setNewExtra]);
 	const handleChangeExtra = useCallback((idx: number, newValue: string) => {
 		if (!newValue) {
 			handleDeleteExtra(idx);
 			return;
 		}
-		onExtraChange(extra.map((extra, i) => idx === i ? newValue : extra));
-	}, [extra, onExtraChange]);
+		person.setExtra(person.extra.map((extra, i) => idx === i ? newValue : extra));
+	}, [person]);
 	const handleDeleteExtra = useCallback((idx: number) => {
-		onExtraChange(extra.filter((__, i) => idx !== i));
-	}, [extra, onExtraChange]);
+		person.setExtra(person.extra.filter((__, i) => idx !== i));
+	}, [person]);
 	const handleAddAttachments = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
 		if (e.currentTarget.files) {
 			const newFiles: File[] = []
@@ -191,12 +82,12 @@ export const AddPerson: React.FC<AddPersonProps> = ({
 				newFiles.push(e.currentTarget.files[i]);
 			}
 			e.currentTarget.files = null;
-			onAttachmentsChange(_.uniq(_.concat(attachments, newFiles)));
+			person.setAttachments(_.uniq(_.concat(person.attachments, newFiles)));
 		}
-	}, [attachments, onAttachmentsChange]);
+	}, [person]);
 	const handleDeleteAttachment = useCallback((idx: number) => {
-		onAttachmentsChange(attachments.filter((__, i) => i !== idx));
-	}, [attachments, onAttachmentsChange])
+		person.setAttachments(person.attachments.filter((__, i) => i !== idx));
+	}, [person])
 	const addAttachmentsInputRef = createRef<HTMLInputElement>();
 	const [categories, setCategories] = useState<{ id: string, label: string }[]>([]);
 	useEffect(() => {
@@ -216,8 +107,8 @@ export const AddPerson: React.FC<AddPersonProps> = ({
 							<Grid item xs={4}>
 								<TextField
 									label={t("add_node.inputs.person.file_number")}
-									value={fileNumber}
-									onChange={onFileNumberChange}
+									value={person.fileNumber}
+									onChange={e => person.setFileNumber(e.target.value)}
 									fullWidth
 									required
 								/>
@@ -225,8 +116,8 @@ export const AddPerson: React.FC<AddPersonProps> = ({
 							<Grid item xs={4}>
 								<TextField
 									label={t("add_node.inputs.person.arabic_name")}
-									value={arabicName}
-									onChange={onArabicNameChange}
+									value={person.arabicName}
+									onChange={e => person.setArabicName(e.target.value)}
 									fullWidth
 									dir='rtl'
 									required
@@ -235,8 +126,8 @@ export const AddPerson: React.FC<AddPersonProps> = ({
 							<Grid item xs={4}>
 								<TextField
 									label={t("add_node.inputs.person.english_name")}
-									value={englishName}
-									onChange={onEnglishNameChange}
+									value={person.englishName}
+									onChange={e => person.setEnglishName(e.target.value)}
 									fullWidth
 									dir='ltr'
 									required
@@ -248,8 +139,8 @@ export const AddPerson: React.FC<AddPersonProps> = ({
 							<Grid item xs={4}>
 								<TextField
 									label={t("add_node.inputs.person.mother_name")}
-									value={motherName}
-									onChange={onMotherNameChange}
+									value={person.motherName}
+									onChange={e => person.setMotherName(e.target.value)}
 									fullWidth
 									required
 								/>
@@ -257,8 +148,8 @@ export const AddPerson: React.FC<AddPersonProps> = ({
 							<Grid item xs={4}>
 								<TextField
 									label={t("add_node.inputs.person.nationality")}
-									value={nationality}
-									onChange={onNationalityChange}
+									value={person.nationality}
+									onChange={e => person.setNationality(e.target.value)}
 									fullWidth
 									required
 								/>
@@ -266,8 +157,8 @@ export const AddPerson: React.FC<AddPersonProps> = ({
 							<Grid item xs={4}>
 								<Autocomplete
 									options={categories}
-									onChange={(__, value) => onCategoryChange(value?.id ?? '')}
-									value={categories.find(cat => cat.id === category)}
+									onChange={(__, value) => person.setCategory(value?.id ?? '')}
+									value={categories.find(cat => cat.id === person.category)}
 									noOptionsText={t('add_node.inputs.person.no_categories')}
 									renderInput={params => (
 										<TextField
@@ -281,16 +172,16 @@ export const AddPerson: React.FC<AddPersonProps> = ({
 							<Grid item xs={4}>
 								<TextField
 									label={t("add_node.inputs.person.nickname")}
-									value={nickname}
-									onChange={onNicknameChange}
+									value={person.nickname}
+									onChange={e => person.setNickname(e.target.value)}
 									fullWidth
 								/>
 							</Grid>
 							<Grid item xs={4}>
 								<TextField
 									label={t("add_node.inputs.person.birthdate")}
-									value={birthDate}
-									onChange={e => onBirthDateChange(e.target.value ? new Date(e.target.value) : null)}
+									value={person.birthDate}
+									onChange={e => person.setBirthDate(new Date(e.target.value))}
 									fullWidth
 									type='date'
 									InputLabelProps={{
@@ -301,32 +192,32 @@ export const AddPerson: React.FC<AddPersonProps> = ({
 							<Grid item xs={4}>
 								<TextField
 									label={t("add_node.inputs.person.birth_place")}
-									value={birthPlace}
-									onChange={onBirthPlaceChange}
+									value={person.birthPlace}
+									onChange={e => person.setBirthPlace((e.target.value))}
 									fullWidth
 								/>
 							</Grid>
 							<Grid item xs={4}>
 								<TextField
 									label={t("add_node.inputs.person.job")}
-									value={job}
-									onChange={onJobChange}
+									value={person.job}
+									onChange={e => person.setJob((e.target.value))}
 									fullWidth
 								/>
 							</Grid>
 							<Grid item xs={4}>
 								<TextField
 									label={t("add_node.inputs.person.phone")}
-									value={phone}
-									onChange={onPhoneChange}
+									value={person.phone}
+									onChange={e => person.setPhone((e.target.value))}
 									fullWidth
 								/>
 							</Grid>
 							<Grid item xs={4}>
 								<TextField
 									label={t("add_node.inputs.person.email")}
-									value={email}
-									onChange={onEmailChange}
+									value={person.email}
+									onChange={e => person.setEmail((e.target.value))}
 									fullWidth
 									inputMode='email'
 									dir='ltr'
@@ -338,24 +229,24 @@ export const AddPerson: React.FC<AddPersonProps> = ({
 							<Grid item xs={4}>
 								<TextField
 									label={t("add_node.inputs.person.workplace")}
-									value={workplace}
-									onChange={onWorkplaceChange}
+									value={person.workplace}
+									onChange={e => person.setWorkplace((e.target.value))}
 									fullWidth
 								/>
 							</Grid>
 							<Grid item xs={4}>
 								<TextField
 									label={t("add_node.inputs.person.address")}
-									value={address}
-									onChange={onAddressChange}
+									value={person.address}
+									onChange={e => person.setAddress((e.target.value))}
 									fullWidth
 								/>
 							</Grid>
 							<Grid item xs={4}>
 								<TextField
 									label={t("add_node.inputs.person.gps_location")}
-									value={gpsLocation}
-									onChange={onGpsLocationChange}
+									value={person.gpsLocation}
+									onChange={e => person.setGpsLocation((e.target.value))}
 									fullWidth
 									inputProps={{
 										pattern: '\\d+\\.\\d+,\\s?\\d+\\.\\d+'
@@ -373,58 +264,58 @@ export const AddPerson: React.FC<AddPersonProps> = ({
 						<Grid container spacing={2}>
 							<Grid item xs={4}>
 								<Card>
-									<CardMedia height='400' component='img' image={image ? URL.createObjectURL(image) : ''} />
+									<CardMedia height='400' component='img' image={person.image ? URL.createObjectURL(person.image) : ''} />
 									<CardContent>
 										<Typography variant='h5' gutterBottom component='div'>{t("add_node.inputs.person.image")}</Typography>
 									</CardContent>
 									<CardActions>
-										<Button component='label' variant='contained'>{t('add_node.inputs.choose_file')}<input accept='image/*' hidden type='file' onChange={onImageChange} /></Button>
+										<Button component='label' variant='contained'>{t('add_node.inputs.choose_file')}<input accept='image/*' hidden type='file' onChange={e => person.setImage(e.target.files ? e.target.files[0] : null)} /></Button>
 									</CardActions>
 								</Card>
 							</Grid>
 							<Grid item xs={4}>
 								<Card>
-									<CardMedia height='400' component='img' image={idImage ? URL.createObjectURL(idImage) : ''} />
+									<CardMedia height='400' component='img' image={person.idImage ? URL.createObjectURL(person.idImage) : ''} />
 									<CardContent>
 										<Typography variant='h5' gutterBottom component='div'>{t("add_node.inputs.person.id_image")}</Typography>
 									</CardContent>
 									<CardActions>
-										<Button component='label' variant='contained'>{t('add_node.inputs.choose_file')}<input accept='image/*' hidden type='file' onChange={onIdImageChange} /></Button>
+										<Button component='label' variant='contained'>{t('add_node.inputs.choose_file')}<input accept='image/*' hidden type='file' onChange={e => person.setIdImage(e.target.files ? e.target.files[0] : null)} /></Button>
 									</CardActions>
 								</Card>
 							</Grid>
 							<Grid item xs={4}>
 								<Card>
-									<CardMedia height='400' component='img' image={passportImage ? URL.createObjectURL(passportImage) : ''} />
+									<CardMedia height='400' component='img' image={person.passportImage ? URL.createObjectURL(person.passportImage) : ''} />
 									<CardContent>
 										<Typography variant='h5' gutterBottom component='div'>{t("add_node.inputs.person.passport_image")}</Typography>
 									</CardContent>
 									<CardActions>
-										<Button component='label' variant='contained'>{t('add_node.inputs.choose_file')}<input accept='image/*' hidden type='file' onChange={onPassportImageChange} /></Button>
+<Button component='label' variant='contained'>{t('add_node.inputs.choose_file')}<input accept='image/*' hidden type='file' onChange={e => person.setPassportImage(e.target.files ? e.target.files[0] : null)} /></Button>
 									</CardActions>
 								</Card>
 							</Grid>
 							<Grid item xs={4}>
 								<TextField
 									label={t("add_node.inputs.person.passport_number")}
-									value={passportNumber}
-									onChange={onPassportNumberChange}
+									value={person.passportNumber}
+									onChange={e => person.setPassportNumber((e.target.value))}
 									fullWidth
 								/>
 							</Grid>
 							<Grid item xs={4}>
 								<TextField
 									label={t("add_node.inputs.person.passport_issue_place")}
-									value={passportIssuePlace}
-									onChange={onPassportIssuePlaceChange}
+									value={person.passportIssuePlace}
+									onChange={e => person.setPassportIssuePlace((e.target.value))}
 									fullWidth
 								/>
 							</Grid>
 							<Grid item xs={4}>
 								<TextField
 									label={t("add_node.inputs.person.passport_issue_date")}
-									value={passportIssueDate}
-									onChange={e => onPassportIssueDateChange(e.target.value ? new Date(e.target.value) : null)}
+									value={person.passportIssueDate}
+									onChange={e => person.setPassportIssueDate(new Date(e.target.value))}
 									fullWidth
 									type='date'
 									InputLabelProps={{ shrink: true }}
@@ -433,16 +324,16 @@ export const AddPerson: React.FC<AddPersonProps> = ({
 							<Grid item xs={4}>
 								<TextField
 									label={t("add_node.inputs.person.id_number")}
-									value={idNumber}
-									onChange={onIdNumberChange}
+									value={person.idNumber}
+									onChange={e => person.setIdNumber((e.target.value))}
 									fullWidth
 								/>
 							</Grid>
 							<Grid item xs={4}>
 								<TextField
 									label={t("add_node.inputs.person.national_number")}
-									value={nationalNumber}
-									onChange={onNationalNumberChange}
+									value={person.nationalNumber}
+									onChange={e => person.setNationalNumber((e.target.value))}
 									fullWidth
 									inputProps={{
 										pattern: '[12](19|20)[0-9]{2}\\d{7}',
@@ -452,8 +343,8 @@ export const AddPerson: React.FC<AddPersonProps> = ({
 							<Grid item xs={4}>
 								<TextField
 									label={t("add_node.inputs.person.registeration_number")}
-									value={registerationNumber}
-									onChange={onRegisterationNumberChange}
+									value={person.registerationNumber}
+									onChange={e => person.setRegisterationNumber((e.target.value))}
 									fullWidth
 								/>
 							</Grid>
@@ -468,7 +359,7 @@ export const AddPerson: React.FC<AddPersonProps> = ({
 						<Grid container spacing={2}>
 							<Grid item xs={12}>
 								<List sx={{ bgcolor: 'background.paper' }} dense subheader={<ListSubheader>{t("add_node.inputs.person.restrictions")}</ListSubheader>}>
-									{restrictions.map((restriction, idx) => (
+									{person.restrictions.map((restriction, idx) => (
 										<ListItem key={idx}
 											secondaryAction={<IconButton edge='end' onClick={() => handleDeleteRestriction(idx)}><DeleteIcon /></IconButton>}>
 											<TextField fullWidth value={restriction} onChange={e => handleChangeRestriction(idx, e.currentTarget.value)} />
@@ -481,7 +372,7 @@ export const AddPerson: React.FC<AddPersonProps> = ({
 								</List>
 							</Grid>
 							<Grid item xs={12} container spacing={2}>
-								{attachments.map((attachment, idx) => (
+								{person.attachments.map((attachment, idx) => (
 									<Grid item xs={4} key={idx}>
 										<Card>
 											<CardMedia height='400' component='img' image={URL.createObjectURL(attachment)} />
@@ -504,8 +395,8 @@ export const AddPerson: React.FC<AddPersonProps> = ({
 							<Grid item xs={12}>
 								<TextField
 									label={t("add_node.inputs.person.notes")}
-									value={notes}
-									onChange={onNotesChange}
+									value={person.notes}
+									onChange={e => person.setNotes((e.target.value))}
 									fullWidth
 									multiline
 									rows={5}
@@ -513,7 +404,7 @@ export const AddPerson: React.FC<AddPersonProps> = ({
 							</Grid>
 							<Grid item xs={12}>
 								<List sx={{ bgcolor: 'background.paper' }} dense subheader={<ListSubheader>{t("add_node.inputs.person.extra")}</ListSubheader>}>
-									{extra.map((extr, idx) => (
+									{person.extra.map((extr, idx) => (
 										<ListItem key={idx}
 											secondaryAction={<IconButton edge='end' onClick={() => handleDeleteExtra(idx)}><DeleteIcon /></IconButton>}>
 											<TextField fullWidth value={extr} onChange={e => handleChangeExtra(idx, e.currentTarget.value)} />
@@ -535,4 +426,4 @@ export const AddPerson: React.FC<AddPersonProps> = ({
 			</Grid>
 		</Grid>
 	)
-}
+});
