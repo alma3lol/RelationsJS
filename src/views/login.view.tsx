@@ -26,7 +26,8 @@ import { ThemeModeSwitch } from '../components';
 import { useTranslation } from 'react-i18next';
 import { Neo4jSigmaGraph } from '../neo4j-sigma-graph';
 import Graph from 'graphology';
-import { useCategoryContextMenu, usePersonContextMenu, useMediaContextMenu, DeletePersonCypher, DeleteCategoryCypher, DeleteMediaCypher } from '../models';
+import { useCategoryContextMenu, usePersonContextMenu, useMediaContextMenu, DeletePersonCypher, DeleteMediaCypher } from '../models';
+import { CategoryRepository } from '../repositories';
 
 const useStyles = makeStyles<DefaultTheme, { mode: 'dark' | 'light' }>({
   input: {
@@ -75,10 +76,10 @@ export const LoginView = () => {
       setDriver(drv);
       setLoading(false);
       Neo4jSigmaGraph.init(new Graph(), drv, { database }, t);
+      Neo4jSigmaGraph.getInstance().setRepository('CATEGORY', new CategoryRepository(drv, { database }));
       Neo4jSigmaGraph.getInstance().setContextMenu('CATEGORY', categoryContextMenu);
       Neo4jSigmaGraph.getInstance().setContextMenu('PERSON', personContextMenu);
       Neo4jSigmaGraph.getInstance().setContextMenu('MEDIA', mediaContextMenu);
-      Neo4jSigmaGraph.getInstance().setDeleteCypher('CATEGORY', DeleteCategoryCypher);
       Neo4jSigmaGraph.getInstance().setDeleteCypher('PERSON', DeletePersonCypher);
       Neo4jSigmaGraph.getInstance().setDeleteCypher('MEDIA', DeleteMediaCypher);
       setConnected(true);
