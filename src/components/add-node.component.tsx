@@ -11,7 +11,7 @@ import { useTranslation } from "react-i18next";
 import { AddCategory, AddPerson } from "./add-node";
 import { v4 } from "uuid";
 import useHotkeys from "@reecelucas/react-use-hotkeys";
-import { CategorySchema, PersonSchema, CreatePersonCypher, CreateCategoryCypher, MediaSchema, CreateMediaCypher } from "../models";
+import { PersonSchema, CreatePersonCypher, MediaSchema, CreateMediaCypher, Category } from "../models";
 import { ValidationError } from "yup";
 import { useSnackbar } from "notistack";
 
@@ -58,7 +58,6 @@ export const AddNode: FC<AddNodeProps> = ({ show, close, onDone: onDoneParent })
 		onDoneParent();
 		handleClose();
 	}
-	const [categoryName, setCategoryName] = useState('');
 	const [fileNumber, setFileNumber] = useState('');
 	const [arabicName, setArabicName] = useState('');
 	const [englishName, setEnglishName] = useState('');
@@ -87,24 +86,22 @@ export const AddNode: FC<AddNodeProps> = ({ show, close, onDone: onDoneParent })
 	const [notes, setNotes] = useState('');
 	const [extra, setExtra] = useState<string[]>([]);
 	const [email, setEmail] = useState('');
+	const categoryModel = new Category();
 	const handleOnSubmit = async (e: FormEvent) => {
 		e.preventDefault();
+		if (nodeType === null) return;
 		const session = Neo4jSigmaGraph.getInstance().generateSession();
 		const id = v4();
+		const repository = Neo4jSigmaGraph.getInstance().getRepository(nodeType);
+		if (!repository) return;
 		switch(nodeType) {
 			case 'CATEGORY':
 				try {
-					const category = await CategorySchema.validate({ id, name: categoryName });
-					await session.run(CreateCategoryCypher, category);
-					await session.close();
+					await repository.create(categoryModel);
 					onDone();
 					enqueueSnackbar(t('add_node.success.category'), { variant: 'success' });
 				} catch (e) {
-					if (e  instanceof ValidationError) {
-						if (e.errors) {
-							enqueueSnackbar(e.errors.join('\n'), { variant: 'error' });
-						}
-					}
+					enqueueSnackbar((e as any).message, { variant: 'error' });
 				}
 				break;
 			case 'PERSON':
@@ -210,7 +207,6 @@ export const AddNode: FC<AddNodeProps> = ({ show, close, onDone: onDoneParent })
 	useEffect(() => {
 		setNodeType(null);
 		setHint(defaultHint);
-		setCategoryName('');
 		setFileNumber('');
 		setArabicName('');
 		setEnglishName('');
@@ -281,7 +277,7 @@ export const AddNode: FC<AddNodeProps> = ({ show, close, onDone: onDoneParent })
 						</Grid>
 						{nodeType !== null && <Divider variant='middle' className={classes.divider} />}
 						<Grid item container spacing={0}>
-							{nodeType === 'CATEGORY' && <AddCategory value={categoryName} onChange={e => setCategoryName(e.currentTarget.value ?? '')} onSubmit={handleOnSubmit} />}
+							{nodeType === 'CATEGORY' && <AddCategory category={categoryModel} onSubmit={handleOnSubmit} />}
 							{nodeType === 'PERSON' && <AddPerson
 								fileNumber={fileNumber}
 								onFileNumberChange={e => setFileNumber(e.currentTarget.value ?? '')}
