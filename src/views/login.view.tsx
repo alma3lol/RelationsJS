@@ -26,8 +26,8 @@ import { ThemeModeSwitch } from '../components';
 import { useTranslation } from 'react-i18next';
 import { Neo4jSigmaGraph } from '../neo4j-sigma-graph';
 import Graph from 'graphology';
-import { useCategoryContextMenu, usePersonContextMenu, useMediaContextMenu, DeleteMediaCypher } from '../models';
-import { CategoryRepository, PersonRepository } from '../repositories';
+import { useCategoryContextMenu, usePersonContextMenu, useMediaContextMenu } from '../models';
+import { CategoryRepository, MediaRepository, PersonRepository } from '../repositories';
 
 const useStyles = makeStyles<DefaultTheme, { mode: 'dark' | 'light' }>({
   input: {
@@ -78,10 +78,10 @@ export const LoginView = () => {
       Neo4jSigmaGraph.init(new Graph(), drv, { database }, t);
       Neo4jSigmaGraph.getInstance().setRepository('CATEGORY', new CategoryRepository(drv, { database }));
       Neo4jSigmaGraph.getInstance().setRepository('PERSON', new PersonRepository(drv, { database }));
+      Neo4jSigmaGraph.getInstance().setRepository('MEDIA', new MediaRepository(drv, { database }));
       Neo4jSigmaGraph.getInstance().setContextMenu('CATEGORY', categoryContextMenu);
       Neo4jSigmaGraph.getInstance().setContextMenu('PERSON', personContextMenu);
       Neo4jSigmaGraph.getInstance().setContextMenu('MEDIA', mediaContextMenu);
-      Neo4jSigmaGraph.getInstance().setDeleteCypher('MEDIA', DeleteMediaCypher);
       setConnected(true);
     } catch (err: any) {
       const typedError: Neo4jError = err || new Neo4jError('Invalid credentials', '403');
