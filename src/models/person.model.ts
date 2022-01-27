@@ -1,8 +1,3 @@
-import { ContextMenuItem } from '../neo4j-sigma-graph';
-import {
-	Edit as EditIcon,
-} from '@mui/icons-material';
-import { useTranslation } from 'react-i18next';
 import { v4 } from 'uuid';
 import { makeAutoObservable } from 'mobx';
 
@@ -68,11 +63,4 @@ export class Person {
 	setImage = (value: File | null) => this.image = value;
 	setIdImage = (value: File | null) => this.idImage = value;
 	setPassportImage = (value: File | null) => this.passportImage = value;
-}
-
-export const usePersonContextMenu = (): ContextMenuItem[] => {
-	const { t } = useTranslation();
-	const menu: ContextMenuItem[] = [];
-	menu.push([<EditIcon />, t('context_menu.person.edit'), id => { console.log('edit', id); }]);
-	return menu;
 }
