@@ -26,7 +26,7 @@ import { ThemeModeSwitch } from '../components';
 import { useTranslation } from 'react-i18next';
 import { Neo4jSigmaGraph } from '../neo4j-sigma-graph';
 import Graph from 'graphology';
-import { CategoryRepository, MediaRepository, PersonRepository } from '../repositories';
+import { CategoryRepository, MediaRepository, NationalityRepository, PersonRepository } from '../repositories';
 import { useCategoryContextMenu, useMediaContextMenu, usePersonContextMenu } from '../menus';
 
 const useStyles = makeStyles<DefaultTheme, { mode: 'dark' | 'light' }>({
@@ -76,9 +76,14 @@ export const LoginView = () => {
       setDriver(drv);
       setLoading(false);
       Neo4jSigmaGraph.init(new Graph(), drv, { database }, t);
-      Neo4jSigmaGraph.getInstance().setRepository('CATEGORY', new CategoryRepository(drv, { database }));
-      Neo4jSigmaGraph.getInstance().setRepository('PERSON', new PersonRepository(drv, { database }));
-      Neo4jSigmaGraph.getInstance().setRepository('MEDIA', new MediaRepository(drv, { database }));
+      const categoryRepo = new CategoryRepository(drv, { database });
+      const mediaRepo = new MediaRepository(drv, { database });
+      const nationalityRepo = new NationalityRepository(drv, { database });
+      const personRepo = new PersonRepository(drv, { database }, categoryRepo, mediaRepo, nationalityRepo);
+      Neo4jSigmaGraph.getInstance().setRepository('CATEGORY', categoryRepo);
+      Neo4jSigmaGraph.getInstance().setRepository('PERSON', personRepo);
+      Neo4jSigmaGraph.getInstance().setRepository('MEDIA', mediaRepo);
+      Neo4jSigmaGraph.getInstance().setRepository('NATIONALITY', nationalityRepo);
       Neo4jSigmaGraph.getInstance().setContextMenu('CATEGORY', categoryContextMenu);
       Neo4jSigmaGraph.getInstance().setContextMenu('PERSON', personContextMenu);
       Neo4jSigmaGraph.getInstance().setContextMenu('MEDIA', mediaContextMenu);
