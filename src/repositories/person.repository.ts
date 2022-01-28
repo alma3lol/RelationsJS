@@ -1,7 +1,16 @@
-import { Person } from "../models";
+import { Driver } from "neo4j-driver";
+import { Category, Media, Nationality, Person } from "../models";
+import { SessionOptions } from "../neo4j-sigma-graph";
 import { Repository } from "../types";
 
 export class PersonRepository extends Repository<Person, string> {
+    constructor(
+        driver: Driver,
+        sessionOptions: SessionOptions,
+        private readonly categoryRepository: Repository<Category, string>,
+        private readonly mediaRepository: Repository<Media, string>,
+        private readonly nationalityRepository: Repository<Nationality, string>,
+    ) { super(driver, sessionOptions); }
     create = async (person: Person) => {
         const session = this.generateSession();
         await session.run(`
