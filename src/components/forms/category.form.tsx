@@ -23,4 +23,4 @@ export const CategoryForm = observer<CategoryFormProps>(({ category, onSubmit })
 			}}
 		/>
 	)
-})
+});
