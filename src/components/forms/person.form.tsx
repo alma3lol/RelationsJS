@@ -32,12 +32,12 @@ import { Neo4jSigmaGraph } from "../../neo4j-sigma-graph";
 import { Person } from "../../models";
 import { observer } from "mobx-react-lite";
 
-export type AddPersonProps = {
+export type PersonFormProps = {
 	person: Person;
 	onSubmit: (e: React.FormEvent) => void;
 }
 
-export const AddPerson = observer<AddPersonProps>(({ person }) => {
+export const PersonForm = observer<PersonFormProps>(({ person }) => {
 	const { t } = useTranslation();
 	const { theme, language } = useContext(appContext);
 	const [expanded, setExpanded] = useState<'BASIC' | 'IDENTIFICATION' | 'IMPORTANT'>('BASIC');
@@ -101,12 +101,12 @@ export const AddPerson = observer<AddPersonProps>(({ person }) => {
 		<Grid item container spacing={1}>
 			<Grid item xs={12}>
 				<Accordion expanded={expanded === 'BASIC'} onChange={() => setExpanded(expanded === 'BASIC' ? 'IDENTIFICATION' : 'BASIC')}>
-					<AccordionSummary expandIcon={<ExpandMoreIcon />}>{t("add_node.sections.person.basic")}</AccordionSummary>
+					<AccordionSummary expandIcon={<ExpandMoreIcon />}>{t("forms.sections.person.basic")}</AccordionSummary>
 					<AccordionDetails>
 						<Grid container spacing={2}>
 							<Grid item xs={4}>
 								<TextField
-									label={t("add_node.inputs.person.file_number")}
+									label={t("forms.inputs.person.file_number")}
 									value={person.fileNumber}
 									onChange={e => person.setFileNumber(e.target.value)}
 									fullWidth
@@ -115,7 +115,7 @@ export const AddPerson = observer<AddPersonProps>(({ person }) => {
 							</Grid>
 							<Grid item xs={4}>
 								<TextField
-									label={t("add_node.inputs.person.arabic_name")}
+									label={t("forms.inputs.person.arabic_name")}
 									value={person.arabicName}
 									onChange={e => person.setArabicName(e.target.value)}
 									fullWidth
@@ -125,7 +125,7 @@ export const AddPerson = observer<AddPersonProps>(({ person }) => {
 							</Grid>
 							<Grid item xs={4}>
 								<TextField
-									label={t("add_node.inputs.person.english_name")}
+									label={t("forms.inputs.person.english_name")}
 									value={person.englishName}
 									onChange={e => person.setEnglishName(e.target.value)}
 									fullWidth
@@ -138,7 +138,7 @@ export const AddPerson = observer<AddPersonProps>(({ person }) => {
 							</Grid>
 							<Grid item xs={4}>
 								<TextField
-									label={t("add_node.inputs.person.mother_name")}
+									label={t("forms.inputs.person.mother_name")}
 									value={person.motherName}
 									onChange={e => person.setMotherName(e.target.value)}
 									fullWidth
@@ -147,7 +147,7 @@ export const AddPerson = observer<AddPersonProps>(({ person }) => {
 							</Grid>
 							<Grid item xs={4}>
 								<TextField
-									label={t("add_node.inputs.person.nationality")}
+									label={t("forms.inputs.person.nationality")}
 									value={person.nationality}
 									onChange={e => person.setNationality(e.target.value)}
 									fullWidth
@@ -159,11 +159,11 @@ export const AddPerson = observer<AddPersonProps>(({ person }) => {
 									options={categories}
 									onChange={(__, value) => person.setCategory(value?.id ?? '')}
 									value={categories.find(cat => cat.id === person.category)}
-									noOptionsText={t('add_node.inputs.person.no_categories')}
+									noOptionsText={t('forms.inputs.person.no_categories')}
 									renderInput={params => (
 										<TextField
 											{...params}
-											label={t("add_node.inputs.person.category")}
+											label={t("forms.inputs.person.category")}
 											fullWidth
 											required
 										/>)
@@ -171,7 +171,7 @@ export const AddPerson = observer<AddPersonProps>(({ person }) => {
 							</Grid>
 							<Grid item xs={4}>
 								<TextField
-									label={t("add_node.inputs.person.nickname")}
+									label={t("forms.inputs.person.nickname")}
 									value={person.nickname}
 									onChange={e => person.setNickname(e.target.value)}
 									fullWidth
@@ -179,7 +179,7 @@ export const AddPerson = observer<AddPersonProps>(({ person }) => {
 							</Grid>
 							<Grid item xs={4}>
 								<TextField
-									label={t("add_node.inputs.person.birthdate")}
+									label={t("forms.inputs.person.birthdate")}
 									value={person.birthDate}
 									onChange={e => person.setBirthDate(new Date(e.target.value))}
 									fullWidth
@@ -191,7 +191,7 @@ export const AddPerson = observer<AddPersonProps>(({ person }) => {
 							</Grid>
 							<Grid item xs={4}>
 								<TextField
-									label={t("add_node.inputs.person.birth_place")}
+									label={t("forms.inputs.person.birth_place")}
 									value={person.birthPlace}
 									onChange={e => person.setBirthPlace((e.target.value))}
 									fullWidth
@@ -199,7 +199,7 @@ export const AddPerson = observer<AddPersonProps>(({ person }) => {
 							</Grid>
 							<Grid item xs={4}>
 								<TextField
-									label={t("add_node.inputs.person.job")}
+									label={t("forms.inputs.person.job")}
 									value={person.job}
 									onChange={e => person.setJob((e.target.value))}
 									fullWidth
@@ -207,7 +207,7 @@ export const AddPerson = observer<AddPersonProps>(({ person }) => {
 							</Grid>
 							<Grid item xs={4}>
 								<TextField
-									label={t("add_node.inputs.person.phone")}
+									label={t("forms.inputs.person.phone")}
 									value={person.phone}
 									onChange={e => person.setPhone((e.target.value))}
 									fullWidth
@@ -215,7 +215,7 @@ export const AddPerson = observer<AddPersonProps>(({ person }) => {
 							</Grid>
 							<Grid item xs={4}>
 								<TextField
-									label={t("add_node.inputs.person.email")}
+									label={t("forms.inputs.person.email")}
 									value={person.email}
 									onChange={e => person.setEmail((e.target.value))}
 									fullWidth
@@ -228,7 +228,7 @@ export const AddPerson = observer<AddPersonProps>(({ person }) => {
 							</Grid>
 							<Grid item xs={4}>
 								<TextField
-									label={t("add_node.inputs.person.workplace")}
+									label={t("forms.inputs.person.workplace")}
 									value={person.workplace}
 									onChange={e => person.setWorkplace((e.target.value))}
 									fullWidth
@@ -236,7 +236,7 @@ export const AddPerson = observer<AddPersonProps>(({ person }) => {
 							</Grid>
 							<Grid item xs={4}>
 								<TextField
-									label={t("add_node.inputs.person.address")}
+									label={t("forms.inputs.person.address")}
 									value={person.address}
 									onChange={e => person.setAddress((e.target.value))}
 									fullWidth
@@ -244,7 +244,7 @@ export const AddPerson = observer<AddPersonProps>(({ person }) => {
 							</Grid>
 							<Grid item xs={4}>
 								<TextField
-									label={t("add_node.inputs.person.gps_location")}
+									label={t("forms.inputs.person.gps_location")}
 									value={person.gpsLocation}
 									onChange={e => person.setGpsLocation((e.target.value))}
 									fullWidth
@@ -259,17 +259,17 @@ export const AddPerson = observer<AddPersonProps>(({ person }) => {
 			</Grid>
 			<Grid item xs={12}>
 				<Accordion expanded={expanded === 'IDENTIFICATION'} onChange={() => setExpanded(expanded === 'IDENTIFICATION' ? 'IMPORTANT' : 'IDENTIFICATION')}>
-					<AccordionSummary expandIcon={<ExpandMoreIcon />}>{t("add_node.sections.person.identification")}</AccordionSummary>
+					<AccordionSummary expandIcon={<ExpandMoreIcon />}>{t("forms.sections.person.identification")}</AccordionSummary>
 					<AccordionDetails>
 						<Grid container spacing={2}>
 							<Grid item xs={4}>
 								<Card>
 									<CardMedia height='400' component='img' image={person.image ? URL.createObjectURL(person.image) : ''} />
 									<CardContent>
-										<Typography variant='h5' gutterBottom component='div'>{t("add_node.inputs.person.image")}</Typography>
+										<Typography variant='h5' gutterBottom component='div'>{t("forms.inputs.person.image")}</Typography>
 									</CardContent>
 									<CardActions>
-										<Button component='label' variant='contained'>{t('add_node.inputs.choose_file')}<input accept='image/*' hidden type='file' onChange={e => person.setImage(e.target.files ? e.target.files[0] : null)} /></Button>
+										<Button component='label' variant='contained'>{t('forms.inputs.choose_file')}<input accept='image/*' hidden type='file' onChange={e => person.setImage(e.target.files ? e.target.files[0] : null)} /></Button>
 									</CardActions>
 								</Card>
 							</Grid>
@@ -277,10 +277,10 @@ export const AddPerson = observer<AddPersonProps>(({ person }) => {
 								<Card>
 									<CardMedia height='400' component='img' image={person.idImage ? URL.createObjectURL(person.idImage) : ''} />
 									<CardContent>
-										<Typography variant='h5' gutterBottom component='div'>{t("add_node.inputs.person.id_image")}</Typography>
+										<Typography variant='h5' gutterBottom component='div'>{t("forms.inputs.person.id_image")}</Typography>
 									</CardContent>
 									<CardActions>
-										<Button component='label' variant='contained'>{t('add_node.inputs.choose_file')}<input accept='image/*' hidden type='file' onChange={e => person.setIdImage(e.target.files ? e.target.files[0] : null)} /></Button>
+										<Button component='label' variant='contained'>{t('forms.inputs.choose_file')}<input accept='image/*' hidden type='file' onChange={e => person.setIdImage(e.target.files ? e.target.files[0] : null)} /></Button>
 									</CardActions>
 								</Card>
 							</Grid>
@@ -288,16 +288,16 @@ export const AddPerson = observer<AddPersonProps>(({ person }) => {
 								<Card>
 									<CardMedia height='400' component='img' image={person.passportImage ? URL.createObjectURL(person.passportImage) : ''} />
 									<CardContent>
-										<Typography variant='h5' gutterBottom component='div'>{t("add_node.inputs.person.passport_image")}</Typography>
+										<Typography variant='h5' gutterBottom component='div'>{t("forms.inputs.person.passport_image")}</Typography>
 									</CardContent>
 									<CardActions>
-<Button component='label' variant='contained'>{t('add_node.inputs.choose_file')}<input accept='image/*' hidden type='file' onChange={e => person.setPassportImage(e.target.files ? e.target.files[0] : null)} /></Button>
+<Button component='label' variant='contained'>{t('forms.inputs.choose_file')}<input accept='image/*' hidden type='file' onChange={e => person.setPassportImage(e.target.files ? e.target.files[0] : null)} /></Button>
 									</CardActions>
 								</Card>
 							</Grid>
 							<Grid item xs={4}>
 								<TextField
-									label={t("add_node.inputs.person.passport_number")}
+									label={t("forms.inputs.person.passport_number")}
 									value={person.passportNumber}
 									onChange={e => person.setPassportNumber((e.target.value))}
 									fullWidth
@@ -305,7 +305,7 @@ export const AddPerson = observer<AddPersonProps>(({ person }) => {
 							</Grid>
 							<Grid item xs={4}>
 								<TextField
-									label={t("add_node.inputs.person.passport_issue_place")}
+									label={t("forms.inputs.person.passport_issue_place")}
 									value={person.passportIssuePlace}
 									onChange={e => person.setPassportIssuePlace((e.target.value))}
 									fullWidth
@@ -313,7 +313,7 @@ export const AddPerson = observer<AddPersonProps>(({ person }) => {
 							</Grid>
 							<Grid item xs={4}>
 								<TextField
-									label={t("add_node.inputs.person.passport_issue_date")}
+									label={t("forms.inputs.person.passport_issue_date")}
 									value={person.passportIssueDate}
 									onChange={e => person.setPassportIssueDate(new Date(e.target.value))}
 									fullWidth
@@ -323,7 +323,7 @@ export const AddPerson = observer<AddPersonProps>(({ person }) => {
 							</Grid>
 							<Grid item xs={4}>
 								<TextField
-									label={t("add_node.inputs.person.id_number")}
+									label={t("forms.inputs.person.id_number")}
 									value={person.idNumber}
 									onChange={e => person.setIdNumber((e.target.value))}
 									fullWidth
@@ -331,7 +331,7 @@ export const AddPerson = observer<AddPersonProps>(({ person }) => {
 							</Grid>
 							<Grid item xs={4}>
 								<TextField
-									label={t("add_node.inputs.person.national_number")}
+									label={t("forms.inputs.person.national_number")}
 									value={person.nationalNumber}
 									onChange={e => person.setNationalNumber((e.target.value))}
 									fullWidth
@@ -342,7 +342,7 @@ export const AddPerson = observer<AddPersonProps>(({ person }) => {
 							</Grid>
 							<Grid item xs={4}>
 								<TextField
-									label={t("add_node.inputs.person.registeration_number")}
+									label={t("forms.inputs.person.registeration_number")}
 									value={person.registerationNumber}
 									onChange={e => person.setRegisterationNumber((e.target.value))}
 									fullWidth
@@ -354,11 +354,11 @@ export const AddPerson = observer<AddPersonProps>(({ person }) => {
 			</Grid>
 			<Grid item xs={12}>
 				<Accordion expanded={expanded === 'IMPORTANT'} onChange={() => setExpanded(expanded === 'IMPORTANT' ? 'BASIC' : 'IMPORTANT')}>
-					<AccordionSummary expandIcon={<ExpandMoreIcon />}>{t("add_node.sections.person.important")}</AccordionSummary>
+					<AccordionSummary expandIcon={<ExpandMoreIcon />}>{t("forms.sections.person.important")}</AccordionSummary>
 					<AccordionDetails>
 						<Grid container spacing={2}>
 							<Grid item xs={12}>
-								<List sx={{ bgcolor: 'background.paper' }} dense subheader={<ListSubheader>{t("add_node.inputs.person.restrictions")}</ListSubheader>}>
+								<List sx={{ bgcolor: 'background.paper' }} dense subheader={<ListSubheader>{t("forms.inputs.person.restrictions")}</ListSubheader>}>
 									{person.restrictions.map((restriction, idx) => (
 										<ListItem key={idx}
 											secondaryAction={<IconButton edge='end' onClick={() => handleDeleteRestriction(idx)}><DeleteIcon /></IconButton>}>
@@ -377,7 +377,7 @@ export const AddPerson = observer<AddPersonProps>(({ person }) => {
 										<Card>
 											<CardMedia height='400' component='img' image={URL.createObjectURL(attachment)} />
 											<CardActions>
-												<Button component='label' fullWidth color='error' variant='contained' onClick={() => handleDeleteAttachment(idx)}>{t('add_node.inputs.delete_file')}</Button>
+												<Button component='label' fullWidth color='error' variant='contained' onClick={() => handleDeleteAttachment(idx)}>{t('forms.inputs.delete_file')}</Button>
 											</CardActions>
 										</Card>
 									</Grid>
@@ -387,14 +387,14 @@ export const AddPerson = observer<AddPersonProps>(({ person }) => {
 										<CardActionArea onClick={() => addAttachmentsInputRef.current?.click()}>
 											<input ref={addAttachmentsInputRef} multiple accept='*' hidden type='file' onChange={handleAddAttachments} />
 											<CardMedia height='420' component='img' image={theme.palette.mode === 'light' ? AddIconDarkSvg: AddIconLightSvg} />
-											<Typography variant='h6' textAlign='center'>{t('add_node.inputs.person.choose_attachments')}</Typography>
+											<Typography variant='h6' textAlign='center'>{t('forms.inputs.person.choose_attachments')}</Typography>
 										</CardActionArea>
 									</Card>
 								</Grid>
 							</Grid>
 							<Grid item xs={12}>
 								<TextField
-									label={t("add_node.inputs.person.notes")}
+									label={t("forms.inputs.person.notes")}
 									value={person.notes}
 									onChange={e => person.setNotes((e.target.value))}
 									fullWidth
@@ -403,7 +403,7 @@ export const AddPerson = observer<AddPersonProps>(({ person }) => {
 								/>
 							</Grid>
 							<Grid item xs={12}>
-								<List sx={{ bgcolor: 'background.paper' }} dense subheader={<ListSubheader>{t("add_node.inputs.person.extra")}</ListSubheader>}>
+								<List sx={{ bgcolor: 'background.paper' }} dense subheader={<ListSubheader>{t("forms.inputs.person.extra")}</ListSubheader>}>
 									{person.extra.map((extr, idx) => (
 										<ListItem key={idx}
 											secondaryAction={<IconButton edge='end' onClick={() => handleDeleteExtra(idx)}><DeleteIcon /></IconButton>}>
