@@ -43,10 +43,10 @@ export const AddNode: FC<AddNodeProps> = ({ show, close, onDone: onDoneParent })
 	const classes = useStyles();
 	const [nodeType, setNodeType] = useState<null | NodeType>(null);
 	const nodeTypes: [JSX.Element, string, NodeType, string][] = [
-		[<GroupsIcon />, t('add_node.type.category'), 'CATEGORY', t('add_node.hint.category')],
-		[<PersonIcon />, t('add_node.type.person'), 'PERSON', t('add_node.hint.person')],
+		[<GroupsIcon />, t('forms.type.category'), 'CATEGORY', t('forms.hint.category')],
+		[<PersonIcon />, t('forms.type.person'), 'PERSON', t('forms.hint.person')],
 	];
-	const defaultHint = t('add_node.hint.default');
+	const defaultHint = t('forms.hint.default');
 	const [hint, setHint] = useState(defaultHint);
 	const handleClose = () => {
 		setNodeType(null);
@@ -63,18 +63,14 @@ export const AddNode: FC<AddNodeProps> = ({ show, close, onDone: onDoneParent })
 		if (nodeType === null) return;
 		const repository = Neo4jSigmaGraph.getInstance().getRepository(nodeType);
 		if (!repository) return;
-		switch(nodeType) {
-			case 'CATEGORY':
-				try {
+		try {
+			switch(nodeType) {
+				case 'CATEGORY':
 					await repository.create(category);
 					onDone();
-					enqueueSnackbar(t('add_node.success.category'), { variant: 'success' });
-				} catch (e) {
-					enqueueSnackbar((e as any).message, { variant: 'error' });
-				}
-				break;
-			case 'PERSON':
-				try {
+					enqueueSnackbar(t('forms.success.category'), { variant: 'success' });
+					break;
+				case 'PERSON':
 					await repository.create(person);
 					await Neo4jSigmaGraph.getInstance().createRelationship(person.id, person.category, 'CATEGORIZED_AS');
 					const mediaRepository = Neo4jSigmaGraph.getInstance().getRepository('MEDIA');
@@ -118,15 +114,15 @@ export const AddNode: FC<AddNodeProps> = ({ show, close, onDone: onDoneParent })
 						}
 					}
 					onDone();
-					enqueueSnackbar(t('add_node.success.person'), { variant: 'success' });
-				} catch (e) {
-					if (Object.hasOwnProperty.call(e, 'message')) {
-						enqueueSnackbar((e as any).message, { variant: 'error' });
-					}
-				}
-				break;
-			default:
-				break;
+					enqueueSnackbar(t('forms.add_node.success.person'), { variant: 'success' });
+					break;
+				default:
+					break;
+			}
+		} catch (e) {
+			if (Object.hasOwnProperty.call(e, 'message')) {
+				enqueueSnackbar((e as any).message, { variant: 'error' });
+			}
 		}
 	}
 	useEffect(() => {
@@ -148,12 +144,12 @@ export const AddNode: FC<AddNodeProps> = ({ show, close, onDone: onDoneParent })
 	return (
 		<Dialog open={show} fullWidth maxWidth='lg'>
 			<form onSubmit={handleOnSubmit}>
-				<DialogTitle>{t('add_node.title')}</DialogTitle>
+				<DialogTitle>{t('forms.add_node.title')}</DialogTitle>
 				<DialogContent>
 					<Grid container spacing={2}>
 						<Grid item container spacing={1}>
 							<Grid item xs={12}>
-								<Typography variant='caption'>{t('add_node.caption')}</Typography>
+								<Typography variant='caption'>{t('forms.add_node.caption')}</Typography>
 							</Grid>
 							<Grid item container xs={12} spacing={1}>
 								{nodeTypes.map((node, idx) => (
@@ -174,15 +170,15 @@ export const AddNode: FC<AddNodeProps> = ({ show, close, onDone: onDoneParent })
 						</Grid>
 						{nodeType !== null && <Divider variant='middle' className={classes.divider} />}
 						<Grid item container spacing={0}>
-							{nodeType === 'CATEGORY' && <AddCategory category={category} onSubmit={handleOnSubmit} />}
-							{nodeType === 'PERSON' && <AddPerson person={person} onSubmit={handleOnSubmit} />}
+							{nodeType === 'CATEGORY' && <CategoryForm category={category} onSubmit={handleOnSubmit} />}
+							{nodeType === 'PERSON' && <PersonForm person={person} onSubmit={handleOnSubmit} />}
 						</Grid>
 					</Grid>
 				</DialogContent>
 				<DialogActions style={{ padding: theme.spacing(3), paddingTop: 0 }}>
-					<Grid style={{ flexGrow: 1, fontSize: 11, fontStyle: 'italic' }}>{hint}</Grid>
+					<Grid style={{ flexGrow: 1, fontSize: 16, fontStyle: 'italic' }}>{hint}</Grid>
 					<Button color='inherit' onClick={handleClose}>{t('cancel')}</Button>
-					<Button variant='contained' color='primary' disabled={nodeType === null} type='submit'>{t('add_node.action')}</Button>
+					<Button variant='contained' color='primary' disabled={nodeType === null} type='submit'>{t('forms.add_node.action')}</Button>
 				</DialogActions>
 			</form>
 		</Dialog>
