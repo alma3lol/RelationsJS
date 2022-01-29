@@ -14768,6 +14768,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"moment@npm:^2.29.1":
+  version: 2.29.1
+  resolution: "moment@npm:2.29.1"
+  checksum: 1e14d5f422a2687996be11dd2d50c8de3bd577c4a4ca79ba5d02c397242a933e5b941655de6c8cb90ac18f01cc4127e55b4a12ae3c527a6c0a274e455979345e
+  languageName: node
+  linkType: hard
+
 "moo@npm:^0.5.0":
   version: 0.5.1
   resolution: "moo@npm:0.5.1"
@@ -18525,6 +18532,7 @@ __metadata:
     lodash: ^4.17.21
     mobx: ^6.3.13
     mobx-react-lite: ^3.2.3
+    moment: ^2.29.1
     neo-forgery: ^2.0.0
     neo4j-driver: ^4.4.1
     notistack: ^2.0.3

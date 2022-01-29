@@ -38,6 +38,7 @@
     "lodash": "^4.17.21",
     "mobx": "^6.3.13",
     "mobx-react-lite": "^3.2.3",
+    "moment": "^2.29.1",
     "neo4j-driver": "^4.4.1",
     "notistack": "^2.0.3",
     "os": "^0.1.2",
