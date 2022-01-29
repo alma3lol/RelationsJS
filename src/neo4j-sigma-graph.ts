@@ -56,7 +56,7 @@ export class Neo4jSigmaGraph {
   private static _instance: Neo4jSigmaGraph;
   private constructor(
     private _graph: Graph,
-    private _connector: Connector,
+    public readonly connector: Connector,
     private _t: TFunction,
   ) {}
 
@@ -128,7 +128,7 @@ export class Neo4jSigmaGraph {
   }
 
   searchNodes = (query: string) => {
-    const session = this._connector.generateSession();
+    const session = this.connector.generateSession();
     if (!session) {
       return [];
     }
@@ -161,7 +161,7 @@ export class Neo4jSigmaGraph {
   }
 
   getNodesByLabel = async (label: NodeType, _session?: Session): Promise<Node[]> => {
-    const session = _session ?? this._connector.generateSession();
+    const session = _session ?? this.connector.generateSession();
     if (!session) return [];
     const result = await session.run(`MATCH (n:${_.capitalize(label.toLowerCase())}) RETURN n`);
     await session.close();
@@ -169,7 +169,7 @@ export class Neo4jSigmaGraph {
   }
 
   getNodeById = async (nodeId: string, _session?: Session): Promise<Node | undefined> => {
-    const session = _session ?? this._connector.generateSession();
+    const session = _session ?? this.connector.generateSession();
     if (!session) return undefined;
     const result = await session.run('MATCH (n { id: $nodeId }) RETURN n', { nodeId });
     await session.close();
@@ -177,7 +177,7 @@ export class Neo4jSigmaGraph {
   }
 
   getNodeRelations = async (nodeId: string, _session?: Session): Promise<Path[]> => {
-    const session = _session ?? this._connector.generateSession();
+    const session = _session ?? this.connector.generateSession();
     if (!session) return [];
     const result = await session.run('MATCH p = ({ id: $nodeId })-[r]-() WHERE NOT r:HAS_HANDSHAKE RETURN p', { nodeId });
     const relations: Path[] = result.records.map(record => record.toObject().p);
@@ -186,7 +186,7 @@ export class Neo4jSigmaGraph {
   }
 
   getNodesShortestPath = async (startNodeId: string, endNodeId: string, _session?: Session): Promise<Path[]> => {
-    const session = _session ?? this._connector.generateSession();
+    const session = _session ?? this.connector.generateSession();
     if (!session) return [];
     const paths = await session.run('MATCH p = shortestPath((n1 { id: $startNodeId })-[*]-(n2 { id: $endNodeId })) RETURN p', { startNodeId, endNodeId });
     return paths.records.map(record => record.toObject().p);
