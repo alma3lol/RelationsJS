@@ -62,7 +62,6 @@ export class Neo4jSigmaGraph {
 
   private _repositories: Map<NodeType, Repository<any, string>> = new Map();
   private _contextMenus: Map<NodeType, ContextMenuItem[]> = new Map();
-  private _deleteCyphers: Map<NodeType, string> = new Map();
 
   static init = (graph: Graph, connector: Connector, t: TFunction) => {
     if (this._instance) return;
@@ -82,23 +81,6 @@ export class Neo4jSigmaGraph {
 
   getContextMenu = (node: NodeType) => this._contextMenus.get(node);
   setContextMenu = (node: NodeType, contextMenu: ContextMenuItem[]) => this._contextMenus.set(node, contextMenu);
-
-  getDeleteCypher = (node: NodeType) => this._deleteCyphers.get(node);
-  setDeleteCypher = (node: NodeType, cypher: string) => this._deleteCyphers.set(node, cypher);
-
-  createRelationship = async (
-    source: string,
-    target: string,
-    type: RelationType,
-    _session?: Session,
-  ): Promise<void> => {
-      const session = _session ?? this._connector.generateSession();
-      await session.run(`
-        MATCH (a { id: $source }), (b { id: $target })
-        CREATE (a)-[:${type}]->(b)
-      `, { source, target });
-      await session.close();
-    }
 
   addNodeToGraph = (node: Node) => {
     const node_type = node.labels[0].toUpperCase() as NodeType;
