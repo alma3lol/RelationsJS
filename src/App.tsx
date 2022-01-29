@@ -3,7 +3,7 @@ import './i18nextConf';
 import { useEffect, useState, createContext } from 'react';
 import { HashRouter, Routes, Route } from 'react-router-dom';
 import { makeStyles } from '@mui/styles';
-import { Driver, Session } from 'neo4j-driver';
+import { Driver } from 'neo4j-driver';
 import { ThemeProvider } from '@emotion/react';
 import { createTheme, CssBaseline, Theme, ThemeOptions } from '@mui/material';
 import Sigma from 'sigma';
@@ -15,6 +15,7 @@ import { AuthRoute, RestrictedRoute } from './components';
 import { LoginView } from './views';
 import { DashboardView } from './views/dashboard.view';
 import { RTL } from './rtl-support';
+import { Neo4jSigmaGraph } from './neo4j-sigma-graph';
 
 export const createThemeOptions = (darkMode: boolean, language: string): ThemeOptions => ({
   direction: language === 'ar' ? 'rtl' : 'ltr',
@@ -55,8 +56,8 @@ export type AppContext = {
   theme: Theme
   autologin: boolean
   setAutologin: (autoLogin: boolean) => void
-  createDatabaseIndexesAndConstraints: (session: Session) => Promise<void>
-  dropDatabaseIndexesAndConstraints: (session: Session) => Promise<void>
+  createDatabaseIndexesAndConstraints: () => Promise<void>
+  dropDatabaseIndexesAndConstraints: () => Promise<void>
   search: string
   setSearch: (search: string) => void
   foundNode: string | null
@@ -188,40 +189,14 @@ const App = () => {
     theme,
     autologin,
     setAutologin,
-    createDatabaseIndexesAndConstraints: async (session: Session) => {
+    createDatabaseIndexesAndConstraints: async () => {
       try {
-        const txc = session.beginTransaction();
-        await txc.run('CREATE INDEX category_name IF NOT EXISTS FOR (n:Category) ON (n.name)');
-        await txc.run('CREATE INDEX person_arabicName IF NOT EXISTS FOR (n:Person) ON (n.arabicName)');
-        await txc.run('CREATE INDEX person_englishName IF NOT EXISTS FOR (n:Person) ON (n.englishName)');
-        await txc.run('CREATE INDEX person_motherName IF NOT EXISTS FOR (n:Person) ON (n.motherName)');
-        await txc.run('CREATE INDEX person_nickname IF NOT EXISTS FOR (n:Person) ON (n.nickname)');
-        await txc.run('CREATE INDEX person_address IF NOT EXISTS FOR (n:Person) ON (n.address)');
-        await txc.run('CREATE INDEX person_notes IF NOT EXISTS FOR (n:Person) ON (n.notes)');
-        await txc.run('CREATE INDEX nationality_name IF NOT EXISTS FOR (n:Nationality) ON (n.name)');
-        await txc.run('CREATE INDEX media_path IF NOT EXISTS FOR (n:Media) ON (n.path)');
-        await txc.run('CREATE INDEX media_name IF NOT EXISTS FOR (n:Media) ON (n.name)');
-        await txc.run('CREATE INDEX media_type IF NOT EXISTS FOR (n:Media) ON (n.type)');
-        await txc.commit();
-        await session.close();
+        await Neo4jSigmaGraph.getInstance().connector.up();
       } catch(__) {}
     },
-    dropDatabaseIndexesAndConstraints: async (session: Session) => {
+    dropDatabaseIndexesAndConstraints: async () => {
       try {
-        const txc = session.beginTransaction();
-        await txc.run('DROP INDEX category_name IF EXISTS');
-        await txc.run('DROP INDEX person_arabicName IF EXISTS');
-        await txc.run('DROP INDEX person_englishName IF EXISTS');
-        await txc.run('DROP INDEX person_motherName IF EXISTS');
-        await txc.run('DROP INDEX person_nickname IF EXISTS');
-        await txc.run('DROP INDEX person_address IF EXISTS');
-        await txc.run('DROP INDEX person_notes IF EXISTS');
-        await txc.run('DROP INDEX nationality_name IF EXISTS');
-        await txc.run('DROP INDEX media_path IF EXISTS');
-        await txc.run('DROP INDEX media_name IF EXISTS');
-        await txc.run('DROP INDEX media_type IF EXISTS');
-        await txc.commit();
-        await session.close();
+        await Neo4jSigmaGraph.getInstance().connector.down();
       } catch(__) {}
     },
     search,

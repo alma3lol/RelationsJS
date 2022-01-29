@@ -323,9 +323,7 @@ export const DashboardView = () => {
 		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [hoveredNode, setSigmaSettings, sigma, theme, mouseMove]);
 	useEffect(() => {
-		if (driver) {
-			createDatabaseIndexesAndConstraints(driver.session({ database }));
-		}
+		createDatabaseIndexesAndConstraints();
 		return () => {
 			sigma.getGraph().clear();
 			sigma.removeAllListeners('rightClickNode');

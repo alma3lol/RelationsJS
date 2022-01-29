@@ -121,8 +121,8 @@ export const Settings: FC<SettingsProps> = ({ show, close, onDone }) => {
 				const session = driver.session({ database });
 				await session.run('MATCH (n) OPTIONAL MATCH (n)-[r]-() DELETE r, n');
 				await session.close();
-				dropDatabaseIndexesAndConstraints(driver.session({ database }));
-				createDatabaseIndexesAndConstraints(driver.session({ database }));
+				dropDatabaseIndexesAndConstraints();
+				createDatabaseIndexesAndConstraints();
 				enqueueSnackbar('Database has been reset', { variant: 'info' });
 				setConfirmDatabaseReset('');
 				setWaitingResetDatabaseConfirmation(false);
