@@ -119,7 +119,7 @@ export const Settings: FC<SettingsProps> = ({ show, close, onDone }) => {
 		if (driver) {
 			try {
 				const session = driver.session({ database });
-				await session.run('MATCH (n) OPTIONAL MATCH (n)-[r]-() DELETE r, n');
+				await session.run('MATCH (n) DETACH DELETE n');
 				await session.close();
 				dropDatabaseIndexesAndConstraints();
 				createDatabaseIndexesAndConstraints();
