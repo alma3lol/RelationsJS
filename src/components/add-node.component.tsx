@@ -3,14 +3,15 @@ import { makeStyles } from "@mui/styles";
 import {
 	Groups as GroupsIcon,
 	Person as PersonIcon,
+	Flag as FlagIcon,
 } from "@mui/icons-material";
 import { FC, FormEvent, useContext, useEffect, useState } from "react";
 import { appContext } from "../App";
 import { Neo4jSigmaGraph, NodeType } from "../neo4j-sigma-graph";
 import { useTranslation } from "react-i18next";
-import { AddCategory, AddPerson } from "./add-node";
+import { CategoryForm, NationalityForm, PersonForm } from "./forms";
 import useHotkeys from "@reecelucas/react-use-hotkeys";
-import { Category, Media, Person } from "../models";
+import { Category, Media, Nationality, Person } from "../models";
 import { useSnackbar } from "notistack";
 
 export type AddNodeProps = {
@@ -45,6 +46,7 @@ export const AddNode: FC<AddNodeProps> = ({ show, close, onDone: onDoneParent })
 	const nodeTypes: [JSX.Element, string, NodeType, string][] = [
 		[<GroupsIcon />, t('forms.type.category'), 'CATEGORY', t('forms.hint.category')],
 		[<PersonIcon />, t('forms.type.person'), 'PERSON', t('forms.hint.person')],
+		[<FlagIcon />, t('forms.type.nationality'), 'NATIONALITY', t('forms.hint.nationality')],
 	];
 	const defaultHint = t('forms.hint.default');
 	const [hint, setHint] = useState(defaultHint);
@@ -58,67 +60,17 @@ export const AddNode: FC<AddNodeProps> = ({ show, close, onDone: onDoneParent })
 	}
 	const [category, setCategory] = useState(new Category());
 	const [person, setPerson] = useState(new Person());
+	const [nationality, setNationality] = useState(new Nationality());
 	const handleOnSubmit = async (e: FormEvent) => {
 		e.preventDefault();
 		if (nodeType === null) return;
 		const repository = Neo4jSigmaGraph.getInstance().getRepository(nodeType);
 		if (!repository) return;
+		const node = nodeType === 'CATEGORY' ? category : nodeType === 'PERSON' ? person : nodeType === 'NATIONALITY' ? nationality : {}
 		try {
-			switch(nodeType) {
-				case 'CATEGORY':
-					await repository.create(category);
-					onDone();
-					enqueueSnackbar(t('forms.success.category'), { variant: 'success' });
-					break;
-				case 'PERSON':
-					await repository.create(person);
-					await Neo4jSigmaGraph.getInstance().createRelationship(person.id, person.category, 'CATEGORIZED_AS');
-					const mediaRepository = Neo4jSigmaGraph.getInstance().getRepository('MEDIA');
-					if (!mediaRepository) return;
-					if (person.image) {
-						const imagePath = window.files.upload(person.id, 'avatar', person.image.name, (await person.image.arrayBuffer()));
-						const media = new Media();
-						media.setName(person.image.name);
-						media.setPath(imagePath);
-						media.setType('avatar');
-						await mediaRepository.create(media);
-						await Neo4jSigmaGraph.getInstance().createRelationship(person.id, media.id, 'HAS');
-					}
-					if (person.idImage) {
-						const idImagePath = window.files.upload(person.id, 'id', person.idImage.name, (await person.idImage.arrayBuffer()));
-						const media = new Media();
-						media.setName(person.idImage.name);
-						media.setPath(idImagePath);
-						media.setType('id');
-						await mediaRepository.create(media);
-						await Neo4jSigmaGraph.getInstance().createRelationship(person.id, media.id, 'HAS');
-					}
-					if (person.passportImage) {
-						const passportImagePath = window.files.upload(person.id, 'passport', person.passportImage.name, (await person.passportImage.arrayBuffer()));
-						const media = new Media();
-						media.setName(person.passportImage.name);
-						media.setPath(passportImagePath);
-						media.setType('passport');
-						await mediaRepository.create(media);
-						await Neo4jSigmaGraph.getInstance().createRelationship(person.id, media.id, 'HAS');
-					}
-					if (person.attachments.length > 0) {
-						for (const attachment of person.attachments) {
-							const attachmentPath = window.files.upload(person.id, 'attachment', attachment.name, (await attachment.arrayBuffer()));
-							const media = new Media();
-							media.setName(attachment.name);
-							media.setPath(attachmentPath);
-							media.setType('attachment');
-							await mediaRepository.create(media);
-							await Neo4jSigmaGraph.getInstance().createRelationship(person.id, media.id, 'HAS');
-						}
-					}
-					onDone();
-					enqueueSnackbar(t('forms.add_node.success.person'), { variant: 'success' });
-					break;
-				default:
-					break;
-			}
+			await repository.create(node);
+			onDone();
+			enqueueSnackbar(t(`forms.add_node.success.${nodeType.toLowerCase()}`), { variant: 'success' });
 		} catch (e) {
 			if (Object.hasOwnProperty.call(e, 'message')) {
 				enqueueSnackbar((e as any).message, { variant: 'error' });
@@ -130,6 +82,7 @@ export const AddNode: FC<AddNodeProps> = ({ show, close, onDone: onDoneParent })
 		setHint(defaultHint);
 		setCategory(new Category());
 		setPerson(new Person());
+		setNationality(new Nationality());
 	}, [show]);
 	useHotkeys(nodeTypes.map((__, i) => (i + 1).toString()), e => {
 		if (nodeType === null) {
@@ -172,6 +125,7 @@ export const AddNode: FC<AddNodeProps> = ({ show, close, onDone: onDoneParent })
 						<Grid item container spacing={0}>
 							{nodeType === 'CATEGORY' && <CategoryForm category={category} onSubmit={handleOnSubmit} />}
 							{nodeType === 'PERSON' && <PersonForm person={person} onSubmit={handleOnSubmit} />}
+							{nodeType === 'NATIONALITY' && <NationalityForm nationality={nationality} onSubmit={handleOnSubmit} />}
 						</Grid>
 					</Grid>
 				</DialogContent>
