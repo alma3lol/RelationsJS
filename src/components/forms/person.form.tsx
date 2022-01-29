@@ -32,6 +32,7 @@ import { appContext } from "../../App";
 import { Neo4jSigmaGraph } from "../../neo4j-sigma-graph";
 import { Person } from "../../models";
 import { observer } from "mobx-react-lite";
+import moment from "moment";
 
 export type PersonFormProps = {
 	person: Person;
@@ -102,6 +103,15 @@ export const PersonForm = observer<PersonFormProps>(({ person }) => {
 		});
 		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, []);
+	const handleDateChange = (property: 'birthDate' | 'passportIssueDate') => (e: React.ChangeEvent<HTMLInputElement>) => {
+		if (e.target.value === '') return;
+		if (property === 'birthDate') {
+			person.setBirthDate(moment(e.target.value).toDate());
+		} else {
+			person.setPassportIssueDate(moment(e.target.value).toDate());
+		}
+		console.log(person);
+	}
 	return (
 		<Grid item container spacing={1}>
 			<Grid item xs={12}>
@@ -209,8 +219,8 @@ export const PersonForm = observer<PersonFormProps>(({ person }) => {
 							<Grid item xs={4}>
 								<TextField
 									label={t("forms.inputs.person.birthdate")}
-									value={person.birthDate}
-									onChange={e => person.setBirthDate(new Date(e.target.value))}
+									value={moment(person.birthDate).format('YYYY-MM-DD')}
+									onChange={handleDateChange('birthDate')}
 									fullWidth
 									type='date'
 									InputLabelProps={{
@@ -343,8 +353,8 @@ export const PersonForm = observer<PersonFormProps>(({ person }) => {
 							<Grid item xs={4}>
 								<TextField
 									label={t("forms.inputs.person.passport_issue_date")}
-									value={person.passportIssueDate}
-									onChange={e => person.setPassportIssueDate(new Date(e.target.value))}
+									value={moment(person.passportIssueDate).format('YYYY-MM-DD')}
+									onChange={handleDateChange('passportIssueDate')}
 									fullWidth
 									type='date'
 									InputLabelProps={{ shrink: true }}

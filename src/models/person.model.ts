@@ -8,7 +8,7 @@ export class Person {
 	englishName = '';
 	motherName = '';
 	nickname = '';
-	birthDate = new Date();
+	birthDate: Date | null = null;
 	birthPlace = '';
 	job = '';
 	nationality = '';
@@ -19,7 +19,7 @@ export class Person {
 	address = '';
 	gpsLocation = '';
 	passportNumber = '';
-	passportIssueDate = new Date();
+	passportIssueDate: Date | null = null;
 	passportIssuePlace = '';
 	idNumber = '';
 	nationalNumber = '';
@@ -40,7 +40,7 @@ export class Person {
 	setEnglishName = (value: string) => this.englishName = value;
 	setMotherName = (value: string) => this.motherName = value;
 	setNickname = (value: string) => this.nickname = value;
-	setBirthDate = (value: Date) => this.birthDate = value;
+	setBirthDate = (value: Date | null) => this.birthDate = value;
 	setBirthPlace = (value: string) => this.birthPlace = value;
 	setJob = (value: string) => this.job = value;
 	setNationality = (value: string) => this.nationality = value;
@@ -51,7 +51,7 @@ export class Person {
 	setAddress = (value: string) => this.address = value;
 	setGpsLocation = (value: string) => this.gpsLocation = value;
 	setPassportNumber = (value: string) => this.passportNumber = value;
-	setPassportIssueDate = (value: Date) => this.passportIssueDate = value;
+	setPassportIssueDate = (value: Date | null) => this.passportIssueDate = value;
 	setPassportIssuePlace = (value: string) => this.passportIssuePlace = value;
 	setIdNumber = (value: string) => this.idNumber = value;
 	setNationalNumber = (value: string) => this.nationalNumber = value;

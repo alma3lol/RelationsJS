@@ -13,7 +13,7 @@ export class PersonRepository extends Repository<Person, string> {
     ) { super(driver, sessionOptions); }
     create = async (person: Person) => {
         let session = this.generateSession();
-        const UUIDv4RegexExp = /^[0-9a-fA-F]{8}\b-[0-9a-fA-F]{4}\b-[0-9a-fA-F]{4}\b-[0-9a-fA-F]{4}\b-[0-9a-fA-F]{12}$/gi;
+        const UUIDv4RegexExp = new RegExp(/^[0-9A-F]{8}-[0-9A-F]{4}-4[0-9A-F]{3}-[89AB][0-9A-F]{3}-[0-9A-F]{12}$/i);
         await session.run(`
             CREATE (p:Person {
                 id: $id,
@@ -47,7 +47,7 @@ export class PersonRepository extends Repository<Person, string> {
             englishName: person.englishName,
             motherName: person.motherName,
             nickname: person.nickname,
-            birthDate: person.birthDate.toISOString(),
+            birthDate: person.birthDate ? person.birthDate.toISOString() : null,
             birthPlace: person.birthPlace,
             job: person.job,
             phone: person.phone,
@@ -56,7 +56,7 @@ export class PersonRepository extends Repository<Person, string> {
             address: person.address,
             gpsLocation: person.gpsLocation,
             passportNumber: person.passportNumber,
-            passportIssueDate: person.passportIssueDate.toISOString(),
+            passportIssueDate: person.passportIssueDate ? person.passportIssueDate.toISOString() : null,
             passportIssuePlace: person.passportIssuePlace,
             idNumber: person.idNumber,
             nationalNumber: person.nationalNumber,
@@ -67,7 +67,7 @@ export class PersonRepository extends Repository<Person, string> {
         });
         await session.close();
         let category = new Category(person.category);
-        if (!UUIDv4RegexExp.test(person.category)) {
+        if (!person.category.match(UUIDv4RegexExp)) {
             category = new Category();
             category.setName(person.category);
             await this.categoryRepository.create(category);
@@ -83,7 +83,7 @@ export class PersonRepository extends Repository<Person, string> {
         });
         await session.close();
         let nationality = new Nationality(person.nationality)
-        if (!UUIDv4RegexExp.test(person.nationality)) {
+        if (!person.nationality.match(UUIDv4RegexExp)) {
             nationality = new Nationality();
             nationality.setName(person.nationality);
             await this.nationalityRepository.create(nationality);
@@ -276,7 +276,7 @@ export class PersonRepository extends Repository<Person, string> {
             englishName: person.englishName,
             motherName: person.motherName,
             nickname: person.nickname,
-            birthDate: person.birthDate.toISOString(),
+            birthDate: person.birthDate ? person.birthDate.toISOString() : null,
             birthPlace: person.birthPlace,
             job: person.job,
             nationality: person.nationality,
@@ -286,7 +286,7 @@ export class PersonRepository extends Repository<Person, string> {
             address: person.address,
             gpsLocation: person.gpsLocation,
             passportNumber: person.passportNumber,
-            passportIssueDate: person.passportIssueDate.toISOString(),
+            passportIssueDate: person.passportIssueDate ? person.passportIssueDate.toISOString() : null,
             passportIssuePlace: person.passportIssuePlace,
             idNumber: person.idNumber,
             nationalNumber: person.nationalNumber,
