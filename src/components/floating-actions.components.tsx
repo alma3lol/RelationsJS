@@ -392,7 +392,7 @@ export const FloatingActions: FC<FloatingActionsProps> = ({ showAddNode, showSet
 		<>
 			<Box className={classes.floatingActionsTop} display='grid' rowGap={2}>
 				<Tooltip placement='left' title={t('settings.title') as string}><Fab color='secondary' onClick={showSettings}><SettingsIcon /></Fab></Tooltip>
-				<Tooltip placement='left' title={t('add_node.title') as string}><Fab color='secondary' onClick={showAddNode}><AddIcon /></Fab></Tooltip>
+				<Tooltip placement='left' title={t('forms.add_node.title') as string}><Fab color='secondary' onClick={showAddNode}><AddIcon /></Fab></Tooltip>
 				<Tooltip placement='left' title={t('refresh') as string}><Fab color='secondary' onClick={() => refreshGraph()}><RefreshIcon /></Fab></Tooltip>
 				<Tooltip placement='left' title={t(`change_layout.${layoutMode}`) as string}><Fab color='secondary' onClick={() => setLayoutMode(layoutMode === 'RANDOM' ? 'CIRCULAR' : 'RANDOM')}>{layoutMode === 'CIRCULAR' ? <ShuffleIcon /> : <CircleSvg />}</Fab></Tooltip>
 				<Tooltip placement='left' title={t('import.title') as string}><Fab color='secondary' onClick={() => setShowImportDialog(true)}><UploadFileIcon /></Fab></Tooltip>
