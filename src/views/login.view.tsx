@@ -76,8 +76,8 @@ export const LoginView = () => {
       setUrl(url);
       setDriver(drv);
       setLoading(false);
-      Neo4jSigmaGraph.init(new Graph(), drv, { database }, t);
       const connector = new DbConnector(drv, { database });
+      Neo4jSigmaGraph.init(new Graph(), connector, t);
       const categoryRepo = new CategoryRepository(connector);
       const mediaRepo = new MediaRepository(connector);
       const nationalityRepo = new NationalityRepository(connector);
