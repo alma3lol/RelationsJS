@@ -16,6 +16,7 @@ import {
 	ListSubheader,
 	CardActionArea,
 	Autocomplete,
+    createFilterOptions,
 } from "@mui/material";
 import {
 	ExpandMore as ExpandMoreIcon,
@@ -90,10 +91,14 @@ export const PersonForm = observer<PersonFormProps>(({ person }) => {
 	}, [person])
 	const addAttachmentsInputRef = createRef<HTMLInputElement>();
 	const [categories, setCategories] = useState<{ id: string, label: string }[]>([]);
+	const [nationalities, setNationalities] = useState<{ id: string, label: string }[]>([]);
 	useEffect(() => {
 		const neo4jSigmaGraph = Neo4jSigmaGraph.getInstance();
 		neo4jSigmaGraph.getNodesByLabel('CATEGORY').then((nodes: any[]) => {
 			setCategories(nodes.map((node: any) => ({ id: node.properties.id, label: node.properties.name })));
+		});
+		neo4jSigmaGraph.getNodesByLabel('NATIONALITY').then((nodes: any[]) => {
+			setNationalities(nodes.map((node: any) => ({ id: node.properties.id, label: node.properties.name })));
 		});
 		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, []);
@@ -146,20 +151,44 @@ export const PersonForm = observer<PersonFormProps>(({ person }) => {
 								/>
 							</Grid>
 							<Grid item xs={4}>
-								<TextField
-									label={t("forms.inputs.person.nationality")}
-									value={person.nationality}
-									onChange={e => person.setNationality(e.target.value)}
-									fullWidth
-									required
-								/>
+								<Autocomplete
+									options={nationalities}
+									onChange={(__, value) => person.setNationality(value?.id ?? '')}
+									filterOptions={(options, params) => {
+										const filter = createFilterOptions<{ id: string, label: string }>();
+										const filtered = filter(options, params);
+										if (params.inputValue !== '' && !_.find(options, { id: params.inputValue })) {
+											filtered.push({ id: params.inputValue, label: t('forms.inputs.person.create_new_nationality', { name: params.inputValue }) });
+										}
+										return filtered;
+									}}
+									value={nationalities.find(nat => nat.id === person.nationality)}
+									noOptionsText={t('forms.inputs.person.no_nationalities')}
+									openOnFocus
+									renderInput={params => (
+										<TextField
+											{...params}
+											label={t("forms.inputs.person.nationality")}
+											fullWidth
+											required
+										/>)
+									} />
 							</Grid>
 							<Grid item xs={4}>
 								<Autocomplete
 									options={categories}
 									onChange={(__, value) => person.setCategory(value?.id ?? '')}
+									filterOptions={(options, params) => {
+										const filter = createFilterOptions<{ id: string, label: string }>();
+										const filtered = filter(options, params);
+										if (params.inputValue !== '' && !_.find(options, { id: params.inputValue })) {
+											filtered.push({ id: params.inputValue, label: t('forms.inputs.person.create_new_category', { name: params.inputValue }) });
+										}
+										return filtered;
+									}}
 									value={categories.find(cat => cat.id === person.category)}
 									noOptionsText={t('forms.inputs.person.no_categories')}
+									openOnFocus
 									renderInput={params => (
 										<TextField
 											{...params}
