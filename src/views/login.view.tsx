@@ -28,6 +28,7 @@ import { Neo4jSigmaGraph } from '../neo4j-sigma-graph';
 import Graph from 'graphology';
 import { CategoryRepository, MediaRepository, NationalityRepository, PersonRepository } from '../repositories';
 import { useCategoryContextMenu, useMediaContextMenu, usePersonContextMenu } from '../menus';
+import { DbConnector } from '../connectors';
 
 const useStyles = makeStyles<DefaultTheme, { mode: 'dark' | 'light' }>({
   input: {
@@ -76,10 +77,11 @@ export const LoginView = () => {
       setDriver(drv);
       setLoading(false);
       Neo4jSigmaGraph.init(new Graph(), drv, { database }, t);
-      const categoryRepo = new CategoryRepository(drv, { database });
-      const mediaRepo = new MediaRepository(drv, { database });
-      const nationalityRepo = new NationalityRepository(drv, { database });
-      const personRepo = new PersonRepository(drv, { database }, categoryRepo, mediaRepo, nationalityRepo);
+      const connector = new DbConnector(drv, { database });
+      const categoryRepo = new CategoryRepository(connector);
+      const mediaRepo = new MediaRepository(connector);
+      const nationalityRepo = new NationalityRepository(connector);
+      const personRepo = new PersonRepository(connector, categoryRepo, mediaRepo, nationalityRepo);
       Neo4jSigmaGraph.getInstance().setRepository('CATEGORY', categoryRepo);
       Neo4jSigmaGraph.getInstance().setRepository('PERSON', personRepo);
       Neo4jSigmaGraph.getInstance().setRepository('MEDIA', mediaRepo);

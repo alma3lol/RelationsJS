@@ -1,12 +1,7 @@
-import { Driver } from "neo4j-driver";
-import { SessionOptions } from "../neo4j-sigma-graph";
+import { Connector } from "./connector.type";
 
 export abstract class Repository<M, I>{
-	constructor(
-		protected driver: Driver,
-		protected sessionOptions: SessionOptions,
-	) {}
-	generateSession = () => this.driver.session(this.sessionOptions);
+	constructor(protected connector: Connector) {}
 	abstract create: (model: M) => Promise<M>;
 	abstract read: () => Promise<M[]>;
 	abstract readById: (id: I) => Promise<M>;

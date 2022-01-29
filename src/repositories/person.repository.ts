@@ -1,18 +1,15 @@
-import { Driver } from "neo4j-driver";
 import { Category, Media, Nationality, Person } from "../models";
-import { SessionOptions } from "../neo4j-sigma-graph";
-import { Repository } from "../types";
+import { Connector, Repository } from "../types";
 
 export class PersonRepository extends Repository<Person, string> {
     constructor(
-        driver: Driver,
-        sessionOptions: SessionOptions,
+        connector: Connector,
         private readonly categoryRepository: Repository<Category, string>,
         private readonly mediaRepository: Repository<Media, string>,
         private readonly nationalityRepository: Repository<Nationality, string>,
-    ) { super(driver, sessionOptions); }
+    ) { super(connector); }
     create = async (person: Person) => {
-        let session = this.generateSession();
+        let session = this.connector.generateSession();
         const UUIDv4RegexExp = new RegExp(/^[0-9A-F]{8}-[0-9A-F]{4}-4[0-9A-F]{3}-[89AB][0-9A-F]{3}-[0-9A-F]{12}$/i);
         await session.run(`
             CREATE (p:Person {
@@ -72,7 +69,7 @@ export class PersonRepository extends Repository<Person, string> {
             category.setName(person.category);
             await this.categoryRepository.create(category);
         }
-        session = this.generateSession();
+        session = this.connector.generateSession();
         await session.run(`
             MATCH (p:Person {id: $id})
             MATCH (c:Category {id: $category})
@@ -88,7 +85,7 @@ export class PersonRepository extends Repository<Person, string> {
             nationality.setName(person.nationality);
             await this.nationalityRepository.create(nationality);
         }
-        session = this.generateSession();
+        session = this.connector.generateSession();
         await session.run(`
             MATCH (p:Person {id: $id})
             MATCH (c:Nationality {id: $nationality})
@@ -104,7 +101,7 @@ export class PersonRepository extends Repository<Person, string> {
             media.setPath(imagePath);
             media.setType('avatar');
             await this.mediaRepository.create(media);
-            session = this.generateSession();
+            session = this.connector.generateSession();
             await session.run(`
                 MATCH (p:Person {id: $id})
                 MATCH (m:Media {id: $media})
@@ -122,7 +119,7 @@ export class PersonRepository extends Repository<Person, string> {
             media.setPath(idImagePath);
             media.setType('id');
             await this.mediaRepository.create(media);
-            session = this.generateSession();
+            session = this.connector.generateSession();
             await session.run(`
                 MATCH (p:Person {id: $id})
                 MATCH (m:Media {id: $media})
@@ -140,7 +137,7 @@ export class PersonRepository extends Repository<Person, string> {
             media.setPath(passportImagePath);
             media.setType('passport');
             await this.mediaRepository.create(media);
-            session = this.generateSession();
+            session = this.connector.generateSession();
             await session.run(`
                 MATCH (p:Person {id: $id})
                 MATCH (m:Media {id: $media})
@@ -159,7 +156,7 @@ export class PersonRepository extends Repository<Person, string> {
                 media.setPath(attachmentPath);
                 media.setType('attachment');
                 await this.mediaRepository.create(media);
-                session = this.generateSession();
+                session = this.connector.generateSession();
                 await session.run(`
                     MATCH (p:Person {id: $id})
                     MATCH (m:Media {id: $media})
@@ -174,7 +171,7 @@ export class PersonRepository extends Repository<Person, string> {
         return person;
     }
     read = async () => {
-        const session = this.generateSession();
+        const session = this.connector.generateSession();
         const persons = await session.run(`MATCH (p:Person) RETURN p`).then(result => result.records.map(record => {
             const personObj = record.toObject().p.properties;
             const person = new Person(personObj.id);
@@ -207,7 +204,7 @@ export class PersonRepository extends Repository<Person, string> {
         return persons;
     }
     readById = async (id: string) => {
-        const session = this.generateSession();
+        const session = this.connector.generateSession();
         const person = await session.run(`MATCH (p:Person) WHERE p.id = $id RETURN p`, { id }).then(result => {
             if (result.records.length === 0) throw Error('No such a person');
             const personObj = result.records[0].toObject().p.properties;
@@ -241,7 +238,7 @@ export class PersonRepository extends Repository<Person, string> {
         return person;
     }
     update = async (id: string, person: Person) => {
-        const session = this.generateSession();
+        const session = this.connector.generateSession();
         await session.run(`
             MATCH (p:Person) WHERE id = $id
                 SET
@@ -299,7 +296,7 @@ export class PersonRepository extends Repository<Person, string> {
         return person;
     }
     delete = async (id: string) => {
-        const session = this.generateSession();
+        const session = this.connector.generateSession();
         await session.run(`
             MATCH (p:Person { id: $id })
             OPTIONAL MATCH (p)-[r]->(o)
