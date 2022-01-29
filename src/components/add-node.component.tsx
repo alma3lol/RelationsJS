@@ -11,7 +11,7 @@ import { Neo4jSigmaGraph, NodeType } from "../neo4j-sigma-graph";
 import { useTranslation } from "react-i18next";
 import { CategoryForm, NationalityForm, PersonForm } from "./forms";
 import useHotkeys from "@reecelucas/react-use-hotkeys";
-import { Category, Media, Nationality, Person } from "../models";
+import { Category, Nationality, Person } from "../models";
 import { useSnackbar } from "notistack";
 
 export type AddNodeProps = {
@@ -70,7 +70,7 @@ export const AddNode: FC<AddNodeProps> = ({ show, close, onDone: onDoneParent })
 		try {
 			await repository.create(node);
 			onDone();
-			enqueueSnackbar(t(`forms.add_node.success.${nodeType.toLowerCase()}`), { variant: 'success' });
+			enqueueSnackbar(t(`forms.success.${nodeType.toLowerCase()}`), { variant: 'success' });
 		} catch (e) {
 			if (Object.hasOwnProperty.call(e, 'message')) {
 				enqueueSnackbar((e as any).message, { variant: 'error' });
