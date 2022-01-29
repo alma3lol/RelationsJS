@@ -67,18 +67,22 @@
 		},
 		"disconnect": "Disconnect"
 	},
-	"add_node": {
-		"title": "Add node",
-		"action": "Add",
-		"caption": "Node type",
+	"forms": {
+		"add_node": {
+			"title": "Add node",
+			"action": "Add",
+			"caption": "Node type"
+		},
 		"hint": {
 			"default": "Hover over a node type to see its description",
 			"category": "A category node that can contain other nodes",
-			"person": "A person node with relations and information"
+			"person": "A person node with relations and information",
+			"nationality": "The status of belonging to a particular nation"
 		},
 		"type": {
 			"category": "Category",
-			"person": "Person"
+			"person": "Person",
+			"nationality": "Nationality"
 		},
 		"inputs": {
 			"choose_file": "Choose a file",
@@ -103,7 +107,7 @@
 				"job": "Job",
 				"id_number": "ID number",
 				"national_number": "National number",
-				"registration_number": "Registration number",
+				"registeration_number": "Registration number",
 				"nationality": "nationality",
 				"address": "Address",
 				"gps_location": "GPS Location",
@@ -117,6 +121,9 @@
 				"extra": "Extra",
 				"choose_attachments": "Choose attachments",
 				"no_categories": "No categories with this name"
+			},
+			"nationality": {
+				"name": "Nationality"
 			}
 		},
 		"sections": {
@@ -128,7 +135,8 @@
 		},
 		"success": {
 			"person": "Successfully added a person",
-			"category": "Successfully added a category"
+			"category": "Successfully added a category",
+			"nationality": "Successfully added a nationality"
 		}
 	},
 	"passport": "Passport",
@@ -202,16 +210,6 @@
 			"reset_zoom": "Reset zoom",
 			"focus_search": "Focus search input",
 			"toggle_find_path": "Toggle find path"
-		}
-	},
-	"schema": {
-		"invalid": {
-			"anyOf": "{{label}} is invalid: {{value}} is not one of {{values}}",
-			"min_number": "{{label}} must be at least {{min}}",
-			"max_number": "{{label}} must be at most {{max}}",
-			"email": "{{label}} must be a valid email address",
-			"uuid": "{{label}} must be a valid UUID",
-			"gps_location": "{{label}} must be a valid GPS location"
 		}
 	},
 	"relations": {

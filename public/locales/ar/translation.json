@@ -67,18 +67,22 @@
 		},
 		"disconnect": "قطع الاتصال"
 	},
-	"add_node": {
-		"title": "إضافة عنصر",
-		"action": "إضافة",
-		"caption": "نوع العنصر",
+	"forms": {
+		"add_node": {
+			"title": "إضافة عنصر",
+			"action": "إضافة",
+			"caption": "نوع العنصر"
+		},
 		"hint": {
 			"default": "حرك مؤشر الفأرة فوق أي عنصر لعرض معلومات عنه",
 			"category": "تصنيف يحتوي على عناصر أخرى",
-			"person": "شخص ذو علاقات و معلومات"
+			"person": "شخص ذو علاقات و معلومات",
+			"nationality": "جنسية إنتماء الأشخاص"
 		},
 		"type": {
 			"category": "تصنيف",
-			"person": "شخص"
+			"person": "شخص",
+			"nationality": "جنسية"
 		},
 		"inputs": {
 			"choose_file": "اختر ملف",
@@ -116,7 +120,13 @@
 				"notes": "الملاحظات",
 				"extra": "تفريغ محاضر الإستدلال",
 				"choose_attachments": "إختيار مرفقات",
-				"no_categories": "لا يوجد تصنيفات بهذا الإسم"
+				"no_categories": "لا يوجد تصنيفات, إبدأ بالكتابة ليتم إنشاء تصنيف جديد",
+				"create_new_category": "إنشاء تصنيف جديد  ({{name}})",
+				"no_nationalities": "لا توجد جنسيات, إبدأ بالكتابة ليتم إنشاء جنسية جديدة",
+				"create_new_nationality": "إنشاء جنسية جديدة  ({{name}})"
+			},
+			"nationality": {
+				"name": "الجنسية"
 			}
 		},
 		"sections": {
@@ -128,7 +138,8 @@
 		},
 		"success": {
 			"person": "تم إضافة الشخص بنجاح.",
-			"category": "تم إضافة التصنيف بنجاح."
+			"category": "تم إضافة التصنيف بنجاح.",
+			"nationality": "تم إضافة الجنسية بنجاح"
 		}
 	},
 	"passport": "جواز السفر",
@@ -202,16 +213,6 @@
 			"reset_zoom": "إعادة تعيين التكبير",
 			"focus_search": "الإنتقال للبحث",
 			"toggle_find_path": "تفعيل/تعطيل البحث عن مسار"
-		}
-	},
-	"schema": {
-		"invalid": {
-			"anyOf": "الحقل {{label}} غير صحيح: {{value}} يجب أن تكون إحدى {{values}}",
-			"min_number": "الحقل {{label}} يجب أن يكون أكبر من {{min}}",
-			"max_number": "الحقل {{label}} يجب أن يكون أصغر من {{max}}",
-			"email": "الحقل {{label}} يجب أن يكون عنوان بريد إلكتروني صحيح",
-			"uuid": "الحقل {{label}} يجب أن يكون UUID صحيح",
-			"gps_location": "الحقل {{label}} يجب أن يكون إحداثي موقع صحيح"
 		}
 	},
 	"relations": {
