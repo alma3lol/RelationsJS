@@ -105,7 +105,6 @@ export const Settings: FC<SettingsProps> = ({ show, close, onDone }) => {
 					enqueueSnackbar(t('notifications.success.settings.cleared_unused', { cleared_count: count, cleared_type: t(('attachments')) }), { variant: 'success' });
 				}
 			}
-
 			if (clearedNothing) enqueueSnackbar('Nothing to be cleared', { variant: 'info' });
 			await session.close();
 		}
