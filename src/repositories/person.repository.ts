@@ -12,7 +12,8 @@ export class PersonRepository extends Repository<Person, string> {
         private readonly nationalityRepository: Repository<Nationality, string>,
     ) { super(driver, sessionOptions); }
     create = async (person: Person) => {
-        const session = this.generateSession();
+        let session = this.generateSession();
+        const UUIDv4RegexExp = /^[0-9a-fA-F]{8}\b-[0-9a-fA-F]{4}\b-[0-9a-fA-F]{4}\b-[0-9a-fA-F]{4}\b-[0-9a-fA-F]{12}$/gi;
         await session.run(`
             CREATE (p:Person {
                 id: $id,
@@ -24,7 +25,6 @@ export class PersonRepository extends Repository<Person, string> {
                 birthDate: $birthDate,
                 birthPlace: $birthPlace,
                 job: $job,
-                nationality: $nationality,
                 phone: $phone,
                 email: $email,
                 workplace: $workplace,
@@ -50,7 +50,6 @@ export class PersonRepository extends Repository<Person, string> {
             birthDate: person.birthDate.toISOString(),
             birthPlace: person.birthPlace,
             job: person.job,
-            nationality: person.nationality,
             phone: person.phone,
             email: person.email,
             workplace: person.workplace,
@@ -67,6 +66,111 @@ export class PersonRepository extends Repository<Person, string> {
             extra: person.extra.map(v => v),
         });
         await session.close();
+        let category = new Category(person.category);
+        if (!UUIDv4RegexExp.test(person.category)) {
+            category = new Category();
+            category.setName(person.category);
+            await this.categoryRepository.create(category);
+        }
+        session = this.generateSession();
+        await session.run(`
+            MATCH (p:Person {id: $id})
+            MATCH (c:Category {id: $category})
+            CREATE (p)-[:CATEGORIZED_AS]->(c)
+        `, {
+            id: person.id,
+            category: category.id,
+        });
+        await session.close();
+        let nationality = new Nationality(person.nationality)
+        if (!UUIDv4RegexExp.test(person.nationality)) {
+            nationality = new Nationality();
+            nationality.setName(person.nationality);
+            await this.nationalityRepository.create(nationality);
+        }
+        session = this.generateSession();
+        await session.run(`
+            MATCH (p:Person {id: $id})
+            MATCH (c:Nationality {id: $nationality})
+            CREATE (p)-[:FROM]->(c)
+        `, {
+            id: person.id,
+            nationality: nationality.id,
+        });
+        if (person.image) {
+            const imagePath = window.files.upload(person.id, 'avatar', person.image.name, (await person.image.arrayBuffer()));
+            const media = new Media();
+            media.setName(person.image.name);
+            media.setPath(imagePath);
+            media.setType('avatar');
+            await this.mediaRepository.create(media);
+            session = this.generateSession();
+            await session.run(`
+                MATCH (p:Person {id: $id})
+                MATCH (m:Media {id: $media})
+                CREATE (p)-[:HAS]->(m)
+            `, {
+                id: person.id,
+                media: media.id,
+            });
+            await session.close();
+        }
+        if (person.idImage) {
+            const idImagePath = window.files.upload(person.id, 'id', person.idImage.name, (await person.idImage.arrayBuffer()));
+            const media = new Media();
+            media.setName(person.idImage.name);
+            media.setPath(idImagePath);
+            media.setType('id');
+            await this.mediaRepository.create(media);
+            session = this.generateSession();
+            await session.run(`
+                MATCH (p:Person {id: $id})
+                MATCH (m:Media {id: $media})
+                CREATE (p)-[:HAS]->(m)
+            `, {
+                id: person.id,
+                media: media.id,
+            });
+            await session.close();
+        }
+        if (person.passportImage) {
+            const passportImagePath = window.files.upload(person.id, 'passport', person.passportImage.name, (await person.passportImage.arrayBuffer()));
+            const media = new Media();
+            media.setName(person.passportImage.name);
+            media.setPath(passportImagePath);
+            media.setType('passport');
+            await this.mediaRepository.create(media);
+            session = this.generateSession();
+            await session.run(`
+                MATCH (p:Person {id: $id})
+                MATCH (m:Media {id: $media})
+                CREATE (p)-[:HAS]->(m)
+            `, {
+                id: person.id,
+                media: media.id,
+            });
+            await session.close();
+        }
+        if (person.attachments.length > 0) {
+            for (const attachment of person.attachments) {
+                const attachmentPath = window.files.upload(person.id, 'attachment', attachment.name, (await attachment.arrayBuffer()));
+                const media = new Media();
+                media.setName(attachment.name);
+                media.setPath(attachmentPath);
+                media.setType('attachment');
+                await this.mediaRepository.create(media);
+                session = this.generateSession();
+                await session.run(`
+                    MATCH (p:Person {id: $id})
+                    MATCH (m:Media {id: $media})
+                    CREATE (p)-[:HAS]->(m)
+                `, {
+                    id: person.id,
+                    media: media.id,
+                });
+                await session.close();
+            }
+        }
         return person;
     }
     read = async () => {
