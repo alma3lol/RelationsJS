@@ -55,9 +55,9 @@ export type ContextMenuItem = [JSX.Element, string, (id: string) => void];
 export class Neo4jSigmaGraph {
   private static _instance: Neo4jSigmaGraph;
   private constructor(
-    private _graph: Graph,
+    private graph: Graph,
     public readonly connector: Connector,
-    private _t: TFunction,
+    private t: TFunction,
   ) {}
 
   private _repositories: Map<NodeType, Repository<any, string>> = new Map();
@@ -73,8 +73,8 @@ export class Neo4jSigmaGraph {
     return this._instance;
   }
 
-  getGraph = () => this._graph;
-  setGraph = (graph: Graph) => this._graph = graph;
+  getGraph = () => this.graph;
+  setGraph = (graph: Graph) => this.graph = graph;
 
   getRepository = (node: NodeType) => this._repositories.get(node);
   setRepository = (node: NodeType, repository: Repository<any, string>) => this._repositories.set(node, repository);
@@ -122,8 +122,8 @@ export class Neo4jSigmaGraph {
         data.extra = node.properties.extra
         break;
     }
-    if (!this._graph.hasNode(node.properties.id)) {
-      this._graph.addNode(node.properties.id, data);
+    if (!this.graph.hasNode(node.properties.id)) {
+      this.graph.addNode(node.properties.id, data);
     }
   }
 
@@ -154,8 +154,8 @@ export class Neo4jSigmaGraph {
       const relationshipActualEndNodeId = start.identity.low === relationship.end.low ? startNode.id : endNode.id;
       this.addNodeToGraph(start);
       this.addNodeToGraph(end);
-      if (!this._graph.hasEdge(relationshipActualStartNodeId, relationshipActualEndNodeId)) {
-        this._graph.addEdge(relationshipActualStartNodeId, relationshipActualEndNodeId, { label: this._t(`relations.${relationshipType}`), size: 5, ...data });
+      if (!this.graph.hasEdge(relationshipActualStartNodeId, relationshipActualEndNodeId)) {
+        this.graph.addEdge(relationshipActualStartNodeId, relationshipActualEndNodeId, { label: this.t(`relations.${relationshipType}`), size: 5, ...data });
       }
     });
   }
