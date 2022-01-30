@@ -110,7 +110,6 @@ export const PersonForm = observer<PersonFormProps>(({ person }) => {
 		} else {
 			person.setPassportIssueDate(moment(e.target.value).toDate());
 		}
-		console.log(person);
 	}
 	return (
 		<Grid item container spacing={1}>
