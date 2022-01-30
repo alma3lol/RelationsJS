@@ -4,7 +4,7 @@ import { v4 } from "uuid";
 export class Record {
 	id = '';
 	title = '';
-	text = '';
+	content = '';
 	date: Date | null = null;
 	attachments: File[] = [];
 	constructor(id: string = v4()) {
@@ -12,7 +12,7 @@ export class Record {
 		this.id = id;
 	}
 	setTitle = (title: string) => this.title = title;
-	setText = (text: string) => this.text = text;
+	setContent = (content: string) => this.content = content;
 	setDate = (date: Date | null) => this.date = date;
 	setAttachments = (attachments: File[]) => this.attachments = attachments;
 }

@@ -16,7 +16,7 @@ export class RecordRepository extends Repository<Record, string> {
       })`, {
         id: record.id,
         title: record.title,
-        text: record.text,
+        text: record.content,
         date: record.date,
       });
     await session.close();
@@ -48,7 +48,7 @@ export class RecordRepository extends Repository<Record, string> {
         const recordObj = record.toObject().r.properties;
         const recordModel = new Record(recordObj.id);
         recordModel.setTitle(recordObj.title);
-        recordModel.setText(recordObj.text);
+        recordModel.setContent(recordObj.text);
         recordModel.setDate(recordObj.date);
         return recordModel;
       }));
@@ -66,7 +66,7 @@ export class RecordRepository extends Repository<Record, string> {
         const recordObj = result.records[0].toObject().r.properties;
         const recordModel = new Record(recordObj.id);
         recordModel.setTitle(recordObj.title);
-        recordModel.setText(recordObj.text);
+        recordModel.setContent(recordObj.text);
         recordModel.setDate(recordObj.date);
         return recordModel;
       });
@@ -85,7 +85,7 @@ export class RecordRepository extends Repository<Record, string> {
       `, {
         id,
         title: record.title,
-        text: record.text,
+        text: record.content,
         date: record.date,
       });
     await session.close();
