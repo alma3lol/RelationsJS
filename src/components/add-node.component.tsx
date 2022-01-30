@@ -10,9 +10,9 @@ import { FC, FormEvent, useContext, useEffect, useState } from "react";
 import { appContext } from "../App";
 import { Neo4jSigmaGraph, NodeType } from "../neo4j-sigma-graph";
 import { useTranslation } from "react-i18next";
-import { CategoryForm, NationalityForm, PersonForm } from "./forms";
+import { CategoryForm, NationalityForm, PersonForm, TranscriptForm } from "./forms";
 import useHotkeys from "@reecelucas/react-use-hotkeys";
-import { Category, Nationality, Person } from "../models";
+import { Category, Nationality, Person, Transcript } from "../models";
 import { useSnackbar } from "notistack";
 
 export type AddNodeProps = {
@@ -63,12 +63,13 @@ export const AddNode: FC<AddNodeProps> = ({ show, close, onDone: onDoneParent })
 	const [category, setCategory] = useState(new Category());
 	const [person, setPerson] = useState(new Person());
 	const [nationality, setNationality] = useState(new Nationality());
+	const [transcript, setTranscript] = useState(new Transcript());
 	const handleOnSubmit = async (e: FormEvent) => {
 		e.preventDefault();
 		if (nodeType === null) return;
 		const repository = Neo4jSigmaGraph.getInstance().getRepository(nodeType);
 		if (!repository) return;
-		const node = nodeType === 'CATEGORY' ? category : nodeType === 'PERSON' ? person : nodeType === 'NATIONALITY' ? nationality : {}
+		const node = nodeType === 'CATEGORY' ? category : nodeType === 'PERSON' ? person : nodeType === 'NATIONALITY' ? nationality : nodeType === 'TRANSCRIPT' ? transcript : {};
 		try {
 			await repository.create(node);
 			onDone();
@@ -85,6 +86,7 @@ export const AddNode: FC<AddNodeProps> = ({ show, close, onDone: onDoneParent })
 		setCategory(new Category());
 		setPerson(new Person());
 		setNationality(new Nationality());
+		setTranscript(new Transcript());
 	}, [show]);
 	useHotkeys(nodeTypes.map((__, i) => (i + 1).toString()), e => {
 		if (nodeType === null) {
@@ -128,6 +130,7 @@ export const AddNode: FC<AddNodeProps> = ({ show, close, onDone: onDoneParent })
 							{nodeType === 'CATEGORY' && <CategoryForm category={category} onSubmit={handleOnSubmit} />}
 							{nodeType === 'PERSON' && <PersonForm person={person} onSubmit={handleOnSubmit} />}
 							{nodeType === 'NATIONALITY' && <NationalityForm nationality={nationality} onSubmit={handleOnSubmit} />}
+							{nodeType === 'TRANSCRIPT' && <TranscriptForm transcript={transcript} />}
 						</Grid>
 					</Grid>
 				</DialogContent>
