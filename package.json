@@ -135,16 +135,16 @@
         {
           "name": "@electron-forge/maker-squirrel",
           "config": {
-            "Authors": "AlMA PRO",
-            "exe": "captive-portal-js-ui-${version}.exe"
+            "Authors": "Omar Almalol",
+            "exe": "relations-js-ui-${version}.exe"
           }
         },
         {
           "name": "@electron-forge/maker-deb",
           "config": {
             "options": {
-              "maintainer": "AlMA PRO",
-              "homepage": "https://github.com/almapro/CaptivePortalJS-ui"
+              "maintainer": "Omar Almalol",
+              "homepage": "https://github.com/alma3lol/RelationsJS"
             }
           }
         },
@@ -152,8 +152,8 @@
           "name": "@electron-forge/maker-rpm",
           "config": {
             "options": {
-              "maintainer": "AlMA PRO",
-              "homepage": "https://github.com/almapro/CaptivePortalJS-ui"
+              "maintainer": "Omar Almalol",
+              "homepage": "https://github.com/alma3lol/RelationsJS"
             }
           }
         }
@@ -163,8 +163,8 @@
         "asar": true
       },
       "github_repository": {
-        "owner": "almapro",
-        "name": "CaptivePortalJS-ui"
+        "owner": "alma3lol",
+        "name": "RelationsJS"
       }
     }
   },
