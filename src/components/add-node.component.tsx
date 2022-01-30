@@ -94,7 +94,7 @@ export const AddNode: FC<AddNodeProps> = ({ show, close, onDone: onDoneParent })
 			nodeTypes.forEach((nodeType, i) => {
 				if (e.key === (i + 1).toString()) {
 					setNodeType(nodeType[2]);
-					setNodeOnProgress(nodeType[3]);
+					setNodeOnProgress(nodeType[4]);
 					return;
 				}
 			});
@@ -114,7 +114,7 @@ export const AddNode: FC<AddNodeProps> = ({ show, close, onDone: onDoneParent })
 								{nodeTypes.map((node, idx) => (
 									<Grid key={idx} item onMouseOver={() => setHint(node[3])} onMouseOut={() => setHint(defaultHint)}>
 										<Card variant='outlined' sx={{ width: 100, height: 100 }}>
-											<CardActionArea className={classes.cardActionArea} disabled={node[2] === nodeType} onClick={() => setNodeType(node[2])}>
+											<CardActionArea className={classes.cardActionArea} disabled={node[2] === nodeType} onClick={() => { setNodeType(node[2]); setNodeOnProgress(node[4]); }}>
 												<CardContent sx={{ height: 100 }}>
 													<Grid container justifyContent='center' alignItems='center' direction='row' height='100%'>
 														<Grid item><Typography>{node[0]}</Typography></Grid>
