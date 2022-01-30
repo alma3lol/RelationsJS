@@ -26,7 +26,8 @@ export type NodeType =
   'PHONE' |
   'EMAIL' |
   'ENTRANCE' |
-  'MEDIA';
+  'MEDIA' |
+  'RECORD';
 
 export type RelationType =
   'CATEGORIZED_AS' |
@@ -41,7 +42,8 @@ export type RelationType =
   'HAS' |
   'RUNS' |
   'MEMBER_OF' |
-  'GRANTED_BY';
+  'GRANTED_BY' |
+  'MENTIONED_IN';
 
 export type SessionOptions = {
   defaultAccessMode?: SessionMode;
