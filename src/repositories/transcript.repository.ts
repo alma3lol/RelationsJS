@@ -11,16 +11,16 @@ export class TranscriptRepository extends Repository<Transcript, string> {
       CREATE (r:Transcript {
         id: $id,
         title: $title,
-        text: $text,
+        content: $content,
         date: $date
       })`, {
         id: transcript.id,
         title: transcript.title,
-        text: transcript.content,
-        date: transcript.date,
+        content: transcript.content,
+        date: transcript.date ? transcript.date.toISOString() : null,
       });
     await session.close();
-    transcript.attachments.forEach(async (attachment) => {
+    await Promise.all(transcript.attachments.map(async attachment => {
       const attachmentPath = window.files.upload(transcript.id, 'attachment', attachment.name, (await attachment.arrayBuffer()));
       const media = new Media();
       media.setName(attachment.name);
@@ -36,7 +36,15 @@ export class TranscriptRepository extends Repository<Transcript, string> {
           media: media.id,
         });
       await session.close();
-    });
+    }));
+    await Promise.all(transcript.mentioned.map(async mentioned => {
+      session = this.connector.generateSession();
+      await session.run(`
+        MATCH (r:Transcript { id: $id }), (p:Person { id: $person })
+        CREATE (p)-[:MENTIONED_IN]->(r)
+      `, { id: transcript.id, person: mentioned.id });
+      await session.close();
+    }));
     return transcript;
   }
   read = async () => {
@@ -48,7 +56,7 @@ export class TranscriptRepository extends Repository<Transcript, string> {
         const transcripObj = record.toObject().r.properties;
         const transcripModel = new Transcript(transcripObj.id);
         transcripModel.setTitle(transcripObj.title);
-        transcripModel.setContent(transcripObj.text);
+        transcripModel.setContent(transcripObj.content);
         transcripModel.setDate(transcripObj.date);
         return transcripModel;
       }));
@@ -66,7 +74,7 @@ export class TranscriptRepository extends Repository<Transcript, string> {
         const recordObj = result.records[0].toObject().r.properties;
         const recordModel = new Transcript(recordObj.id);
         recordModel.setTitle(recordObj.title);
-        recordModel.setContent(recordObj.text);
+        recordModel.setContent(recordObj.content);
         recordModel.setDate(recordObj.date);
         return recordModel;
       });
@@ -80,13 +88,13 @@ export class TranscriptRepository extends Repository<Transcript, string> {
       WHERE r.id = $id
       SET
         r.title = $title,
-        r.text = $text,
+        r.content = $content,
         r.date = $date
       `, {
         id,
         title: transcript.title,
-        text: transcript.content,
-        date: transcript.date,
+        content: transcript.content,
+        date: transcript.date ? transcript.date.toISOString() : null,
       });
     await session.close();
     return transcript;
