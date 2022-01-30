@@ -13,7 +13,6 @@ import { Attributes } from 'graphology-types';
 import { useSigma, useSetSettings, useRegisterEvents } from 'react-sigma-v2';
 import { circular } from 'graphology-layout';
 import { useSnackbar } from "notistack"
-import _ from 'lodash';
 import useHotkeys from '@reecelucas/react-use-hotkeys';
 import { Node } from 'neo4j-driver';
 import { SpringSupervisor } from '../layout-spring';
@@ -28,7 +27,6 @@ import {
     Help,
 } from '../components';
 import { useTranslation } from 'react-i18next';
-import FA2Layout from "graphology-layout-forceatlas2/worker";
 import forceAtlas2 from "graphology-layout-forceatlas2";
 import { animateNodes } from 'sigma/utils/animate';
 
@@ -44,7 +42,6 @@ export const DashboardView = () => {
 		driver,
 		setSigma,
 		theme,
-		database,
 		createDatabaseIndexesAndConstraints,
 		startNode,
 		setStartNode,
@@ -149,7 +146,6 @@ export const DashboardView = () => {
 		}
 	});
 	const setSigmaSettings = useSetSettings();
-	const fa2Layout = useRef<FA2Layout>();
 	const springSupervisor = useRef<SpringSupervisor>();
 	const cancelCurrentAnimation = useRef<() => void>();
 	const refreshGraph = useCallback(() => {
@@ -188,7 +184,7 @@ export const DashboardView = () => {
 			springSupervisor.current = new SpringSupervisor(graph, { isNodeFixed: (n) => graph.getNodeAttribute(n, "highlighted") });
 			springSupervisor.current.start();
 		}
-	}, [neo4jSigmaGraph, layoutMode, fa2Layout]);
+	}, [layoutMode, sigma]);
 	useHotkeys('Control+r', e => {
 		e.preventDefault();
 		refreshGraph();
@@ -208,7 +204,7 @@ export const DashboardView = () => {
 		// loadGraph(graph);
 		refreshGraph();
 	}
-	const createGraphCallback = useCallback(createGraph, [neo4jSigmaGraph, sigma]);
+	const createGraphCallback = useCallback(createGraph, [neo4jSigmaGraph, sigma, refreshGraph]);
 	useEffect(() => {
 		refreshGraph();
 		// eslint-disable-next-line react-hooks/exhaustive-deps
@@ -271,7 +267,7 @@ export const DashboardView = () => {
 			items,
 		});
 	}
-	const handleNodeRightClickCallback = useCallback(handleNodeRightClick, [setMenu, driver, sigma, enqueueSnackbar, createGraphCallback, database, foundPath, setEndNode, setEndNodeSearch, setIsFindPath, setStartNode, setStartNodeSearch, Neo4jSigmaGraph]);
+	const handleNodeRightClickCallback = useCallback(handleNodeRightClick, [setMenu, sigma, enqueueSnackbar, createGraphCallback, setEndNode, setEndNodeSearch, setIsFindPath, setStartNode, setStartNodeSearch, t]);
 	useEffect(() => {
 		sigma.addListener('rightClickNode', handleNodeRightClickCallback);
 		return () => {

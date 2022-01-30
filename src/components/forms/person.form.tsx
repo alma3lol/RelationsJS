@@ -50,16 +50,16 @@ export const PersonForm = observer<PersonFormProps>(({ person }) => {
 			setNewRestriction('')
 		}
 	}, [newRestriction, person, setNewRestriction])
+	const handleDeleteRestriction = useCallback((idx: number) => {
+		person.setRestrictions(person.restrictions.filter((__, i) => idx !== i));
+	}, [person]);
 	const handleChangeRestriction = useCallback((idx: number, newValue: string) => {
 		if (!newValue) {
 			handleDeleteRestriction(idx);
 			return;
 		}
 		person.setRestrictions(person.restrictions.map((restriction, i) => idx === i ? newValue : restriction));
-	}, [person]);
-	const handleDeleteRestriction = useCallback((idx: number) => {
-		person.setRestrictions(person.restrictions.filter((__, i) => idx !== i));
-	}, [person]);
+	}, [person, handleDeleteRestriction]);
 	const [newExtra, setNewExtra] = useState('');
 	const handleAddNewExtra = useCallback(() => {
 		if (newExtra) {
@@ -67,16 +67,16 @@ export const PersonForm = observer<PersonFormProps>(({ person }) => {
 			setNewExtra('')
 		}
 	}, [newExtra, person, setNewExtra]);
+	const handleDeleteExtra = useCallback((idx: number) => {
+		person.setExtra(person.extra.filter((__, i) => idx !== i));
+	}, [person]);
 	const handleChangeExtra = useCallback((idx: number, newValue: string) => {
 		if (!newValue) {
 			handleDeleteExtra(idx);
 			return;
 		}
 		person.setExtra(person.extra.map((extra, i) => idx === i ? newValue : extra));
-	}, [person]);
-	const handleDeleteExtra = useCallback((idx: number) => {
-		person.setExtra(person.extra.filter((__, i) => idx !== i));
-	}, [person]);
+	}, [person, handleDeleteExtra]);
 	const handleAddAttachments = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
 		if (e.currentTarget.files) {
 			const newFiles: File[] = []

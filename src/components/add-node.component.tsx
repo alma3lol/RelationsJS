@@ -88,7 +88,7 @@ export const AddNode: FC<AddNodeProps> = ({ show, close, onDone: onDoneParent })
 		setPerson(new Person());
 		setNationality(new Nationality());
 		setTranscript(new Transcript());
-	}, [show]);
+	}, [show, defaultHint]);
 	useHotkeys(nodeTypes.map((__, i) => (i + 1).toString()), e => {
 		if (nodeType === null) {
 			nodeTypes.forEach((nodeType, i) => {

@@ -109,7 +109,7 @@ export const Settings: FC<SettingsProps> = ({ show, close, onDone }) => {
 			await session.close();
 		}
 	}
-	const deleteUsedFilesCallback = useCallback(deleteUsedFiles, [driver, filesTypes, setFilesTypes, database, enqueueSnackbar]);
+	const deleteUsedFilesCallback = useCallback(deleteUsedFiles, [driver, filesTypes, setFilesTypes, database, enqueueSnackbar, t]);
 	const [waitingResetDatabaseConfirmation, setWaitingResetDatabaseConfirmation] = useState(false);
 	const [confirmDatabaseReset, setConfirmDatabaseReset] = useState('');
 	const handleDatabaseReset = async (e: FormEvent) => {

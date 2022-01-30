@@ -8,7 +8,7 @@ export const LanguageSelector = () => {
 	const { i18n } = useTranslation();
 	useEffect(() => {
 		i18n.changeLanguage(language);
-	}, [language]);
+	}, [language, i18n]);
 	return (
 		<Select
 			value={language}

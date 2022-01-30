@@ -115,6 +115,7 @@ export const LoginView = () => {
     categoryContextMenu,
     personContextMenu,
     mediaContextMenu,
+    t,
   ]);
   useEffect(() => {
     if (autologin) {
