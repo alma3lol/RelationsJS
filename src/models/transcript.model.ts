@@ -7,6 +7,7 @@ export class Transcript {
 	content = '';
 	date: Date | null = null;
 	attachments: File[] = [];
+	mentioned: { id: string, label: string }[] = [];
 	constructor(id: string = v4()) {
 		makeAutoObservable(this, { id: false });
 		this.id = id;
@@ -15,4 +16,5 @@ export class Transcript {
 	setContent = (content: string) => this.content = content;
 	setDate = (date: Date | null) => this.date = date;
 	setAttachments = (attachments: File[]) => this.attachments = attachments;
+	setMentioned = (mentioned: { id: string, label: string }[]) => this.mentioned = mentioned;
 }
