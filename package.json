@@ -136,7 +136,7 @@
           "name": "@electron-forge/maker-squirrel",
           "config": {
             "Authors": "Omar Almalol",
-            "exe": "relations-js-ui-${version}.exe"
+            "exe": "relations-js-${version}.exe"
           }
         },
         {
