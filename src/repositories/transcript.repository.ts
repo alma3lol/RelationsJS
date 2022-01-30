@@ -1,27 +1,27 @@
 import { Connector, Repository } from "../types";
-import { Media, Record } from "../models";
+import { Media, Transcript } from "../models";
 
-export class RecordRepository extends Repository<Record, string> {
+export class TranscriptRepository extends Repository<Transcript, string> {
   constructor(connector: Connector, private mediaRepository: Repository<Media, string>) {
     super(connector);
   }
-  create = async (record: Record) => {
+  create = async (transcript: Transcript) => {
     let session = this.connector.generateSession();
     await session.run(`
-      CREATE (r:Record {
+      CREATE (r:Transcript {
         id: $id,
         title: $title,
         text: $text,
         date: $date
       })`, {
-        id: record.id,
-        title: record.title,
-        text: record.content,
-        date: record.date,
+        id: transcript.id,
+        title: transcript.title,
+        text: transcript.content,
+        date: transcript.date,
       });
     await session.close();
-    record.attachments.forEach(async (attachment) => {
-      const attachmentPath = window.files.upload(record.id, 'attachment', attachment.name, (await attachment.arrayBuffer()));
+    transcript.attachments.forEach(async (attachment) => {
+      const attachmentPath = window.files.upload(transcript.id, 'attachment', attachment.name, (await attachment.arrayBuffer()));
       const media = new Media();
       media.setName(attachment.name);
       media.setPath(attachmentPath);
@@ -29,54 +29,54 @@ export class RecordRepository extends Repository<Record, string> {
       await this.mediaRepository.create(media);
       session = this.connector.generateSession();
       await session.run(`
-        MATCH (r:Record {id: $id})
+        MATCH (r:Transcript {id: $id})
         MATCH (m:Media {id: $media})
         CREATE (r)-[:HAS]->(m)`, {
-          id: record.id,
+          id: transcript.id,
           media: media.id,
         });
       await session.close();
     });
-    return record;
+    return transcript;
   }
   read = async () => {
     const session = this.connector.generateSession();
-    const records = await session.run(
-      `MATCH (r:Record)
+    const transcrips = await session.run(
+      `MATCH (r:Transcript)
       RETURN r`
     ).then(result => result.records.map(record => {
-        const recordObj = record.toObject().r.properties;
-        const recordModel = new Record(recordObj.id);
-        recordModel.setTitle(recordObj.title);
-        recordModel.setContent(recordObj.text);
-        recordModel.setDate(recordObj.date);
-        return recordModel;
+        const transcripObj = record.toObject().r.properties;
+        const transcripModel = new Transcript(transcripObj.id);
+        transcripModel.setTitle(transcripObj.title);
+        transcripModel.setContent(transcripObj.text);
+        transcripModel.setDate(transcripObj.date);
+        return transcripModel;
       }));
     await session.close();
-    return records;
+    return transcrips;
   }
   readById = async (id: string) => {
     const session = this.connector.generateSession();
-    const record = await session.run(`
-        MATCH (r:Record)
+    const transcript = await session.run(`
+        MATCH (r:Transcript)
         WHERE r.id = $id
         RETURN r
       `, { id }).then(result => {
-        if (result.records.length === 0) throw new Error("No such record");
+        if (result.records.length === 0) throw new Error("No such transcript");
         const recordObj = result.records[0].toObject().r.properties;
-        const recordModel = new Record(recordObj.id);
+        const recordModel = new Transcript(recordObj.id);
         recordModel.setTitle(recordObj.title);
         recordModel.setContent(recordObj.text);
         recordModel.setDate(recordObj.date);
         return recordModel;
       });
     await session.close();
-    return record;
+    return transcript;
   }
-  update = async (id: string, record: Record) => {
+  update = async (id: string, transcript: Transcript) => {
     const session = this.connector.generateSession();
     await session.run(`
-      MATCH (r:Record)
+      MATCH (r:Transcript)
       WHERE r.id = $id
       SET
         r.title = $title,
@@ -84,17 +84,17 @@ export class RecordRepository extends Repository<Record, string> {
         r.date = $date
       `, {
         id,
-        title: record.title,
-        text: record.content,
-        date: record.date,
+        title: transcript.title,
+        text: transcript.content,
+        date: transcript.date,
       });
     await session.close();
-    return record;
+    return transcript;
   }
   delete = async (id: string) => {
     const session = this.connector.generateSession();
     await session.run(`
-      MATCH (r:Record)
+      MATCH (r:Transcript)
       WHERE r.id = $id
       DETATCH DELETE r
       `, { id });

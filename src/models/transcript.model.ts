@@ -1,7 +1,7 @@
 import { makeAutoObservable } from "mobx";
 import { v4 } from "uuid";
 
-export class Record {
+export class Transcript {
 	id = '';
 	title = '';
 	content = '';

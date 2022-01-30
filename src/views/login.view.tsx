@@ -26,7 +26,7 @@ import { ThemeModeSwitch } from '../components';
 import { useTranslation } from 'react-i18next';
 import { Neo4jSigmaGraph } from '../neo4j-sigma-graph';
 import Graph from 'graphology';
-import { CategoryRepository, MediaRepository, NationalityRepository, PersonRepository, RecordRepository } from '../repositories';
+import { CategoryRepository, MediaRepository, NationalityRepository, PersonRepository, TranscriptRepository } from '../repositories';
 import { useCategoryContextMenu, useMediaContextMenu, usePersonContextMenu } from '../menus';
 import { DbConnector } from '../connectors';
 
@@ -82,12 +82,12 @@ export const LoginView = () => {
       const mediaRepo = new MediaRepository(connector);
       const nationalityRepo = new NationalityRepository(connector);
       const personRepo = new PersonRepository(connector, categoryRepo, mediaRepo, nationalityRepo);
-      const recordRepo = new RecordRepository(connector, mediaRepo);
+      const transcriptRepo = new TranscriptRepository(connector, mediaRepo);
       Neo4jSigmaGraph.getInstance().setRepository('CATEGORY', categoryRepo);
       Neo4jSigmaGraph.getInstance().setRepository('PERSON', personRepo);
       Neo4jSigmaGraph.getInstance().setRepository('MEDIA', mediaRepo);
       Neo4jSigmaGraph.getInstance().setRepository('NATIONALITY', nationalityRepo);
-      Neo4jSigmaGraph.getInstance().setRepository('RECORD', recordRepo);
+      Neo4jSigmaGraph.getInstance().setRepository('TRANSCRIPT', transcriptRepo);
       Neo4jSigmaGraph.getInstance().setContextMenu('CATEGORY', categoryContextMenu);
       Neo4jSigmaGraph.getInstance().setContextMenu('PERSON', personContextMenu);
       Neo4jSigmaGraph.getInstance().setContextMenu('MEDIA', mediaContextMenu);

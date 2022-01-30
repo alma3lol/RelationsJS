@@ -27,7 +27,7 @@ export type NodeType =
   'EMAIL' |
   'ENTRANCE' |
   'MEDIA' |
-  'RECORD';
+  'TRANSCRIPT';
 
 export type RelationType =
   'CATEGORIZED_AS' |

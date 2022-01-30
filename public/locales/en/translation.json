@@ -77,12 +77,14 @@
 			"default": "Hover over a node type to see its description",
 			"category": "A category node that can contain other nodes",
 			"person": "A person node with relations and information",
-			"nationality": "The status of belonging to a particular nation"
+			"nationality": "The status of belonging to a particular nation",
+			"transcript": "A record of events written and/or photocopied"
 		},
 		"type": {
 			"category": "Category",
 			"person": "Person",
-			"nationality": "Nationality"
+			"nationality": "Nationality",
+			"transcript": "transcript"
 		},
 		"inputs": {
 			"choose_file": "Choose a file",
@@ -124,6 +126,12 @@
 			},
 			"nationality": {
 				"name": "Nationality"
+			},
+			"transcript": {
+				"title": "Title",
+				"content": "Content",
+				"date": "Date",
+				"attachments": "Attachments"
 			}
 		},
 		"sections": {
@@ -136,7 +144,8 @@
 		"success": {
 			"person": "Successfully added a person",
 			"category": "Successfully added a category",
-			"nationality": "Successfully added a nationality"
+			"nationality": "Successfully added a nationality",
+			"transcript": "Successfully added a transcript"
 		}
 	},
 	"passport": "Passport",

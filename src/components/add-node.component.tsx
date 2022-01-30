@@ -4,6 +4,7 @@ import {
 	Groups as GroupsIcon,
 	Person as PersonIcon,
 	Flag as FlagIcon,
+	Article as ArticleIcon,
 } from "@mui/icons-material";
 import { FC, FormEvent, useContext, useEffect, useState } from "react";
 import { appContext } from "../App";
@@ -47,6 +48,7 @@ export const AddNode: FC<AddNodeProps> = ({ show, close, onDone: onDoneParent })
 		[<GroupsIcon />, t('forms.type.category'), 'CATEGORY', t('forms.hint.category')],
 		[<PersonIcon />, t('forms.type.person'), 'PERSON', t('forms.hint.person')],
 		[<FlagIcon />, t('forms.type.nationality'), 'NATIONALITY', t('forms.hint.nationality')],
+		[<ArticleIcon />, t('forms.type.transcript'), 'TRANSCRIPT', t('forms.hint.transcript')],
 	];
 	const defaultHint = t('forms.hint.default');
 	const [hint, setHint] = useState(defaultHint);
