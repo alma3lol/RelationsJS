@@ -5,7 +5,6 @@ import {
 } from '@mui/icons-material';
 import { useCallback, useContext, useEffect, useRef, useState } from 'react';
 import { useTitle } from 'react-use';
-import Captor from 'sigma/core/captors/captor';
 import { Settings as SigmaSettings } from 'sigma/settings';
 import getNodeProgramImage from "sigma/rendering/webgl/programs/node.image";
 import { MouseCoords, NodeDisplayData, PlainObject } from 'sigma/types';
@@ -35,7 +34,6 @@ import { animateNodes } from 'sigma/utils/animate';
 
 export type ClickNode = {
 	node: string
-	captor: Captor
 	event: MouseCoords
 }
 
