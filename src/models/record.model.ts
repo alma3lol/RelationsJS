@@ -6,6 +6,7 @@ export class Record {
 	title = '';
 	text = '';
 	date: Date | null = null;
+	attachments: File[] = [];
 	constructor(id: string = v4()) {
 		makeAutoObservable(this, { id: false });
 		this.id = id;
@@ -13,4 +14,5 @@ export class Record {
 	setTitle = (title: string) => this.title = title;
 	setText = (text: string) => this.text = text;
 	setDate = (date: Date | null) => this.date = date;
+	setAttachments = (attachments: File[]) => this.attachments = attachments;
 }
