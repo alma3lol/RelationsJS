@@ -109,6 +109,8 @@ jobs:
         uses: actions/download-artifact@v2.0.10
         with:
           name: zipArtifact
+      - name: Display structure of downloaded files
+        run: ls -R
       - name: Collecting artifacts
         id: collecting
         run: |
