@@ -32,11 +32,11 @@ const createWindow = () => {
   win.setMenuBarVisibility(false);
   win.maximize();
 
-  win.loadURL(
-    isDev
-    ? "http://localhost:3000"
-    : `file://${path.join(__dirname, "../index.html")}`
-  );
+  if (isDev) {
+    win.loadURL("http://localhost:3000");
+  } else {
+    win.loadFile("index.html");
+  }
 
   // Open the DevTools.
   if (isDev) {
