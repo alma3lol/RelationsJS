@@ -49,34 +49,40 @@ export class TranscriptRepository extends Repository<Transcript, string> {
   }
   read = async () => {
     const session = this.connector.generateSession();
-    const transcrips = await session.run(
-      `MATCH (r:Transcript)
-      RETURN r`
-    ).then(result => result.records.map(record => {
-        const transcripObj = record.toObject().r.properties;
+    const trx = session.beginTransaction();
+    const transcrips = await trx.run(
+      `MATCH (t:Transcript)
+      RETURN t`
+    ).then(async result => await Promise.all(result.records.map(async record => {
+        const transcripObj = record.toObject().t.properties;
         const transcripModel = new Transcript(transcripObj.id);
         transcripModel.setTitle(transcripObj.title);
         transcripModel.setContent(transcripObj.content);
         transcripModel.setDate(transcripObj.date);
+        const mentioned = await trx.run(`MATCH (p:Person)-[:MENTIONED_IN]->(t:Transcript { id: $id }) RETURN p`, { id: transcripModel.id }).then(result => result.records.map(record => ({ id: record.get('p').properties.id, label: record.get('p').properties.arabicName })));
+        transcripModel.setMentioned(mentioned);
         return transcripModel;
-      }));
+      })));
     await session.close();
     return transcrips;
   }
   readById = async (id: string) => {
     const session = this.connector.generateSession();
-    const transcript = await session.run(`
+    const trx = session.beginTransaction();
+    const transcript = await trx.run(`
         MATCH (r:Transcript)
         WHERE r.id = $id
         RETURN r
-      `, { id }).then(result => {
+      `, { id }).then(async result => {
         if (result.records.length === 0) throw new Error("No such transcript");
-        const recordObj = result.records[0].toObject().r.properties;
-        const recordModel = new Transcript(recordObj.id);
-        recordModel.setTitle(recordObj.title);
-        recordModel.setContent(recordObj.content);
-        recordModel.setDate(recordObj.date);
-        return recordModel;
+        const transcriptObj = result.records[0].toObject().r.properties;
+        const transcripModel = new Transcript(transcriptObj.id);
+        transcripModel.setTitle(transcriptObj.title);
+        transcripModel.setContent(transcriptObj.content);
+        transcripModel.setDate(transcriptObj.date);
+        const mentioned = await trx.run(`MATCH (p:Person)-[:MENTIONED_IN]->(t:Transcript { id: $id }) RETURN p`, { id: transcripModel.id }).then(result => result.records.map(record => ({ id: record.get('p').properties.id, label: record.get('p').properties.arabicName })));
+        transcripModel.setMentioned(mentioned);
+        return transcripModel;
       });
     await session.close();
     return transcript;
