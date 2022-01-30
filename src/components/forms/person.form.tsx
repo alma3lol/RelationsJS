@@ -138,28 +138,6 @@ export const PersonForm = observer<PersonFormProps>(({ person }) => {
 								/>
 							</Grid>
 							<Grid item xs={4}>
-								<TextField
-									label={t("forms.inputs.person.english_name")}
-									value={person.englishName}
-									onChange={e => person.setEnglishName(e.target.value)}
-									fullWidth
-									dir='ltr'
-									required
-									InputLabelProps={{
-										dir: (language === 'ar') ? 'rtl' : 'ltr',
-									}}
-								/>
-							</Grid>
-							<Grid item xs={4}>
-								<TextField
-									label={t("forms.inputs.person.mother_name")}
-									value={person.motherName}
-									onChange={e => person.setMotherName(e.target.value)}
-									fullWidth
-									required
-								/>
-							</Grid>
-							<Grid item xs={4}>
 								<Autocomplete
 									options={nationalities}
 									onChange={(__, value) => person.setNationality(value?.id ?? '')}
@@ -206,6 +184,26 @@ export const PersonForm = observer<PersonFormProps>(({ person }) => {
 											required
 										/>)
 									} />
+							</Grid>
+							<Grid item xs={4}>
+								<TextField
+									label={t("forms.inputs.person.english_name")}
+									value={person.englishName}
+									onChange={e => person.setEnglishName(e.target.value)}
+									fullWidth
+									dir='ltr'
+									InputLabelProps={{
+										dir: (language === 'ar') ? 'rtl' : 'ltr',
+									}}
+								/>
+							</Grid>
+							<Grid item xs={4}>
+								<TextField
+									label={t("forms.inputs.person.mother_name")}
+									value={person.motherName}
+									onChange={e => person.setMotherName(e.target.value)}
+									fullWidth
+								/>
 							</Grid>
 							<Grid item xs={4}>
 								<TextField
