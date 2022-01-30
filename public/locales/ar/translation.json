@@ -134,7 +134,10 @@
 				"title": "عنوان المحضر",
 				"content": "المحتوى",
 				"date": "التاريخ",
-				"attachments": "المرفقات"
+				"attachments": "المرفقات",
+				"mentioned": "المذكورين",
+				"choose_attachments": "إختيار مرفقات",
+				"no_persons": "لا يوجد أشخاص"
 			}
 		},
 		"sections": {

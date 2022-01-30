@@ -131,7 +131,10 @@
 				"title": "Title",
 				"content": "Content",
 				"date": "Date",
-				"attachments": "Attachments"
+				"attachments": "Attachments",
+				"mentioned": "Mentioned",
+				"choose_attachments": "Choose attachments",
+				"no_persons": "No people found"
 			}
 		},
 		"sections": {
