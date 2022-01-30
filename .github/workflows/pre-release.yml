@@ -112,10 +112,10 @@ jobs:
       - name: Collecting artifacts
         id: collecting
         run: |
-          echo "::set-output name=packedFileNameEXE::$(ls make/squirrel.windows/x64/relations-js*.exe)"
-          echo "::set-output name=packedFileNameDEB::$(ls make/relations-js*.deb)"
-          echo "::set-output name=packedFileNameRPM::$(ls make/relations-js*.rpm)"
-          echo "::set-output name=packedFileNameZIP::$(ls make/relations-js*.zip)"
+          echo "::set-output name=packedFileNameEXE::$(ls **/relations-js*.exe)"
+          echo "::set-output name=packedFileNameDEB::$(ls **/relations-js*.deb)"
+          echo "::set-output name=packedFileNameRPM::$(ls **/relations-js*.rpm)"
+          echo "::set-output name=packedFileNameZIP::$(ls **/relations-js*.zip)"
       - name: Create pre-release
         uses: softprops/action-gh-release@v1
         with:
