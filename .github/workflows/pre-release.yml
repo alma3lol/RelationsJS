@@ -109,15 +109,13 @@ jobs:
         uses: actions/download-artifact@v2.0.10
         with:
           name: zipArtifact
-      - name: Display structure of downloaded files
-        run: ls -R
       - name: Collecting artifacts
         id: collecting
         run: |
-          echo "::set-output name=packedFileNameEXE::$(ls **/relations-js*.exe)"
-          echo "::set-output name=packedFileNameDEB::$(ls **/relations-js*.deb)"
-          echo "::set-output name=packedFileNameRPM::$(ls **/relations-js*.rpm)"
-          echo "::set-output name=packedFileNameZIP::$(ls **/relations-js*.zip)"
+          echo "::set-output name=packedFileNameEXE::$(ls make/squirrel.windows/x64/relationsjs*.exe)"
+          echo "::set-output name=packedFileNameDEB::$(ls make/relationsjs*.deb)"
+          echo "::set-output name=packedFileNameRPM::$(ls make/relationsjs*.rpm)"
+          echo "::set-output name=packedFileNameZIP::$(ls make/relationsjs*.zip)"
       - name: Create pre-release
         uses: softprops/action-gh-release@v1
         with:
