@@ -5,6 +5,7 @@
   "author": "Omar Almalol",
   "description": "Relations management & representation in JavaScript",
   "main": "./public/electron.js",
+  "license": "MIT",
   "homepage": "./",
   "dependencies": {
     "@emotion/react": "^11.7.1",
