@@ -114,7 +114,8 @@
       "node_modules/**/*"
     ],
     "directories": {
-      "buildResources": "public"
+      "buildResources": "public",
+      "output": "release/"
     },
     "mac": {
       "target": "dmg"
