@@ -44,11 +44,16 @@ export const AddNode: FC<AddNodeProps> = ({ show, close, onDone: onDoneParent })
 	});
 	const classes = useStyles();
 	const [nodeType, setNodeType] = useState<null | NodeType>(null);
-	const nodeTypes: [JSX.Element, string, NodeType, string][] = [
-		[<GroupsIcon />, t('forms.type.category'), 'CATEGORY', t('forms.hint.category')],
-		[<PersonIcon />, t('forms.type.person'), 'PERSON', t('forms.hint.person')],
-		[<FlagIcon />, t('forms.type.nationality'), 'NATIONALITY', t('forms.hint.nationality')],
-		[<ArticleIcon />, t('forms.type.transcript'), 'TRANSCRIPT', t('forms.hint.transcript')],
+	const [nodeOnProgress, setNodeOnProgress] = useState<any>(null);
+	const [category, setCategory] = useState(new Category());
+	const [person, setPerson] = useState(new Person());
+	const [nationality, setNationality] = useState(new Nationality());
+	const [transcript, setTranscript] = useState(new Transcript());
+	const nodeTypes: [JSX.Element, string, NodeType, string, any][] = [
+		[<GroupsIcon />, t('forms.type.category'), 'CATEGORY', t('forms.hint.category'), category],
+		[<PersonIcon />, t('forms.type.person'), 'PERSON', t('forms.hint.person'), person],
+		[<FlagIcon />, t('forms.type.nationality'), 'NATIONALITY', t('forms.hint.nationality'), nationality],
+		[<ArticleIcon />, t('forms.type.transcript'), 'TRANSCRIPT', t('forms.hint.transcript'), transcript],
 	];
 	const defaultHint = t('forms.hint.default');
 	const [hint, setHint] = useState(defaultHint);
@@ -60,18 +65,14 @@ export const AddNode: FC<AddNodeProps> = ({ show, close, onDone: onDoneParent })
 		onDoneParent();
 		handleClose();
 	}
-	const [category, setCategory] = useState(new Category());
-	const [person, setPerson] = useState(new Person());
-	const [nationality, setNationality] = useState(new Nationality());
-	const [transcript, setTranscript] = useState(new Transcript());
 	const handleOnSubmit = async (e: FormEvent) => {
 		e.preventDefault();
 		if (nodeType === null) return;
+		if (nodeOnProgress === null) return;
 		const repository = Neo4jSigmaGraph.getInstance().getRepository(nodeType);
 		if (!repository) return;
-		const node = nodeType === 'CATEGORY' ? category : nodeType === 'PERSON' ? person : nodeType === 'NATIONALITY' ? nationality : nodeType === 'TRANSCRIPT' ? transcript : {};
 		try {
-			await repository.create(node);
+			await repository.create(nodeOnProgress);
 			onDone();
 			enqueueSnackbar(t(`forms.success.${nodeType.toLowerCase()}`), { variant: 'success' });
 		} catch (e) {
@@ -93,6 +94,7 @@ export const AddNode: FC<AddNodeProps> = ({ show, close, onDone: onDoneParent })
 			nodeTypes.forEach((nodeType, i) => {
 				if (e.key === (i + 1).toString()) {
 					setNodeType(nodeType[2]);
+					setNodeOnProgress(nodeType[3]);
 					return;
 				}
 			});
