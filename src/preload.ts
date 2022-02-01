@@ -10,14 +10,14 @@ import { FileType } from './global';
 contextBridge.exposeInMainWorld(
   'files',
   {
-    upload: (nodeId: string, fileType: FileType, filename: string, content: string | NodeJS.ArrayBufferView) => {
+    upload: (nodeId: string, fileType: FileType, filename: string, content: string | NodeJS.ArrayBufferView | ArrayBuffer) => {
       const fileExtension = path.extname(filename);
       const filenameWithoutExtension = path.basename(filename, fileExtension);
       const newFileName = `${filenameWithoutExtension}-${v4()}${fileExtension}`;
       const folderPath = `${userDataPath}/${fileType}/${nodeId}`;
       const filePath = `${folderPath}/${newFileName}`;
       fs.mkdirSync(folderPath, { recursive: true });
-      fs.writeFileSync(filePath, content);
+      fs.writeFileSync(filePath, content.toString());
       return filePath;
     },
     list: (nodeId: string, filesType: FileType) => {
