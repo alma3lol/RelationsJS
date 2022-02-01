@@ -161,7 +161,7 @@ export const FloatingActions: FC<FloatingActionsProps> = ({ showAddNode, showSet
 			});
 		}
 		return () => {
-			sigma.getGraph().setNodeAttribute(foundNode, 'highlighted', false)
+			if (sigma.getGraph().hasNode(foundNode)) sigma.getGraph().setNodeAttribute(foundNode, 'highlighted', false)
 		}
 		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [foundNode]);
@@ -415,7 +415,7 @@ export const FloatingActions: FC<FloatingActionsProps> = ({ showAddNode, showSet
 							onInputChange={(__, v) => handleSearchChange(v)}
 							noOptionsText={search ===  '' ? t('search.hint.empty') : foundNode ? t('search.hint.found') : t('search.hint.no_match')}
 							fullWidth
-							renderInput={(params) => <TextField {...params} onChange={e => handleSearchChange(e.target.value)} label={t('search.find')} inputRef={searchRef} />} />}
+							renderInput={(params) => <TextField {...params} label={t('search.find')} inputRef={searchRef} />} />}
 						{isFindPath && <>
 							<Autocomplete
 								disablePortal
