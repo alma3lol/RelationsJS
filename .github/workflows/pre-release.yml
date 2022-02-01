@@ -18,12 +18,12 @@ jobs:
         with:
           node-version: ${{ matrix.node-version }}
       - run: yarn
-      - run: yarn build
-      - name: Upload build artifacts
-        uses: actions/upload-artifact@v2.2.4
-        with:
-          name: build
-          path: build
+      # - run: yarn build
+      # - name: Upload build artifacts
+      #   uses: actions/upload-artifact@v2.2.4
+      #   with:
+      #     name: build
+      #     path: build
       - name: Get Yarn cache folder
         id: yarn-cache-dir-path
         run: echo "::set-output name=dir::$(yarn cache dir)"
@@ -57,10 +57,10 @@ jobs:
         with:
           path: ${{ steps.yarn-cache-dir-path.outputs.dir }}
           key: yarn-cache
-      - name: Download build artifact
-        uses: actions/download-artifact@v2.0.10
-        with:
-          name: build
+      # - name: Download build artifact
+      #   uses: actions/download-artifact@v2.0.10
+      #   with:
+      #     name: build
       - run: yarn
       - run: yarn electron-forge make
       - name: Upload ZIP artifacts (OSX)
