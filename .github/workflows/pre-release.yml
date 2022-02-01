@@ -115,9 +115,9 @@ jobs:
         id: collecting
         run: |
           echo "::set-output name=packedFileNameEXE::$(ls make/squirrel.windows/x64/RelationsJS*.exe)"
-          echo "::set-output name=packedFileNameDEB::$(ls make/RelationsJS*.deb)"
-          echo "::set-output name=packedFileNameRPM::$(ls make/RelationsJS*.rpm)"
-          echo "::set-output name=packedFileNameZIP::$(ls make/RelationsJS*.zip)"
+          echo "::set-output name=packedFileNameDEB::$(ls make/deb/x64/relationsjs*.deb)"
+          echo "::set-output name=packedFileNameRPM::$(ls make/rpm/x64/relationsjs*.rpm)"
+          echo "::set-output name=packedFileNameZIP::$(ls make/zip/darwin/x64/relationsjs*.zip)"
       - name: Create pre-release
         uses: softprops/action-gh-release@v1
         with:
