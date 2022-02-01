@@ -70,6 +70,8 @@ export const LoginView = () => {
     try {
       const drv = driver(url, auth.basic(username, password));
       await drv.verifyConnectivity({ database });
+      const session = drv.session({ database });
+      await session.run('MATCH (n) RETURN n LIMIT 1');
       setDatabase(database);
       setUsername(username);
       setPassword(password);
