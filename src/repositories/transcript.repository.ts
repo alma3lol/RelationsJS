@@ -1,4 +1,4 @@
-import { Connector, Repository } from "../types";
+import { Connector, Repository, RepositorySearch } from "../types";
 import { Media, Transcript } from "../models";
 
 export class TranscriptRepository extends Repository<Transcript, string> {
@@ -47,14 +47,16 @@ export class TranscriptRepository extends Repository<Transcript, string> {
     }));
     return transcript;
   }
-  read = async () => {
+  read = async (search: RepositorySearch<Transcript>) => {
     const session = this.connector.generateSession();
+    const searchCypher = search ? this._renderSearchObject(search) : '';
     const trx = session.beginTransaction();
     const transcrips = await trx.run(
-      `MATCH (t:Transcript)
-      RETURN t`
+      `MATCH (n:Transcript)
+      ${searchCypher ? `WHERE ${searchCypher}` : ''}
+      RETURN n`
     ).then(async result => await Promise.all(result.records.map(async record => {
-        const transcripObj = record.toObject().t.properties;
+        const transcripObj = record.toObject().n.properties;
         const transcripModel = new Transcript(transcripObj.id);
         transcripModel.setTitle(transcripObj.title);
         transcripModel.setContent(transcripObj.content);
