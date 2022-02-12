@@ -81,7 +81,7 @@ export const TranscriptForm = observer<TranscriptFormProps>(({ transcript }) => 
 			<Grid item xs={12}>
 				<Autocomplete
 					options={persons}
-					onChange={(__, value) => transcript.setMentioned(value)}
+					onChange={(__, value) => transcript.setMentioned(value.map(v => typeof v === 'string' ? { id: v, label: '' } : v))}
 					value={toJS(transcript.mentioned)}
 					noOptionsText={t('forms.inputs.transcript.no_persons')}
 					openOnFocus
