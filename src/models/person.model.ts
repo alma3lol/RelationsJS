@@ -11,8 +11,8 @@ export class Person {
 	birthDate: Date | null = null;
 	birthPlace = '';
 	job = '';
-	nationality = '';
-	category = '';
+	nationality: { id: string, label: string } = { id: '', label: '' };
+	category: { id: string, label: string } = { id: '', label: '' };
 	phone = '';
 	email = '';
 	workplace = '';
@@ -43,8 +43,8 @@ export class Person {
 	setBirthDate = (value: Date | null) => this.birthDate = value;
 	setBirthPlace = (value: string) => this.birthPlace = value;
 	setJob = (value: string) => this.job = value;
-	setNationality = (value: string) => this.nationality = value;
-	setCategory = (value: string) => this.category = value;
+	setNationality = (value: { id: string, label: string }) => this.nationality = value;
+	setCategory = (value: { id: string, label: string }) => this.category = value;
 	setPhone = (value: string) => this.phone = value;
 	setEmail = (value: string) => this.email = value;
 	setWorkplace = (value: string) => this.workplace = value;
