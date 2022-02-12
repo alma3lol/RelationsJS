@@ -29,6 +29,7 @@ import {
 import { useTranslation } from 'react-i18next';
 import forceAtlas2 from "graphology-layout-forceatlas2";
 import { animateNodes } from 'sigma/utils/animate';
+import { useNavigate } from 'react-router-dom';
 
 export type ClickNode = {
 	node: string
@@ -188,6 +189,10 @@ export const DashboardView = () => {
 	useHotkeys('Control+r', e => {
 		e.preventDefault();
 		refreshGraph();
+	});
+	const navigate = useNavigate();
+	useHotkeys('Control+Tab', () => {
+		navigate('/list');
 	});
 	const createGraph = async () => {
 		const graph = sigma.getGraph();
@@ -406,7 +411,7 @@ export const DashboardView = () => {
 	return (
 		<>
 			<Help show={showHelp} onClose={() => setShowHelp(false)} />
-			<QuickFind show={quickFind} onClose={() => setQuickFind(false)} />
+			<QuickFind show={quickFind} onClose={() => setQuickFind(false)} onDone={() => {}} />
 			<AddNode show={showAddNode} onDone={createGraphCallback} close={() => setShowAddNode(false)} />
 			<Settings onDone={createGraphCallback} show={showSettings} close={() => setShowSettings(false)}/>
 			<FloatingActions showAddNode={() => setShowAddNode(true)} showSettings={() => setShowSettings(true)} onDoneImporting={createGraphCallback} refreshGraph={refreshGraph} />
