@@ -33,10 +33,10 @@ import { Neo4jSigmaGraph } from "../../neo4j-sigma-graph";
 import { Person } from "../../models";
 import { observer } from "mobx-react-lite";
 import moment from "moment";
+import { toJS } from "mobx";
 
 export type PersonFormProps = {
 	person: Person;
-	onSubmit: (e: React.FormEvent) => void;
 }
 
 export const PersonForm = observer<PersonFormProps>(({ person }) => {
@@ -114,7 +114,7 @@ export const PersonForm = observer<PersonFormProps>(({ person }) => {
 	return (
 		<Grid item container spacing={1}>
 			<Grid item xs={12}>
-				<Accordion expanded={expanded === 'BASIC'} onChange={() => setExpanded(expanded === 'BASIC' ? 'IDENTIFICATION' : 'BASIC')}>
+				<Accordion elevation={3} expanded={expanded === 'BASIC'} onChange={() => setExpanded(expanded === 'BASIC' ? 'IDENTIFICATION' : 'BASIC')}>
 					<AccordionSummary expandIcon={<ExpandMoreIcon />}>{t("forms.sections.person.basic")}</AccordionSummary>
 					<AccordionDetails>
 						<Grid container spacing={2}>
@@ -140,7 +140,15 @@ export const PersonForm = observer<PersonFormProps>(({ person }) => {
 							<Grid item xs={4}>
 								<Autocomplete
 									options={nationalities}
-									onChange={(__, value) => person.setNationality(value?.id ?? '')}
+									onChange={(__, value) => {
+										if (value) {
+											if (typeof value === 'string') {
+												person.setNationality({ id: value, label: value });
+											} else {
+												person.setNationality(value);
+											}
+										}
+									}}
 									filterOptions={(options, params) => {
 										const filter = createFilterOptions<{ id: string, label: string }>();
 										const filtered = filter(options, params);
@@ -149,9 +157,10 @@ export const PersonForm = observer<PersonFormProps>(({ person }) => {
 										}
 										return filtered;
 									}}
-									value={nationalities.find(nat => nat.id === person.nationality)}
+									value={toJS(person.nationality)}
 									noOptionsText={t('forms.inputs.person.no_nationalities')}
 									openOnFocus
+									isOptionEqualToValue={(option, value) => option.id === value.id}
 									renderInput={params => (
 										<TextField
 											{...params}
@@ -164,7 +173,7 @@ export const PersonForm = observer<PersonFormProps>(({ person }) => {
 							<Grid item xs={4}>
 								<Autocomplete
 									options={categories}
-									onChange={(__, value) => person.setCategory(value?.id ?? '')}
+									onChange={(__, value) => person.setCategory(typeof value === 'string' ? { id: value, label: value } : value)}
 									filterOptions={(options, params) => {
 										const filter = createFilterOptions<{ id: string, label: string }>();
 										const filtered = filter(options, params);
@@ -173,8 +182,9 @@ export const PersonForm = observer<PersonFormProps>(({ person }) => {
 										}
 										return filtered;
 									}}
-									value={categories.find(cat => cat.id === person.category)}
+									value={toJS(person.category)}
 									noOptionsText={t('forms.inputs.person.no_categories')}
+									isOptionEqualToValue={(option, value) => option.id === value.id}
 									openOnFocus
 									renderInput={params => (
 										<TextField
@@ -284,9 +294,6 @@ export const PersonForm = observer<PersonFormProps>(({ person }) => {
 									value={person.gpsLocation}
 									onChange={e => person.setGpsLocation((e.target.value))}
 									fullWidth
-									inputProps={{
-										pattern: '\\d+\\.\\d+,\\s?\\d+\\.\\d+'
-									}}
 								/>
 							</Grid>
 						</Grid>
@@ -294,7 +301,7 @@ export const PersonForm = observer<PersonFormProps>(({ person }) => {
 				</Accordion>
 			</Grid>
 			<Grid item xs={12}>
-				<Accordion expanded={expanded === 'IDENTIFICATION'} onChange={() => setExpanded(expanded === 'IDENTIFICATION' ? 'IMPORTANT' : 'IDENTIFICATION')}>
+				<Accordion elevation={3} expanded={expanded === 'IDENTIFICATION'} onChange={() => setExpanded(expanded === 'IDENTIFICATION' ? 'IMPORTANT' : 'IDENTIFICATION')}>
 					<AccordionSummary expandIcon={<ExpandMoreIcon />}>{t("forms.sections.person.identification")}</AccordionSummary>
 					<AccordionDetails>
 						<Grid container spacing={2}>
@@ -389,7 +396,7 @@ export const PersonForm = observer<PersonFormProps>(({ person }) => {
 				</Accordion>
 			</Grid>
 			<Grid item xs={12}>
-				<Accordion expanded={expanded === 'IMPORTANT'} onChange={() => setExpanded(expanded === 'IMPORTANT' ? 'BASIC' : 'IMPORTANT')}>
+				<Accordion elevation={3} expanded={expanded === 'IMPORTANT'} onChange={() => setExpanded(expanded === 'IMPORTANT' ? 'BASIC' : 'IMPORTANT')}>
 					<AccordionSummary expandIcon={<ExpandMoreIcon />}>{t("forms.sections.person.important")}</AccordionSummary>
 					<AccordionDetails>
 						<Grid container spacing={2}>
