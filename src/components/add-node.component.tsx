@@ -1,18 +1,16 @@
 import { Dialog, Grid, CardContent, Card, CardActionArea, Divider, Typography, Button, DialogTitle, DialogContent, DialogActions } from "@mui/material";
 import { makeStyles } from "@mui/styles";
 import {
-	Groups as GroupsIcon,
 	Person as PersonIcon,
-	Flag as FlagIcon,
 	Article as ArticleIcon,
 } from "@mui/icons-material";
 import { FC, FormEvent, useContext, useEffect, useState } from "react";
 import { appContext } from "../App";
 import { Neo4jSigmaGraph, NodeType } from "../neo4j-sigma-graph";
 import { useTranslation } from "react-i18next";
-import { CategoryForm, NationalityForm, PersonForm, TranscriptForm } from "./forms";
+import { PersonForm, TranscriptForm } from "./forms";
 import useHotkeys from "@reecelucas/react-use-hotkeys";
-import { Category, Nationality, Person, Transcript } from "../models";
+import { Person, Transcript } from "../models";
 import { useSnackbar } from "notistack";
 
 export type AddNodeProps = {
@@ -45,14 +43,10 @@ export const AddNode: FC<AddNodeProps> = ({ show, close, onDone: onDoneParent })
 	const classes = useStyles();
 	const [nodeType, setNodeType] = useState<null | NodeType>(null);
 	const [nodeOnProgress, setNodeOnProgress] = useState<any>(null);
-	const [category, setCategory] = useState(new Category());
 	const [person, setPerson] = useState(new Person());
-	const [nationality, setNationality] = useState(new Nationality());
 	const [transcript, setTranscript] = useState(new Transcript());
 	const nodeTypes: [JSX.Element, string, NodeType, string, any][] = [
-		[<GroupsIcon />, t('forms.type.category'), 'CATEGORY', t('forms.hint.category'), category],
 		[<PersonIcon />, t('forms.type.person'), 'PERSON', t('forms.hint.person'), person],
-		[<FlagIcon />, t('forms.type.nationality'), 'NATIONALITY', t('forms.hint.nationality'), nationality],
 		[<ArticleIcon />, t('forms.type.transcript'), 'TRANSCRIPT', t('forms.hint.transcript'), transcript],
 	];
 	const defaultHint = t('forms.hint.default');
@@ -74,7 +68,7 @@ export const AddNode: FC<AddNodeProps> = ({ show, close, onDone: onDoneParent })
 		try {
 			await repository.create(nodeOnProgress);
 			onDone();
-			enqueueSnackbar(t(`forms.success.${nodeType.toLowerCase()}`), { variant: 'success' });
+			enqueueSnackbar(t(`forms.success.${nodeType.toLowerCase()}.add`), { variant: 'success' });
 		} catch (e) {
 			if (Object.hasOwnProperty.call(e, 'message')) {
 				enqueueSnackbar((e as any).message, { variant: 'error' });
@@ -84,9 +78,7 @@ export const AddNode: FC<AddNodeProps> = ({ show, close, onDone: onDoneParent })
 	useEffect(() => {
 		setNodeType(null);
 		setHint(defaultHint);
-		setCategory(new Category());
 		setPerson(new Person());
-		setNationality(new Nationality());
 		setTranscript(new Transcript());
 	}, [show, defaultHint]);
 	useHotkeys(nodeTypes.map((__, i) => (i + 1).toString()), e => {
@@ -100,9 +92,15 @@ export const AddNode: FC<AddNodeProps> = ({ show, close, onDone: onDoneParent })
 			});
 		}
 	});
+	const handleOnInvalid = (e: React.FormEvent<HTMLFormElement>) => {
+		e.preventDefault();
+		if (nodeType === null) return;
+		if (nodeOnProgress === null) return;
+		enqueueSnackbar(t('forms.invalid.form'), { variant: 'warning' });
+	}
 	return (
 		<Dialog open={show} fullWidth maxWidth='lg'>
-			<form onSubmit={handleOnSubmit}>
+			<form onSubmit={handleOnSubmit} onInvalid={handleOnInvalid}>
 				<DialogTitle>{t('forms.add_node.title')}</DialogTitle>
 				<DialogContent>
 					<Grid container spacing={2}>
@@ -129,9 +127,7 @@ export const AddNode: FC<AddNodeProps> = ({ show, close, onDone: onDoneParent })
 						</Grid>
 						{nodeType !== null && <Divider variant='middle' className={classes.divider} />}
 						<Grid item container spacing={0}>
-							{nodeType === 'CATEGORY' && <CategoryForm category={category} onSubmit={handleOnSubmit} />}
-							{nodeType === 'PERSON' && <PersonForm person={person} onSubmit={handleOnSubmit} />}
-							{nodeType === 'NATIONALITY' && <NationalityForm nationality={nationality} onSubmit={handleOnSubmit} />}
+							{nodeType === 'PERSON' && <PersonForm person={person} />}
 							{nodeType === 'TRANSCRIPT' && <TranscriptForm transcript={transcript} />}
 						</Grid>
 					</Grid>

@@ -1,38 +1,62 @@
 import { Button, CircularProgress, Dialog, DialogActions, DialogContent, DialogTitle, TextField } from "@mui/material";
-import { useSnackbar } from "notistack";
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
-import { useSigma } from "react-sigma-v2";
-import { Neo4jSigmaGraph } from "../neo4j-sigma-graph";
+import { Category, Nationality, Person, Transcript } from "../models";
+import { Neo4jSigmaGraph, NodeType } from "../neo4j-sigma-graph";
+import { RepositorySearch } from "../types";
 
 export type QuickFindProps = {
 	show: boolean;
 	onClose: () => void;
+	onDone: (nodes: (Person | Category | Nationality | Transcript)[]) => void;
 }
 
-export const QuickFind: React.FC<QuickFindProps> = ({ show, onClose }) => {
+export const QuickFind: React.FC<QuickFindProps> = ({ show, onClose, onDone }) => {
 	const { t } = useTranslation();
-	const { enqueueSnackbar } = useSnackbar();
 	const [search, setSearch] = useState("");
 	const [loading, setLoading] = useState(false);
-	const sigma = useSigma();
 	const searchItems = async () => {
 		setLoading(true);
-		const neo4jSigmaGraph = Neo4jSigmaGraph.getInstance();
-		const nodes = await neo4jSigmaGraph.searchNodes(search);
-		if (nodes.length === 0) {
-			enqueueSnackbar(t("quick_find.no_results"), { variant: "warning" });
-		} else {
-			sigma.getGraph().clear();
-			for (const node of nodes) {
-				neo4jSigmaGraph.addNodeToGraph(node);
-			}
-			// refresh graph
-			sigma.refresh();
+		const personSearch: RepositorySearch<Person> = {
+			arabicName: { like: search },
+			englishName: { like: search },
+			motherName: { like: search },
+			nickname: { like: search },
+			job: { like: search },
+			idNumber: { like: search },
+			email: { like: search },
+			phone: { like: search },
+			notes: { like: search },
+			fileNumber: { like: search },
+			workplace: { like: search },
+			birthPlace: { like: search },
+			gpsLocation: { like: search },
+			restrictions: { inarr: search },
+			nationalNumber: { like: search },
+			passportNumber: { like: search },
+			passportIssuePlace: { like: search },
+			registerationNumber: { like: search },
+			extra: { inarr: search },
 		}
+		const transcriptSearch: RepositorySearch<Transcript> = {
+			title: { like: search },
+			content: { like: search },
+		}
+		const searchNodeTypes: [NodeType, RepositorySearch<Person | Category | Transcript | Nationality> ][] = [
+			['PERSON', personSearch],
+			['TRANSCRIPT', transcriptSearch],
+		];
+		const foundNodes: (Person | Category | Nationality | Transcript)[] = [];
+		await Promise.all(searchNodeTypes.map(async nodeType => {
+			const repo = Neo4jSigmaGraph.getInstance().getRepository(nodeType[0]);
+			if (repo) {
+				foundNodes.push(...(await repo.read(nodeType[1])));
+			}
+		}));
+		setLoading(false);
+		onDone(foundNodes);
 		onCloseWithReset();
 	}
-	// combine `onClose` with reset results & search, errors, loading
 	const onCloseWithReset = () => {
 		setSearch("");
 		setLoading(false);

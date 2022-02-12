@@ -53,7 +53,7 @@ export const Settings: FC<SettingsProps> = ({ show, close, onDone }) => {
 			let clearedNothing = true;
 			if (filesTypes['passport']) {
 				const result = await trx.run(`MATCH (m:Media { type: 'passport' }) RETURN m`);
-				const count = await window.files.clearUnused('passport', result.records.map(record => record.toObject().m));
+				const count = await window.files.clearUnused('passport', result.records.map(record => record.toObject().m.properties.path));
 				setFilesTypes(prev => ({ ...prev, passport: false }));
 				if (count) {
 					clearedNothing = false;
@@ -62,7 +62,7 @@ export const Settings: FC<SettingsProps> = ({ show, close, onDone }) => {
 			}
 			if (filesTypes['image']) {
 				const result = await trx.run(`MATCH (m:Media { type: 'image' }) RETURN m`);
-				const count = await window.files.clearUnused('image', result.records.map(record => record.toObject().m));
+				const count = await window.files.clearUnused('image', result.records.map(record => record.toObject().m.properties.path));
 				setFilesTypes(prev => ({ ...prev, image: false }));
 				if (count) {
 					clearedNothing = false;
@@ -71,7 +71,7 @@ export const Settings: FC<SettingsProps> = ({ show, close, onDone }) => {
 			}
 			if (filesTypes['id']) {
 				const result = await trx.run(`MATCH (m:Media { type: 'id' }) RETURN m`);
-				const count = await window.files.clearUnused('id', result.records.map(record => record.toObject().m));
+				const count = await window.files.clearUnused('id', result.records.map(record => record.toObject().m.properties.path));
 				setFilesTypes(prev => ({ ...prev, id: false }));
 				if (count) {
 					clearedNothing = false;
@@ -80,7 +80,7 @@ export const Settings: FC<SettingsProps> = ({ show, close, onDone }) => {
 			}
 			if (filesTypes['video']) {
 				const result = await trx.run(`MATCH (m:Media { type: 'video' }) RETURN m`);
-				const count = await window.files.clearUnused('video', result.records.map(record => record.toObject().m));
+				const count = await window.files.clearUnused('video', result.records.map(record => record.toObject().m.properties.path));
 				setFilesTypes(prev => ({ ...prev, video: false }));
 				if (count) {
 					clearedNothing = false;
@@ -89,7 +89,7 @@ export const Settings: FC<SettingsProps> = ({ show, close, onDone }) => {
 			}
 			if (filesTypes['avatar']) {
 				const result = await trx.run(`MATCH (m:Media { type: 'avatar' }) RETURN m`);
-				const count = await window.files.clearUnused('avatar', result.records.map(record => record.toObject().m));
+				const count = await window.files.clearUnused('avatar', result.records.map(record => record.toObject().m.properties.path));
 				setFilesTypes(prev => ({ ...prev, avatar: false }));
 				if (count) {
 					clearedNothing = false;
@@ -98,7 +98,7 @@ export const Settings: FC<SettingsProps> = ({ show, close, onDone }) => {
 			}
 			if (filesTypes['attachment']) {
 				const result = await trx.run(`MATCH (m:Media { type: 'attachment' }) RETURN m`);
-				const count = await window.files.clearUnused('attachment', result.records.map(record => record.toObject().m));
+				const count = await window.files.clearUnused('attachment', result.records.map(record => record.toObject().m.properties.path));
 				setFilesTypes(prev => ({ ...prev, attachment: false }));
 				if (count) {
 					clearedNothing = false;
