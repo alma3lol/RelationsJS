@@ -1,6 +1,8 @@
 const En = {
 	"cancel": "Cancel",
 	"close": "Close",
+	"print": "Print",
+	"edit": "Edit",
 	"login": "Login",
 	"username": "Username",
 	"password": "Password",
@@ -8,7 +10,10 @@ const En = {
 	"neo4j_url": "Neo4j URL",
 	"titles": {
 		"login": "Login - RelationsJS",
-		"dashboard": "Dashboard - RelationsJS"
+		"dashboard": "Dashboard - RelationsJS",
+		"print": {
+			"information_card": "Print Information Card"
+		}
 	},
 	"search": {
 		"find": "Find a node",
@@ -68,6 +73,10 @@ const En = {
 		"disconnect": "Disconnect"
 	},
 	"forms": {
+		"sortBy": "Sort by",
+		"orderBy": "Order",
+		"ascendingOrder": "Ascending",
+		"descendingOrder": "Descending",
 		"add_node": {
 			"title": "Add node",
 			"action": "Add",
@@ -104,8 +113,8 @@ const En = {
 				"birthdate": "Birthdate",
 				"birth_place": "Birth place",
 				"passport_number": "Passport number",
-				"passport_issue_date": "Passport issue date",
-				"passport_issue_place": "Passport issue place",
+				"passport_issue_date": "Issue date",
+				"passport_issue_place": "Issue place",
 				"job": "Job",
 				"id_number": "ID number",
 				"national_number": "National number",
@@ -145,10 +154,34 @@ const En = {
 			}
 		},
 		"success": {
-			"person": "Successfully added a person",
-			"category": "Successfully added a category",
-			"nationality": "Successfully added a nationality",
-			"transcript": "Successfully added a transcript"
+			"person": {
+				"add": "Successfully added a person",
+				"edit": "Successfully edited a person",
+			},
+			"category": {
+				"add": "Successfully added a category",
+				"edit": "Successfully edited a category",
+			},
+			"nationality": {
+				"add": "Successfully added a nationality",
+				"edit": "Successfully edited a nationality"
+			},
+			"transcript": {
+				"add": "Successfully added a transcript",
+				"edit": "Successfully edited a transcript"
+			}
+		},
+		"invalid": {
+			"form": "There's an invalid input, please recheck your input"
+		},
+		"views": {
+			"person": "Viewing file: {{fileNumber}}"
+		},
+		"print": {
+			"person": "Information card"
+		},
+		"edit": {
+			"person": "Edit file: {{fileNumber}}"
 		}
 	},
 	"passport": "Passport",
@@ -164,7 +197,8 @@ const En = {
 	"attachment": "Attachment",
 	"attachments": "Attachments",
 	"files": {
-		"save_dialog_title": "Choose a file to export graph to"
+		"save_dialog_title": "Choose a file to export graph to",
+		"information_card": "Information card"
 	},
 	"context_menu": {
 		"set_start_node": "Set as start node",

@@ -1,6 +1,8 @@
 const Ar = {
 	"cancel": "إلغاء",
 	"close": "إغلاق",
+	"print": "طباعة",
+	"edit": "تعديل",
 	"login": "تسجيل الدخول",
 	"username": "اسم المستخدم",
 	"password": "كلمة المرور",
@@ -8,7 +10,10 @@ const Ar = {
 	"neo4j_url": "مسار خادم Neo4j",
 	"titles": {
 		"login": "تسجيل الدخول - RelationsJS",
-		"dashboard": "لوحة التحكم - RelationsJS"
+		"dashboard": "لوحة التحكم - RelationsJS",
+		"print": {
+			"information_card": "طباعة بطاقة المعلومات"
+		}
 	},
 	"search": {
 		"find": "البحث",
@@ -68,6 +73,10 @@ const Ar = {
 		"disconnect": "قطع الاتصال"
 	},
 	"forms": {
+		"sortBy": "فرز حسب",
+		"orderBy": "ترتيب",
+		"ascendingOrder": "تصاعدي",
+		"descendingOrder": "تنازلي",
 		"add_node": {
 			"title": "إضافة عنصر",
 			"action": "إضافة",
@@ -104,8 +113,8 @@ const Ar = {
 				"birthdate": "تاريخ الميلاد",
 				"birth_place": "مكان الميلاد",
 				"passport_number": "رقم جواز السفر",
-				"passport_issue_date": "تاريخ صدور جواز السفر",
-				"passport_issue_place": "مكان صدور جواز السفر",
+				"passport_issue_date": "تاريخ صدور",
+				"passport_issue_place": "مكان صدور",
 				"job": "الوظيفة",
 				"id_number": "رقم الهوية",
 				"national_number": "الرقم الوطني",
@@ -148,10 +157,34 @@ const Ar = {
 			}
 		},
 		"success": {
-			"person": "تم إضافة الشخص بنجاح.",
-			"category": "تم إضافة التصنيف بنجاح.",
-			"nationality": "تم إضافة الجنسية بنجاح",
-			"transcript": "تم إضافة المحضر بنجاح"
+			"person": {
+				"add": "تم إضافة الشخص بنجاح.",
+				"edit": "تم تعديل الشخص بنجاح."
+			},
+			"category": {
+				"add": "تم إضافة التصنيف بنجاح.",
+				"edit": "تم تعديل التصنيف بنجاح."
+			},
+			"nationality": {
+				"add": "تم إضافة الجنسية بنجاح",
+				"edit": "تم تعديل الجنسية بنجاح"
+			},
+			"transcript": {
+				"add": "تم إضافة المحضر بنجاح",
+				"edit": "تم تعديل المحضر بنجاح"
+			}
+		},
+		"invalid": {
+			"form": "يوجد خطأ بأحد الحقول, يرجى التأكد من المدخلات"
+		},
+		"views": {
+			"person": "عرض الملف: {{fileNumber}}"
+		},
+		"print": {
+			"person": "بطاقة معلومات"
+		},
+		"edit": {
+			"person": "تعديل الملف: {{fileNumber}}"
 		}
 	},
 	"passport": "جواز السفر",
@@ -167,7 +200,8 @@ const Ar = {
 	"attachment": "مرفق",
 	"attachments": "مرفقات",
 	"files": {
-		"save_dialog_title": "قم بإختيار ملف لحفظ العناصر فيه"
+		"save_dialog_title": "قم بإختيار ملف لحفظ العناصر فيه",
+		"information_card": "بطاقة المعلومات"
 	},
 	"context_menu": {
 		"set_start_node": "تعيين كعنصر البدء",
