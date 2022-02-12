@@ -7,19 +7,18 @@ import { useEffect, useState, createContext } from 'react';
 import { HashRouter, Routes, Route } from 'react-router-dom';
 import { makeStyles } from '@mui/styles';
 import { Driver } from 'neo4j-driver';
-import { ThemeProvider } from '@emotion/react';
-import { createTheme, CssBaseline, Theme, ThemeOptions } from '@mui/material';
+import { createTheme, ThemeProvider, Theme, ThemeOptions } from '@mui/material/styles';
 import Sigma from 'sigma';
 import { SnackbarProvider } from 'notistack';
 import { SigmaContainer } from 'react-sigma-v2';
 import 'react-sigma-v2/lib/react-sigma-v2.css';
 import getNodeProgramImage from 'sigma/rendering/webgl/programs/node.image';
 import { AuthRoute, RestrictedRoute } from './components';
-import { LoginView } from './views';
-import { DashboardView } from './views/dashboard.view';
+import { DashboardView, ListView, LoginView, PersonPrint, PersonEdit } from './views';
 import { RTL } from './rtl-support';
 import { Neo4jSigmaGraph } from './neo4j-sigma-graph';
 import reportWebVitals from './reportWebVitals';
+import { CssBaseline } from '@mui/material';
 
 export const createThemeOptions = (darkMode: boolean, language: string): ThemeOptions => ({
   direction: language === 'ar' ? 'rtl' : 'ltr',
@@ -255,6 +254,21 @@ const App = () => {
                       <LoginView />
                     </AuthRoute>
                     } />
+                  <Route path='/list' element={
+                    <RestrictedRoute>
+                      <ListView />
+                    </RestrictedRoute>
+                  } />
+                  <Route path='/print/person/:id' element={
+                    <RestrictedRoute>
+                      <PersonPrint />
+                    </RestrictedRoute>
+                  } />
+                  <Route path='/edit/person/:id' element={
+                    <RestrictedRoute>
+                      <PersonEdit />
+                    </RestrictedRoute>
+                  } />
                 </Routes>
               </HashRouter>
             </SnackbarProvider>
