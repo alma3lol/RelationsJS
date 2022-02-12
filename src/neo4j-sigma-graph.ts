@@ -2,7 +2,7 @@ import Graph from "graphology";
 import _ from "lodash";
 import { Node, Path, Session, SessionMode } from "neo4j-driver";
 import { TFunction } from "react-i18next";
-import GroupsSvgIcon from './images/groups.svg';
+import TagSvgIcon from './images/tag.svg';
 import PersonSvgIcon from './images/person.svg';
 import { Connector, Repository } from "./types";
 
@@ -93,7 +93,7 @@ export class Neo4jSigmaGraph {
     data.y = y;
     switch (node_type) {
       case 'CATEGORY':
-        data.image = GroupsSvgIcon;
+        data.image = TagSvgIcon;
         data.label = node.properties.name;
         data.name = node.properties.name;
         break;
