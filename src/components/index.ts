@@ -10,3 +10,5 @@ export * from './language-selector.component';
 export * from './quick-find.component';
 export * from './help.component';
 export * from './forms';
+export * from './categories.component';
+export * from './nationalities.component';
