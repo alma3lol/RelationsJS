@@ -12,14 +12,14 @@ import { useState, useEffect, useContext, createRef } from "react";
 import { useTranslation } from "react-i18next";
 import { useNavigate, useParams } from "react-router-dom";
 import { appContext } from "../../App";
-import { Person } from "../../models"
+import { Transcript } from "../../models"
 import { Neo4jSigmaGraph } from "../../neo4j-sigma-graph";
 import { Repository } from "../../types";
 import {
 	Print as PrintIcon,
 	Close as CloseIcon,
 } from "@mui/icons-material";
-import { PersonDetails } from "../details";
+import { TranscriptDetails } from "../details";
 
 const useStyles = makeStyles<Theme>(theme => ({
 	box: {
@@ -57,7 +57,7 @@ const useStyles = makeStyles<Theme>(theme => ({
 	},
 }));
 
-export const PersonPrint = () => {
+export const TranscriptPrint = () => {
 	const { t } = useTranslation();
 	const [headerImage, setHeaderImage] = useState<File | null>(null);
 	const [darkModeWasDefault, setDarkModeWasDefault] = useState(false);
@@ -68,16 +68,16 @@ export const PersonPrint = () => {
 		}
 	}, []);
 	const { theme, language, darkMode, toggleDarkMode } = useContext(appContext);
-	const [person, setPerson] = useState<Person | null>(null)
+	const [transcript, setTranscript] = useState<Transcript | null>(null)
 	const [loading, setLoading] = useState(true);
 	const { id } = useParams();
 	const navigate = useNavigate();
 	const classes = useStyles();
 	const fetchPerson = async () => {
-		const repo: Repository<Person, string> = Neo4jSigmaGraph.getInstance().getRepository('PERSON');
+		const repo: Repository<Transcript, string> = Neo4jSigmaGraph.getInstance().getRepository('TRANSCRIPT');
 		if (repo) {
 			try {
-				repo.readById(id).then(setPerson);
+				repo.readById(id).then(setTranscript);
 			} catch (error) {
 				console.error(error);
 			}
@@ -85,7 +85,7 @@ export const PersonPrint = () => {
 		setLoading(false)
 	}
 	const handlePrint = async () => {
-		await window.electron.print(`${t('forms.print.person')} - ${person.arabicName}`);
+		await window.electron.print(`${t('forms.print.transcript')} - ${transcript.title}`);
 		handleClose();
 	}
 	const handleClose = () => {
@@ -140,7 +140,7 @@ export const PersonPrint = () => {
 		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, []);
 	if (loading) return <div>Loading...</div>
-	if (!person) return null;
+	if (!transcript) return null;
 	return (
 		<Box className={classes.box}>
 			<Grid container px={2} className={classes.container}>
@@ -176,9 +176,9 @@ export const PersonPrint = () => {
 							</Grid>
 						</Grid>
 					</Box>
-					<Divider classes={{ root: classes.dividerRoot }}>{t('forms.print.person')}</Divider>
+					<Divider classes={{ root: classes.dividerRoot }}>{t('forms.print.transcript')}</Divider>
 				</Grid>
-				<PersonDetails person={person} print />
+				<TranscriptDetails transcript={transcript} onMentionedClick={() => {}} print />
 				<Grid item xs={12} sx={{ direction: language === 'ar' ? 'ltr' : 'ltr', displayPrint: 'none', my: 1 }} justifyContent='flex-end'>
 					<Button classes={{ endIcon: classes.buttonIcon }} endIcon={<CloseIcon />} color='inherit' variant='outlined' sx={{ mx: 1 }} onClick={handleClose}>{t('cancel')}</Button>
 					<Button classes={{ endIcon: classes.buttonIcon }} variant='contained' endIcon={<PrintIcon />} onClick={handlePrint}>{t('print')}</Button>
