@@ -18,12 +18,12 @@ jobs:
         with:
           node-version: ${{ matrix.node-version }}
       - run: yarn
-      - run: yarn build
-      - name: Upload build artifacts
-        uses: actions/upload-artifact@v2.2.4
-        with:
-          name: build
-          path: build
+      # - run: yarn build
+      # - name: Upload build artifacts
+      #   uses: actions/upload-artifact@v2.2.4
+      #   with:
+      #     name: build
+      #     path: build
       - name: Get Yarn cache folder
         id: yarn-cache-dir-path
         run: echo "::set-output name=dir::$(yarn cache dir)"
@@ -57,10 +57,10 @@ jobs:
         with:
           path: ${{ steps.yarn-cache-dir-path.outputs.dir }}
           key: yarn-cache
-      - name: Download build Artifact
-        uses: actions/download-artifact@v2.0.10
-        with:
-          name: build
+      # - name: Download build Artifact
+      #   uses: actions/download-artifact@v2.0.10
+      #   with:
+      #     name: build
       - run: yarn
       - run: yarn electron-forge make
       - name: Upload ZIP artifacts (OSX)
@@ -112,10 +112,10 @@ jobs:
       - name: Collecting artifacts
         id: collecting
         run: |
-          echo "::set-output name=packedFileNameEXE::$(ls make/squirrel.windows/x64/relationsjs*.exe)"
-          echo "::set-output name=packedFileNameDEB::$(ls make/relationsjs*.deb)"
-          echo "::set-output name=packedFileNameRPM::$(ls make/relationsjs*.rpm)"
-          echo "::set-output name=packedFileNameZIP::$(ls make/relationsjs*.zip)"
+          echo "::set-output name=packedFileNameEXE::$(ls make/squirrel.windows/x64/RelationsJS*.exe)"
+          echo "::set-output name=packedFileNameDEB::$(ls make/deb/x64/relationsjs*.deb)"
+          echo "::set-output name=packedFileNameRPM::$(ls make/rpm/x64/relationsjs*.rpm)"
+          echo "::set-output name=packedFileNameZIP::$(ls make/zip/darwin/x64/relationsjs*.zip)"
       - name: Create release
         uses: softprops/action-gh-release@v1
         with:
