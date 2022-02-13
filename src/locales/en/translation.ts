@@ -3,6 +3,8 @@ const En = {
 	"close": "Close",
 	"print": "Print",
 	"edit": "Edit",
+	"add": "Add",
+	"download": "Download file",
 	"login": "Login",
 	"username": "Username",
 	"password": "Password",
@@ -75,8 +77,15 @@ const En = {
 	"forms": {
 		"sortBy": "Sort by",
 		"orderBy": "Order",
+		"advanced": "Advanced",
+		"showPeople": "Show people",
+		"showTranscripts": "Show transcripts",
 		"ascendingOrder": "Ascending",
 		"descendingOrder": "Descending",
+		"titles": {
+			"categories": "Categories",
+			"nationalities": "Nationalities"
+		},
 		"add_node": {
 			"title": "Add node",
 			"action": "Add",
@@ -131,7 +140,11 @@ const En = {
 				"notes": "Notes",
 				"extra": "Extra",
 				"choose_attachments": "Choose attachments",
-				"no_categories": "No categories with this name"
+				"no_categories": "No categories with this name",
+				"create_new_category": "Create a new category ({{name}})",
+				"no_nationalities": "No nationalities, start typing to create a new one",
+				"create_new_nationality": "Create a new nationality ({{name}})",
+				"save_attachment": "Save attachment"
 			},
 			"nationality": {
 				"name": "Nationality"
@@ -143,7 +156,8 @@ const En = {
 				"attachments": "Attachments",
 				"mentioned": "Mentioned",
 				"choose_attachments": "Choose attachments",
-				"no_persons": "No people found"
+				"no_persons": "No people found",
+				"save_attachment": "Save attachment",
 			}
 		},
 		"sections": {
@@ -175,13 +189,16 @@ const En = {
 			"form": "There's an invalid input, please recheck your input"
 		},
 		"views": {
-			"person": "Viewing file: {{fileNumber}}"
+			"person": "Viewing file: {{fileNumber}}",
+			"transcript": "Viewing transcript: {{title}}"
 		},
 		"print": {
-			"person": "Information card"
+			"person": "Information card",
+			"transcript": "Transcript"
 		},
 		"edit": {
-			"person": "Edit file: {{fileNumber}}"
+			"person": "Editing file: {{fileNumber}}",
+			"transcript": "Editing transcript: {{title}}"
 		}
 	},
 	"passport": "Passport",

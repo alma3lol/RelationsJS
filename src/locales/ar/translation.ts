@@ -3,6 +3,8 @@ const Ar = {
 	"close": "إغلاق",
 	"print": "طباعة",
 	"edit": "تعديل",
+	"add": "إضافة",
+	"download": "تحميل الملف",
 	"login": "تسجيل الدخول",
 	"username": "اسم المستخدم",
 	"password": "كلمة المرور",
@@ -75,8 +77,15 @@ const Ar = {
 	"forms": {
 		"sortBy": "فرز حسب",
 		"orderBy": "ترتيب",
+		"advanced": "متقدم",
+		"showPeople": "عرض الأشخاص",
+		"showTranscripts": "عرض المحاضر",
 		"ascendingOrder": "تصاعدي",
 		"descendingOrder": "تنازلي",
+		"titles": {
+			"categories": "التصنيفات",
+			"nationalities": "الجنسيات",
+		},
 		"add_node": {
 			"title": "إضافة عنصر",
 			"action": "إضافة",
@@ -123,7 +132,7 @@ const Ar = {
 				"address": "العنوان",
 				"gps_location": "إحداثي موقع السكن",
 				"workplace": "جهة العمل",
-				"attachments": "المرفثقات",
+				"attachments": "المرفقات",
 				"phone": "رقم الهاتف",
 				"email": "عنوان البريد الإلكتروني",
 				"restrictions": "القيودات",
@@ -132,9 +141,10 @@ const Ar = {
 				"extra": "تفريغ محاضر الإستدلال",
 				"choose_attachments": "إختيار مرفقات",
 				"no_categories": "لا يوجد تصنيفات, إبدأ بالكتابة ليتم إنشاء تصنيف جديد",
-				"create_new_category": "إنشاء تصنيف جديد  ({{name}})",
+				"create_new_category": "إنشاء تصنيف جديد ({{name}})",
 				"no_nationalities": "لا توجد جنسيات, إبدأ بالكتابة ليتم إنشاء جنسية جديدة",
-				"create_new_nationality": "إنشاء جنسية جديدة  ({{name}})"
+				"create_new_nationality": "إنشاء جنسية جديدة ({{name}})",
+				"save_attachment": "حفظ المرفق"
 			},
 			"nationality": {
 				"name": "الجنسية"
@@ -146,7 +156,8 @@ const Ar = {
 				"attachments": "المرفقات",
 				"mentioned": "المذكورين",
 				"choose_attachments": "إختيار مرفقات",
-				"no_persons": "لا يوجد أشخاص"
+				"no_persons": "لا يوجد أشخاص",
+				"save_attachment": "حفظ المرفق",
 			}
 		},
 		"sections": {
@@ -178,13 +189,16 @@ const Ar = {
 			"form": "يوجد خطأ بأحد الحقول, يرجى التأكد من المدخلات"
 		},
 		"views": {
-			"person": "عرض الملف: {{fileNumber}}"
+			"person": "عرض الملف: {{fileNumber}}",
+			"transcript": "عرض المحضر: {{title}}"
 		},
 		"print": {
-			"person": "بطاقة معلومات"
+			"person": "بطاقة معلومات",
+			"transcript": "محضر إستدلال"
 		},
 		"edit": {
-			"person": "تعديل الملف: {{fileNumber}}"
+			"person": "تعديل الملف: {{fileNumber}}",
+			"transcript": "تعديل المحضر: {{title}}"
 		}
 	},
 	"passport": "جواز السفر",
