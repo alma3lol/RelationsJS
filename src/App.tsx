@@ -14,7 +14,7 @@ import { SigmaContainer } from 'react-sigma-v2';
 import 'react-sigma-v2/lib/react-sigma-v2.css';
 import getNodeProgramImage from 'sigma/rendering/webgl/programs/node.image';
 import { AuthRoute, RestrictedRoute } from './components';
-import { DashboardView, ListView, LoginView, PersonPrint, PersonEdit } from './views';
+import { DashboardView, ListView, LoginView, PersonPrint, TranscriptPrint, PersonEdit, TranscriptEdit } from './views';
 import { RTL } from './rtl-support';
 import { Neo4jSigmaGraph } from './neo4j-sigma-graph';
 import reportWebVitals from './reportWebVitals';
@@ -267,6 +267,16 @@ const App = () => {
                   <Route path='/edit/person/:id' element={
                     <RestrictedRoute>
                       <PersonEdit />
+                    </RestrictedRoute>
+                  } />
+                  <Route path='/print/transcript/:id' element={
+                    <RestrictedRoute>
+                      <TranscriptPrint />
+                    </RestrictedRoute>
+                  } />
+                  <Route path='/edit/transcript/:id' element={
+                    <RestrictedRoute>
+                      <TranscriptEdit />
                     </RestrictedRoute>
                   } />
                 </Routes>
