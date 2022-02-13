@@ -1,5 +1,7 @@
 import { Connector, Repository, RepositorySearch } from "../types";
 import { Media, Transcript } from "../models";
+import _ from "lodash";
+import moment from "moment";
 
 export class TranscriptRepository extends Repository<Transcript, string> {
   constructor(connector: Connector, private mediaRepository: Repository<Media, string>) {
@@ -20,7 +22,7 @@ export class TranscriptRepository extends Repository<Transcript, string> {
         date: transcript.date ? transcript.date.toISOString() : null,
       });
     await session.close();
-    await Promise.all(transcript.attachments.map(async attachment => {
+    for (const attachment of transcript.attachments) {
       const attachmentPath = window.files.upload(transcript.id, 'attachment', attachment.name, (await attachment.arrayBuffer()));
       const media = new Media();
       media.setName(attachment.name);
@@ -36,15 +38,18 @@ export class TranscriptRepository extends Repository<Transcript, string> {
           media: media.id,
         });
       await session.close();
-    }));
-    await Promise.all(transcript.mentioned.map(async mentioned => {
+    }
+    for (const mentioned of transcript.mentioned) {
       session = this.connector.generateSession();
       await session.run(`
-        MATCH (r:Transcript { id: $id }), (p:Person { id: $person })
-        CREATE (p)-[:MENTIONED_IN]->(r)
-      `, { id: transcript.id, person: mentioned.id });
+        MATCH (t:Transcript {id: $id})
+        MATCH (p:Person {id: $person})
+        CREATE (p)-[:MENTIONED_IN]->(t)`, {
+          id: transcript.id,
+          person: mentioned.id,
+        });
       await session.close();
-    }));
+    }
     return transcript;
   }
   read = async (search: RepositorySearch<Transcript>) => {
@@ -56,14 +61,23 @@ export class TranscriptRepository extends Repository<Transcript, string> {
       ${searchCypher ? `WHERE ${searchCypher}` : ''}
       RETURN n`
     ).then(async result => await Promise.all(result.records.map(async record => {
-        const transcripObj = record.toObject().n.properties;
-        const transcripModel = new Transcript(transcripObj.id);
-        transcripModel.setTitle(transcripObj.title);
-        transcripModel.setContent(transcripObj.content);
-        transcripModel.setDate(transcripObj.date);
-        const mentioned = await trx.run(`MATCH (p:Person)-[:MENTIONED_IN]->(t:Transcript { id: $id }) RETURN p`, { id: transcripModel.id }).then(result => result.records.map(record => ({ id: record.get('p').properties.id, label: record.get('p').properties.arabicName })));
-        transcripModel.setMentioned(mentioned);
-        return transcripModel;
+        const transcriptObj = record.toObject().n.properties;
+        const transcriptModel = new Transcript(transcriptObj.id);
+        transcriptModel.setTitle(transcriptObj.title);
+        transcriptModel.setContent(transcriptObj.content);
+        transcriptModel.setDate(moment(transcriptObj.date).toDate());
+        const attachments = await trx.run(`
+          MATCH (t:Transcript {id: $id}), (t)-[:HAS]->(m:Media)
+          RETURN m`, {
+            id: transcriptObj.id,
+          }).then(async result => await Promise.all(result.records.map(async record => {
+            const mediaObj = record.toObject().m.properties;
+            return window.files.getFile(mediaObj.path);
+          })));
+        transcriptModel.setAttachments(attachments);
+        const mentioned = await trx.run(`MATCH (p:Person)-[:MENTIONED_IN]->(t:Transcript { id: $id }) RETURN p`, { id: transcriptModel.id }).then(result => result.records.map(record => ({ id: record.get('p').properties.id, label: record.get('p').properties.arabicName })));
+        transcriptModel.setMentioned(mentioned);
+        return transcriptModel;
       })));
     await session.close();
     return transcrips;
@@ -81,7 +95,16 @@ export class TranscriptRepository extends Repository<Transcript, string> {
         const transcripModel = new Transcript(transcriptObj.id);
         transcripModel.setTitle(transcriptObj.title);
         transcripModel.setContent(transcriptObj.content);
-        transcripModel.setDate(transcriptObj.date);
+        transcripModel.setDate(moment(transcriptObj.date).toDate());
+        const attachments = await trx.run(`
+          MATCH (t:Transcript {id: $id}), (t)-[:HAS]->(m:Media)
+          RETURN m`, {
+            id: transcriptObj.id,
+          }).then(async result => await Promise.all(result.records.map(async record => {
+            const mediaObj = record.toObject().m.properties;
+            return window.files.getFile(mediaObj.path);
+          })));
+        transcripModel.setAttachments(attachments);
         const mentioned = await trx.run(`MATCH (p:Person)-[:MENTIONED_IN]->(t:Transcript { id: $id }) RETURN p`, { id: transcripModel.id }).then(result => result.records.map(record => ({ id: record.get('p').properties.id, label: record.get('p').properties.arabicName })));
         transcripModel.setMentioned(mentioned);
         return transcripModel;
@@ -90,7 +113,8 @@ export class TranscriptRepository extends Repository<Transcript, string> {
     return transcript;
   }
   update = async (id: string, transcript: Transcript) => {
-    const session = this.connector.generateSession();
+    const oldTranscript = await this.readById(id);
+    let session = this.connector.generateSession();
     await session.run(`
       MATCH (r:Transcript)
       WHERE r.id = $id
@@ -104,16 +128,74 @@ export class TranscriptRepository extends Repository<Transcript, string> {
         content: transcript.content,
         date: transcript.date ? transcript.date.toISOString() : null,
       });
+    await session.run(`
+      MATCH (t:Transcript {id: $id})
+      OPTIONAL MATCH ()-[r:MENTIONED_IN]->(t)
+      DETACH DELETE r`, {
+        id: transcript.id,
+    });
     await session.close();
+    for(const mentioned of transcript.mentioned) {
+      session = this.connector.generateSession();
+      await session.run(`
+        MATCH (t:Transcript {id: $id})
+        MATCH (p:Person {id: $person})
+        CREATE (p)-[:MENTIONED_IN]->(t)`, {
+          id: transcript.id,
+          person: mentioned.id,
+        });
+      await session.close();
+    }
+    for(const attachment of oldTranscript.attachments) {
+        if (_.find(transcript.attachments, { name: attachment.name })) continue;
+        session = this.connector.generateSession();
+        await session.run(`
+            MATCH (m:Media { type: 'attachment' })
+            WHERE m.path ENDS WITH $name
+            DETACH DELETE m
+        `, { name: attachment.name });
+        await session.close();
+        window.files.delete(transcript.id, 'attachment', attachment.name);
+    }
+    for (const attachment of transcript.attachments) {
+        if (_.find(oldTranscript.attachments, { name: attachment.name })) continue;
+        const attachmentPath = window.files.upload(transcript.id, 'attachment', attachment.name, (await attachment.arrayBuffer()));
+        const media = new Media();
+        media.setName(attachment.name);
+        media.setPath(attachmentPath);
+        media.setType('attachment');
+        await this.mediaRepository.create(media);
+        session = this.connector.generateSession();
+        await session.run(`
+            MATCH (t:Transcript {id: $id})
+            MATCH (m:Media {id: $media})
+            CREATE (t)-[:HAS]->(m)
+        `, {
+            id: transcript.id,
+            media: media.id,
+        });
+        await session.close();
+    }
     return transcript;
   }
   delete = async (id: string) => {
-    const session = this.connector.generateSession();
+    const oldTranscript = await this.readById(id);
+    let session = this.connector.generateSession();
     await session.run(`
-      MATCH (r:Transcript)
-      WHERE r.id = $id
-      DETATCH DELETE r
+      MATCH (t:Transcript { id: $id })
+      OPTIONAL MATCH (t)-[r:HAS]->()
+      DETATCH DELETE r, t
       `, { id });
     await session.close();
+    for(const attachment of oldTranscript.attachments) {
+        session = this.connector.generateSession();
+        await session.run(`
+            MATCH (m:Media { type: 'attachment' })
+            WHERE m.path ENDS WITH $name
+            DETACH DELETE m
+        `, { name: attachment.name });
+        await session.close();
+        window.files.delete(id, 'attachment', attachment.name);
+    }
   }
 }

@@ -182,7 +182,7 @@ export class PersonRepository extends Repository<Person, string> {
             const person = new Person(personObj.id);
             person.setFileNumber(personObj.fileNumber);
             person.setArabicName(personObj.arabicName);
-            person.setEnglishName(personObj.englishNamen);
+            person.setEnglishName(personObj.englishName);
             person.setMotherName(personObj.motherName);
             person.setNickname(personObj.nickname);
             if (personObj.birthDate) person.setBirthDate(moment(personObj.birthDate).toDate());
@@ -481,7 +481,7 @@ export class PersonRepository extends Repository<Person, string> {
                         MATCH (m:Media { type: 'id' })
                         WHERE m.path ENDS WITH $name
                         DETACH DELETE m
-                    `, { id: person.id, name: oldPerson.idImage.name });
+                    `, { name: oldPerson.idImage.name });
                     await session.close();
                     window.files.delete(person.id, 'id', oldPerson.idImage.name);
                 } else shouldUpdate = false;
@@ -514,7 +514,7 @@ export class PersonRepository extends Repository<Person, string> {
                         MATCH (m:Media { type: 'passport' })
                         WHERE m.path ENDS WITH $name
                         DETACH DELETE m
-                    `, { id: person.id, name: oldPerson.passportImage.name });
+                    `, { name: oldPerson.passportImage.name });
                     await session.close();
                     window.files.delete(person.id, 'passport', oldPerson.passportImage.name);
                 } else shouldUpdate = false;
@@ -545,7 +545,7 @@ export class PersonRepository extends Repository<Person, string> {
                 MATCH (m:Media { type: 'attachment' })
                 WHERE m.path ENDS WITH $name
                 DETACH DELETE m
-            `, { id: person.id, name: attachment.name });
+            `, { name: attachment.name });
             await session.close();
             window.files.delete(person.id, 'attachment', attachment.name);
         }
@@ -573,7 +573,8 @@ export class PersonRepository extends Repository<Person, string> {
         return person;
     }
     delete = async (id: string) => {
-        const session = this.connector.generateSession();
+        const oldPerson = await this.readById(id);
+        let session = this.connector.generateSession();
         await session.run(`
             MATCH (p:Person { id: $id })
             OPTIONAL MATCH (p)-[r]->(o)
@@ -583,5 +584,45 @@ export class PersonRepository extends Repository<Person, string> {
             id
         });
         await session.close();
+        for(const attachment of oldPerson.attachments) {
+            session = this.connector.generateSession();
+            await session.run(`
+                MATCH (m:Media { type: 'attachment' })
+                WHERE m.path ENDS WITH $name
+                DETACH DELETE m
+            `, { name: attachment.name });
+            await session.close();
+            window.files.delete(oldPerson.id, 'attachment', attachment.name);
+        }
+        if (oldPerson.image) {
+            session = this.connector.generateSession();
+            await session.run(`
+                MATCH (m:Media { type: 'avatar' })
+                WHERE m.path ENDS WITH $name
+                DETACH DELETE m
+            `, { name: oldPerson.image.name });
+            await session.close();
+            window.files.delete(oldPerson.id, 'avatar', oldPerson.image.name);
+        }
+        if (oldPerson.idImage) {
+            session = this.connector.generateSession();
+            await session.run(`
+                MATCH (m:Media { type: 'id' })
+                WHERE m.path ENDS WITH $name
+                DETACH DELETE m
+            `, { name: oldPerson.idImage.name });
+            await session.close();
+            window.files.delete(oldPerson.id, 'id', oldPerson.idImage.name);
+        }
+        if (oldPerson.passportImage) {
+            session = this.connector.generateSession();
+            await session.run(`
+                MATCH (m:Media { type: 'passport' })
+                WHERE m.path ENDS WITH $name
+                DETACH DELETE m
+            `, { name: oldPerson.passportImage.name });
+            await session.close();
+            window.files.delete(oldPerson.id, 'passport', oldPerson.passportImage.name);
+        }
     }
 }
