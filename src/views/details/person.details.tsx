@@ -1,4 +1,4 @@
-import { Box, Grid, Table, TableBody, TableCell, TableRow, Theme } from "@mui/material";
+import { Box, Card, CardActions, CardContent, CardMedia, Grid, IconButton, Table, TableBody, TableCell, TableRow, Theme, Tooltip, Typography } from "@mui/material";
 import { makeStyles } from "@mui/styles";
 import moment from "moment";
 import { useTranslation } from "react-i18next";
@@ -7,6 +7,9 @@ import PersonLightSvgIcon from "../../images/person-light.svg"
 import PersonDarkSvgIcon from "../../images/person.svg"
 import { appContext } from "../../App";
 import { useContext } from "react";
+import {
+	Download  as DownloadIcon,
+} from '@mui/icons-material';
 
 const useStyles = makeStyles<Theme>(theme => ({
 	table: {
@@ -34,12 +37,16 @@ const useStyles = makeStyles<Theme>(theme => ({
 
 export type PersonDetailsProps = {
 	person: Person;
+	print?: true
 };
 
-export const PersonDetails: React.FC<PersonDetailsProps> = ({ person }) => {
+export const PersonDetails: React.FC<PersonDetailsProps> = ({ person, print }) => {
 	const { t } = useTranslation();
-	const { darkMode } = useContext(appContext);
+	const { darkMode, theme } = useContext(appContext);
 	const classes = useStyles();
+	const handleDownloadAttachment = async (attachment: File) => {
+		window.files.saveFile((await attachment.arrayBuffer()), t('forms.inputs.person.save_attachment'), attachment.name);
+	}
 	return (
 		<Grid item container spacing={2} px={2} pb={2} className={classes.container}>
 			<Grid item flexGrow={1}>
@@ -111,9 +118,35 @@ export const PersonDetails: React.FC<PersonDetailsProps> = ({ person }) => {
 							<TableCell sx={{ width: '80%' }} colSpan={3}>{person.email}</TableCell>
 						</TableRow>
 						<TableRow>
-							<TableCell sx={{ width: '20% !important' }}>{t('forms.inputs.person.notes')}</TableCell>
-							<TableCell sx={{ width: '80%' }} colSpan={3}>{person.notes}</TableCell>
+							<TableCell sx={{ width: '20% !important' }}><Box height={theme.spacing(15)}>{t('forms.inputs.person.notes')}</Box></TableCell>
+							<TableCell sx={{ width: '80%' }} colSpan={3}><Box height={theme.spacing(15)}>{person.notes}</Box></TableCell>
 						</TableRow>
+						{!print &&
+							<TableRow>
+								<TableCell sx={{ width: '20% !important' }}>{t('forms.inputs.person.attachments')}</TableCell>
+								<TableCell sx={{ width: '80%' }} colSpan={3}>
+									<Grid container spacing={2}>
+										{person.attachments.map(attachment => (
+											<Grid item xs={4} key={attachment.name}>
+												<Card>
+													<CardMedia sx={{ height: 250 }} component='img' src={URL.createObjectURL(attachment)} />
+													<CardContent>
+														<Typography noWrap variant='caption'>{attachment.name}</Typography>
+													</CardContent>
+													<CardActions>
+														<Tooltip title={t('download')}>
+															<IconButton size='small' onClick={() => handleDownloadAttachment(attachment)}>
+																<DownloadIcon />
+															</IconButton>
+														</Tooltip>
+													</CardActions>
+												</Card>
+											</Grid>
+										))}
+									</Grid>
+								</TableCell>
+							</TableRow>
+						}
 					</TableBody>
 				</Table>
 			</Grid>
