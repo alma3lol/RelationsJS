@@ -14,8 +14,8 @@ declare global {
 			upload: (nodeId: string, fileType: FileType, filename: string, content: ArrayBuffer) => string
 			list: (nodeId: string, filesType: FileType) => string[]
 			delete: (nodeId: string, fileType: FileType, filename: string) => void
-			clearUnused: (filesType: FileType, files: any[]) => Pomise<number>
-			saveFile: (content, title?: string) => Pomise<boolean>
+			clearUnused: (filesType: FileType, files: any[]) => number
+			saveFile: (content: string | ArrayBuffer, title?: string, defaultPath?: string) => boolean
 			getFile: (filePath) => File
 		},
 		electron: {

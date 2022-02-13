@@ -33,7 +33,7 @@ contextBridge.exposeInMainWorld(
       if (!fs.existsSync(fullPath)) return;
       fs.unlinkSync(fullPath)
     },
-    clearUnused: async (filesType: FileType, files: string[]) => {
+    clearUnused: (filesType: FileType, files: string[]) => {
       const folderToSearch = `${userDataPath}/${filesType}`;
       if (!fs.existsSync(folderToSearch)) return 0;
       let deleted = 0;
@@ -51,20 +51,25 @@ contextBridge.exposeInMainWorld(
       });
       return deleted;
     },
-    saveFile: async (content: string | NodeJS.ArrayBufferView, _title?: string) => {
+    saveFile: (content: string | ArrayBuffer, _title?: string, defaultPath?: string) => {
       const title = _title ?? 'Choose file to export to';
       const filePath = dialog.showSaveDialogSync({
         title,
-        defaultPath: 'relations-js-graph.json',
-        filters: [
-          {
-            name: 'JSON',
-            extensions: ['json']
-          }
-        ]
+        defaultPath: defaultPath ?? 'relations-js-graph.json',
+        // filters: [
+        //   {
+        //     name: 'JSON',
+        //     extensions: ['json']
+        //   }
+        // ]
       });
       if (filePath) {
-        fs.writeFileSync(filePath, content);
+        if (typeof content === 'string') {
+          fs.writeFileSync(filePath, content);
+        } else {
+          const buffer = Buffer.from(content);
+          fs.writeFileSync(filePath, buffer);
+        }
         return true;
       } else {
         return false;
