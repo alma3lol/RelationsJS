@@ -8,7 +8,7 @@ export const AuthRoute: React.FC<{ children: ReactNode }> = ({ children }) => {
   const { connected } = useContext(appContext);
   if (connected) {
     if (state && state.from !== "/logout") return <Navigate to={state.from} />
-      else return <Navigate to='/' />;
+      else return <Navigate to='/list' />;
   }
   else return <>{children}</>;
 }
